@@ -1,0 +1,10 @@
+/run/verbose 2
+/GB03/verbose 2 
+
+/gun/particle neutron
+
+# 10 layers, splitting with factor 2 is fine:
+/GB03/numberOfLayers 5
+/GB03/biasing/setSplittingFactor 2
+/GB03/biasing/setApplyProbability 1.0
+/run/beamOn 100
