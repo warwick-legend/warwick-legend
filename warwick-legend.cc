@@ -1,5 +1,5 @@
 // ********************************************************************
-// FirstAttempt project
+// warwick-legend project
 
 #ifdef G4MULTITHREADED
 #include "G4MTRunManager.hh"
@@ -25,9 +25,9 @@
 #include "G4Threading.hh"
 
 // us
-#include "LGDetectorConstruction.hh"
-#include "LGPrimaryGeneratorAction.hh"
-#include "LGActionInitialization.hh"
+#include "WLGDDetectorConstruction.hh"
+#include "WLGDPrimaryGeneratorAction.hh"
+#include "WLGDActionInitialization.hh"
 #include "getopt_pp.h"
 
 
