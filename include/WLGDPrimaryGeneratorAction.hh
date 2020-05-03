@@ -12,6 +12,7 @@ class G4ParticleGun;
 class G4GenericMessenger;
 class G4Event;
 class G4ParticleDefinition;
+class WLGDDetectorConstruction;
 
 /// Primary generator
 ///
@@ -76,7 +77,7 @@ class WLGDPrimaryGeneratorAction : public
 G4VUserPrimaryGeneratorAction
 {
   public:
-    WLGDPrimaryGeneratorAction(G4int ival);
+    WLGDPrimaryGeneratorAction(WLGDDetectorConstruction* det, G4int ival);
     virtual ~WLGDPrimaryGeneratorAction();
     
     virtual void GeneratePrimaries(G4Event*);
@@ -90,9 +91,12 @@ G4VUserPrimaryGeneratorAction
 
     std::mt19937 generator(0); // explicit std generator
 
+    WLGDDetectorConstruction* fDetector;
+
     G4ParticleGun* fParticleGun;
     G4GenericMessenger* fMessenger;
     G4ParticleDefinition* fMuon;
+
     G4double fDepth;
     G4int fseed;
 };

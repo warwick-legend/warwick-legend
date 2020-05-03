@@ -1,4 +1,5 @@
 #include "WLGDPrimaryGeneratorAction.hh"
+#include "WLGDDetectorConstruction.hh"
 
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
@@ -6,11 +7,12 @@
 #include "G4ParticleDefinition.hh"
 #include "G4GenericMessenger.hh"
 #include "G4SystemOfUnits.hh"
+#include "Randomize.hh"
 
 
-WLGDPrimaryGeneratorAction::WLGDPrimaryGeneratorAction(G4int ival)
+WLGDPrimaryGeneratorAction::WLGDPrimaryGeneratorAction(WLGDDetectorConstruction* det, G4int ival)
 : G4VUserPrimaryGeneratorAction(),     
-  generator(nullptr), 
+  fDetector(det), 
   fParticleGun(nullptr), fMessenger(nullptr), 
   fMuon(nullptr), 
   fDepth(0.0), fseed(ival) 
@@ -24,7 +26,6 @@ WLGDPrimaryGeneratorAction::WLGDPrimaryGeneratorAction(G4int ival)
   fMuon = particleTable->FindParticle("mu-");
   
   // default particle kinematics
-  //  fParticleGun->SetParticlePosition(G4ThreeVector(0.,0.,-8.*m));
   fParticleGun->SetParticleDefinition(fMuon);
   
   // define commands for this class
@@ -76,6 +77,15 @@ void WLGDPrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
   ekin *= GeV;
   fParticleGun->SetParticleEnergy(ekin);
   
+  // position, top of world, sample circle uniformly
+  G4double zvertex = fDetector->GetWorldSizeZ(); // inline on WLGDDetectorConstruction
+  G4double maxrad  = fDetector->GetWorldExtent(); // --"--
+  phi = twopi * rndm(generator); // another random angle
+  G4double vx = maxrad * std::cos(phi);
+  G4double vy = maxrad * std::sin(phi);
+
+  fParticleGun->SetParticlePosition(G4ThreeVector(vx, vy, zvertex));
+
   fParticleGun->GeneratePrimaryVertex(event);
 }
 
