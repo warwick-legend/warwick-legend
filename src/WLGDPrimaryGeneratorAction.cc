@@ -8,12 +8,15 @@
 #include "G4SystemOfUnits.hh"
 
 
-WLGDPrimaryGeneratorAction::WLGDPrimaryGeneratorAction()
+WLGDPrimaryGeneratorAction::WLGDPrimaryGeneratorAction(G4int ival)
 : G4VUserPrimaryGeneratorAction(),     
+  generator(nullptr), 
   fParticleGun(nullptr), fMessenger(nullptr), 
   fMuon(nullptr), 
-  fDepth(0.0)
+  fDepth(0.0), fseed(ival) 
 {
+  generator.seed(fseed); // re-initialize internal state with new seed
+
   G4int nofParticles = 1;
   fParticleGun  = new G4ParticleGun(nofParticles);
   
@@ -38,7 +41,40 @@ WLGDPrimaryGeneratorAction::~WLGDPrimaryGeneratorAction()
 
 void WLGDPrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
 {
+  typedef std::piecewise_linear_distribution<double> pld_type;
+
+  int nw = 100; // number of bins
+  double lower_bound = 1.0;    // energy interval lower bound [GeV]
+  double upper_bound = 3000.0; // upper bound [GeV]
+  double nearhorizontal = 1.0e-5;
+  double fullcosangle = 1.0;
+
+  // custom probability distributions
+  pld_type ed(nw, lower_bound, upper_bound, MuEnergy(fDepth) );
+  pld_type cosd(nw, nearhorizontal, fullcosangle, MuAngle(fDepth) );
   
+  // momentum vector
+  G4double px, py, pz;
+  double sintheta, sinphi, costheta, cosphi;
+
+  costheta = cosd(generator); // get a random number
+  sintheta = std::sqrt(1. - costheta*costheta);
+
+  std::uniform_real_distribution<> rndm(0.0, 1.0); // azimuth angle
+  double twopi = 2.0 * std::acos(-1.0);
+  double phi = twopi * rndm(generator);  // random uniform number
+  sinphi = std::sin(phi);
+  cosphi = std::cos(phi);
+  
+  px = -sintheta * cosphi;
+  py = -sintheta * sinphi;
+  pz = -costheta;  // default downwards: pz = -1.0
+  G4ThreeVector momentumDir(px, py, pz);
+  fParticleGun->SetParticleMomentumDirection(momentumDir);
+
+  G4double ekin = ed(generator);  // get random number
+  ekin *= GeV;
+  fParticleGun->SetParticleEnergy(ekin);
   
   fParticleGun->GeneratePrimaryVertex(event);
 }
