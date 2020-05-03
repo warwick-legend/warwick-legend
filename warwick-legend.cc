@@ -76,7 +76,7 @@ int main(int argc,char** argv)
 #endif
   
   // -- Set mandatory initialization classes
-  G4VUserDetectorConstruction* detector = new WLGDetectorConstruction;
+  G4VUserDetectorConstruction* detector = new WLGDDetectorConstruction;
   runManager->SetUserInitialization(detector);
 
   G4VModularPhysicsList* physicsList = new Shielding;
@@ -93,7 +93,7 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(physicsList);
   
   // -- Set user action initialization class, forward random seed
-  G4VUserActionInitialization* actions = new WLGDActionInitialization(seed);
+  G4VUserActionInitialization* actions = new WLGDActionInitialization(detector, seed);
   runManager->SetUserInitialization(actions);
   
   // Initialize G4 kernel
