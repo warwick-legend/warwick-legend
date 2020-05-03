@@ -26,7 +26,6 @@
 
 // us
 #include "WLGDDetectorConstruction.hh"
-#include "WLGDPrimaryGeneratorAction.hh"
 #include "WLGDActionInitialization.hh"
 #include "getopt_pp.h"
 
@@ -35,6 +34,7 @@ void showHelp() {
   std::cout << "Command line option(s) help" << std::endl;
   std::cout << "\t -m , --macro <Geant4 macro filename> Default: None" << std::endl;
   std::cout << "\t -o , --outputFile <FULL PATH ROOT FILENAME> Default: lg.root" << std::endl;
+  std::cout << "\t -s , --seed <random seed for event generator> Default: 0" << std::endl;
   std::cout << "\t -t , --nthreads <number of threads to use> Default: 4" << std::endl;
 }
 
@@ -43,6 +43,7 @@ int main(int argc,char** argv)
 {
   // command line interface
   G4int nthreads = 4;
+  G4int seed = 0;
   G4String outputFileName;
   G4String macroName;
   GetOpt::GetOpt_pp ops(argc, argv);
@@ -55,6 +56,7 @@ int main(int argc,char** argv)
   
   ops >> GetOpt::Option('m', "macro", macroName, "");
   ops >> GetOpt::Option('o', "outputFile", outputFileName, "lg.root");
+  ops >> GetOpt::Option('s', "seed", seed, 0);
   ops >> GetOpt::Option('t', "nthreads", nthreads, 4);
 
   // GEANT4 code
@@ -74,7 +76,7 @@ int main(int argc,char** argv)
 #endif
   
   // -- Set mandatory initialization classes
-  G4VUserDetectorConstruction* detector = new LGDetectorConstruction;
+  G4VUserDetectorConstruction* detector = new WLGDetectorConstruction;
   runManager->SetUserInitialization(detector);
 
   G4VModularPhysicsList* physicsList = new Shielding;
@@ -90,8 +92,8 @@ int main(int argc,char** argv)
   physicsList->RegisterPhysics(biasingPhysics);
   runManager->SetUserInitialization(physicsList);
   
-  // -- Set user action initialization class
-  G4VUserActionInitialization* actions = new LGActionInitialization;
+  // -- Set user action initialization class, forward random seed
+  G4VUserActionInitialization* actions = new WLGDActionInitialization(seed);
   runManager->SetUserInitialization(actions);
   
   // Initialize G4 kernel
