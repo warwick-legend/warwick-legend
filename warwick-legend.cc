@@ -76,10 +76,10 @@ int main(int argc,char** argv)
 #endif
   
   // -- Set mandatory initialization classes
-  WLGDDetectorConstruction* detector = new WLGDDetectorConstruction;
+  auto detector = new WLGDDetectorConstruction;
   runManager->SetUserInitialization(detector);
 
-  G4VModularPhysicsList* physicsList = new Shielding;
+  auto physicsList = new Shielding;
 
   // -- Setup biasing, first for neutrons, again for muons later
   G4String pname = "nCapture"; // neutron capture process name
@@ -93,7 +93,7 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(physicsList);
   
   // -- Set user action initialization class, forward random seed
-  WLGDActionInitialization* actions = new WLGDActionInitialization(detector, seed);
+  auto actions = new WLGDActionInitialization(detector, seed);
   runManager->SetUserInitialization(actions);
   
   // Initialize G4 kernel
