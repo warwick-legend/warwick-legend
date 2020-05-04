@@ -9,8 +9,8 @@ find_package(Geant4 10.6 REQUIRED ui_all vis_all)
 
 add_executable(warwick-legend 
   warwick-legend.cc
-  WLGDActionInitialization.cc
-  WLGDPrimaryGeneratorAction.cc
-  getopt_pp.cpp)
+  src/WLGDActionInitialization.cc
+  src/WLGDPrimaryGeneratorAction.cc
+  src/getopt_pp.cpp)
 target_include_directories(warwick-legend PRIVATE ${PROJECT_SOURCE_DIR}/include)
 target_link_libraries(warwick-legend PRIVATE ${GEANT4_LIBRARIES})	
