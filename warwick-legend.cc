@@ -1,5 +1,6 @@
 // ********************************************************************
 // warwick-legend project
+#include "G4Types.hh"
 
 #ifdef G4MULTITHREADED
 #include "G4MTRunManager.hh"
@@ -47,13 +48,13 @@ int main(int argc,char** argv)
   G4String outputFileName;
   G4String macroName;
   GetOpt::GetOpt_pp ops(argc, argv);
-  
+
   // Check for help request
   if (ops >> GetOpt::OptionPresent('h', "help")){
     showHelp();
     return 0;
   }
-  
+
   ops >> GetOpt::Option('m', "macro", macroName, "");
   ops >> GetOpt::Option('o', "outputFile", outputFileName, "lg.root");
   ops >> GetOpt::Option('s', "seed", seed, 0);
@@ -74,7 +75,7 @@ int main(int argc,char** argv)
   G4cout << "      ********** Run Manager constructed in sequential mode ************ " << G4endl;
 
 #endif
-  
+
   // -- Set mandatory initialization classes
   auto detector = new WLGDDetectorConstruction;
   runManager->SetUserInitialization(detector);
@@ -91,47 +92,47 @@ int main(int argc,char** argv)
   biasingPhysics->Bias("neutron", pvec); // bias particle and process
   physicsList->RegisterPhysics(biasingPhysics);
   runManager->SetUserInitialization(physicsList);
-  
+
   // -- Set user action initialization class, forward random seed
   auto actions = new WLGDActionInitialization(detector, seed);
   runManager->SetUserInitialization(actions);
-  
+
   // Initialize G4 kernel
   //
   runManager->Initialize();
-  
+
 #ifdef G4VIS_USE
   // Visualization manager
   //
   G4VisManager* visManager = new G4VisExecutive;
   visManager->Initialize();
 #endif
-  
+
   // Get the pointer to the User Interface manager
   //
-  G4UImanager* UImanager = G4UImanager::GetUIpointer();  
-  
+  G4UImanager* UImanager = G4UImanager::GetUIpointer();
+
   if (macroName.isNull())   // Define UI session for interactive mode
     {
 #ifdef G4UI_USE
       G4UIExecutive * ui = new G4UIExecutive(argc,argv);
 #ifdef G4VIS_USE
-      UImanager->ApplyCommand("/control/execute vis.mac");     
+      UImanager->ApplyCommand("/control/execute vis.mac");
 #endif
       ui->SessionStart();
       delete ui;
 #endif
     }
   else           // Batch mode
-    { 
+    {
       G4String command = "/control/execute ";
       UImanager->ApplyCommand(command+macroName);
     }
-  
+
 #ifdef G4VIS_USE
   delete visManager;
 #endif
   delete runManager;
-  
+
   return 0;
 }
