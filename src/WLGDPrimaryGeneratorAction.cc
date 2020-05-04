@@ -55,7 +55,7 @@ void WLGDPrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
   pld_type cosd(nw, nearhorizontal, fullcosangle, MuAngle(fDepth) );
   
   // momentum vector
-  G4double px, py, pz;
+  double px, py, pz;
   double sintheta, sinphi, costheta, cosphi;
 
   costheta = cosd(generator); // get a random number
