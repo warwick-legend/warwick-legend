@@ -1,7 +1,7 @@
 #ifndef WLGDActionInitialization_h
 #define WLGDActionInitialization_h 1
 
-#^nclude "WLGDDetectorConstruction.hh"
+#include "WLGDDetectorConstruction.hh"
 #include "G4VUserActionInitialization.hh"
 
 /// Action initialization class.
@@ -23,4 +23,4 @@ class WLGDActionInitialization : public G4VUserActionInitialization
 
 #endif
 
-    
+
