@@ -9,7 +9,7 @@
 class WLGDActionInitialization : public G4VUserActionInitialization
 {
   public:
-    WLGDActionInitialization(WLGDDetectorConstruction* det, G4int ival);
+    WLGDActionInitialization(WLGDDetectorConstruction* det);
     virtual ~WLGDActionInitialization();
 
     virtual void BuildForMaster() const;
@@ -17,7 +17,6 @@ class WLGDActionInitialization : public G4VUserActionInitialization
 
   private:
     WLGDDetectorConstruction* fDet;
-    G4int seed;
 };
 
 

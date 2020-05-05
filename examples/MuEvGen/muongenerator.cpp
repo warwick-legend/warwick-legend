@@ -1,7 +1,6 @@
 #include <random>
 #include <cmath>
 #include <iostream>
-#include <chrono>
 
 class MuEnergy {
   // data members
@@ -64,8 +63,8 @@ int main() {
   double depth = 5.89; // Sudbury laboratory [km.w.e]
 
   // custom probability distributions
-  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-  std::mt19937 generator(seed); // explicit generator, time seed
+  std::random_device rd;
+  std::ranlux24 generator(rd()); // explicit generator
   pld_type ed(nw, lower_bound, upper_bound, MuEnergy(depth) );
   pld_type cosd(nw, nearhorizontal, fullcosangle, MuAngle(depth) );
 

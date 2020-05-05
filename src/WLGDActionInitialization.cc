@@ -4,8 +4,8 @@
 #include "WLGDEventAction.hh"
 
 
-WLGDActionInitialization::WLGDActionInitialization(WLGDDetectorConstruction* det, G4int ival)
- : G4VUserActionInitialization(), fDet(det), seed(ival)
+WLGDActionInitialization::WLGDActionInitialization(WLGDDetectorConstruction* det)
+ : G4VUserActionInitialization(), fDet(det)
 {}
 
 
@@ -21,8 +21,8 @@ void WLGDActionInitialization::BuildForMaster() const
 
 void WLGDActionInitialization::Build() const
 {
-  // forward detector and seed
-  SetUserAction(new WLGDPrimaryGeneratorAction(fDet, seed));
+  // forward detector
+  SetUserAction(new WLGDPrimaryGeneratorAction(fDet));
   SetUserAction(new WLGDEventAction);
   SetUserAction(new WLGDRunAction);
 }  
