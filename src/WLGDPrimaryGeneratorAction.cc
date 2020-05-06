@@ -1,23 +1,28 @@
+// std
+#include <random>
+
+// us
 #include "WLGDPrimaryGeneratorAction.hh"
 #include "WLGDDetectorConstruction.hh"
 
+// geant
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4GenericMessenger.hh"
 #include "G4SystemOfUnits.hh"
-#include "Randomize.hh"
 
 
-WLGDPrimaryGeneratorAction::WLGDPrimaryGeneratorAction(WLGDDetectorConstruction* det, G4int ival)
+WLGDPrimaryGeneratorAction::WLGDPrimaryGeneratorAction(WLGDDetectorConstruction* det)
 : G4VUserPrimaryGeneratorAction(),     
   fDetector(det), 
   fParticleGun(nullptr), fMessenger(nullptr), 
   fMuon(nullptr), 
-  fDepth(0.0), fseed(ival) 
+  fDepth(0.0) 
 {
-  generator.seed(fseed); // re-initialize internal state with new seed
+  std::random_device rd; // random seed generator
+  std::ranlux24 generator(rd()); // std random engine
 
   G4int nofParticles = 1;
   fParticleGun  = new G4ParticleGun(nofParticles);

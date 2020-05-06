@@ -2,7 +2,6 @@
 #define WLGDPrimaryGeneratorAction_h 1
 
 // std c++ includes
-#include <random>
 #include <cmath>
 
 #include "G4VUserPrimaryGeneratorAction.hh"
@@ -77,7 +76,7 @@ class WLGDPrimaryGeneratorAction : public
 G4VUserPrimaryGeneratorAction
 {
   public:
-    WLGDPrimaryGeneratorAction(WLGDDetectorConstruction* det, G4int ival);
+    WLGDPrimaryGeneratorAction(WLGDDetectorConstruction* det);
     virtual ~WLGDPrimaryGeneratorAction();
     
     virtual void GeneratePrimaries(G4Event*);
@@ -89,8 +88,6 @@ G4VUserPrimaryGeneratorAction
   private:
     void DefineCommands();
 
-    std::mt19937 generator(0); // explicit std generator
-
     WLGDDetectorConstruction* fDetector;
 
     G4ParticleGun* fParticleGun;
@@ -98,7 +95,6 @@ G4VUserPrimaryGeneratorAction
     G4ParticleDefinition* fMuon;
 
     G4double fDepth;
-    G4int fseed;
 };
 
 #endif

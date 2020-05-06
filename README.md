@@ -23,7 +23,7 @@ Macro commands for change of geometry, one material in the geometry,
 primary vertex generator, cross section bias factor (one each, neutron and muon), 
 bias split factor (integer >= 2)
 
-CLI for number of threads, macro file, output file name, random seed (for production runs)
+CLI for number of threads, macro file, output file name (for production runs)
 
 User Limits for run time optimization, use recommended benchmarking tool
 
