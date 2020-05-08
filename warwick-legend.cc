@@ -79,14 +79,19 @@ int main(int argc,char** argv)
 
   auto physicsList = new Shielding;
 
-  // -- Setup biasing, first for neutrons, again for muons later
+  // -- Setup biasing, first for neutrons, again for muons
+  G4GenericBiasingPhysics* biasingPhysics = new G4GenericBiasingPhysics();
+
   G4String pname = "nCapture"; // neutron capture process name
   std::vector<G4String> pvec; // required vector,
   pvec.push_back(pname);      // here with single data member
-
-  G4GenericBiasingPhysics* biasingPhysics = new G4GenericBiasingPhysics();
-  biasingPhysics->NonPhysicsBias("neutron"); // geometry bias for neutrons
   biasingPhysics->Bias("neutron", pvec); // bias particle and process
+
+  pvec.clear();
+  pname = "muonNuclear";
+  pvec.push_back(pname);
+  biasingPhysics->Bias("mu-", pvec); // bias particle and process
+
   physicsList->RegisterPhysics(biasingPhysics);
   runManager->SetUserInitialization(physicsList);
 
