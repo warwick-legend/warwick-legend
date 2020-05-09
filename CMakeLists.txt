@@ -10,6 +10,8 @@ find_package(Geant4 10.6 REQUIRED ui_all vis_all)
 add_executable(warwick-legend
   warwick-legend.cc
   src/WLGDActionInitialization.cc
+  src/WLGDBiasChangeCrossSection.cc
+  src/WLGDBiasMultiParticleChangeCrossSection.cc
   src/WLGDPrimaryGeneratorAction.cc
   src/getopt_pp.cpp)
 target_include_directories(warwick-legend PRIVATE ${PROJECT_SOURCE_DIR}/include)
