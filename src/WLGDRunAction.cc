@@ -8,7 +8,7 @@
 #include "G4SystemOfUnits.hh"
 
 
-B4RunAction::B4RunAction(B4dEventAction* eventAction, G4String name)
+WLGDRunAction::WLGDRunAction(WLGDEventAction* eventAction, G4String name)
  : G4UserRunAction(),
    fEventAction(eventAction), fout(name)
 { 
@@ -43,13 +43,13 @@ B4RunAction::B4RunAction(B4dEventAction* eventAction, G4String name)
 }
 
 
-B4RunAction::~B4RunAction()
+WLGDRunAction::~WLGDRunAction()
 {
   delete G4AnalysisManager::Instance();  
 }
 
 
-void B4RunAction::BeginOfRunAction(const G4Run* /*run*/)
+void WLGDRunAction::BeginOfRunAction(const G4Run* /*run*/)
 { 
   // Get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
@@ -60,7 +60,7 @@ void B4RunAction::BeginOfRunAction(const G4Run* /*run*/)
 }
 
 
-void B4RunAction::EndOfRunAction(const G4Run* /*run*/)
+void WLGDRunAction::EndOfRunAction(const G4Run* /*run*/)
 {
   // Get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
