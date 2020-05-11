@@ -22,17 +22,22 @@ B4RunAction::B4RunAction(B4dEventAction* eventAction, G4String name)
   // Creating ntuple with vector entries
   //
   analysisManager->CreateNtuple("Score", "Edep and location");
-  analysisManager->CreateNtupleIColumn("IdWWabs", fEventAction->GetAbsWWID());
-  analysisManager->CreateNtupleDColumn("withWabs", fEventAction->GetAbsWithWeight());
-  analysisManager->CreateNtupleIColumn("IdNWabs", fEventAction->GetAbsNWID());
-  analysisManager->CreateNtupleDColumn("noWabs", fEventAction->GetAbsNoWeight());
-  analysisManager->CreateNtupleIColumn("IdWWgap", fEventAction->GetGapWWID());
-  analysisManager->CreateNtupleDColumn("withWgap", fEventAction->GetGapWithWeight());
-  analysisManager->CreateNtupleIColumn("IdNWgap", fEventAction->GetGapNWID());
-  analysisManager->CreateNtupleDColumn("noWgap", fEventAction->GetGapNoWeight());
-  analysisManager->CreateNtupleDColumn("xgap", fEventAction->GetxLocation());
-  analysisManager->CreateNtupleDColumn("ygap", fEventAction->GetyLocation());
-  analysisManager->CreateNtupleDColumn("zgap", fEventAction->GetzLocation());
+  analysisManager->CreateNtupleDColumn("Edepwater", fEventAction->GetEdepWater());
+  analysisManager->CreateNtupleDColumn("Edeplar", fEventAction->GetEdepLar());
+  analysisManager->CreateNtupleDColumn("Edepular", fEventAction->GetEdepULar());
+  analysisManager->CreateNtupleDColumn("Edepge", fEventAction->GetEdepGe());
+  analysisManager->CreateNtupleDColumn("xwater", fEventAction->GetxLocWater());
+  analysisManager->CreateNtupleDColumn("xlar", fEventAction->GetxLocLar());
+  analysisManager->CreateNtupleDColumn("xular", fEventAction->GetxLocULar());
+  analysisManager->CreateNtupleDColumn("xge", fEventAction->GetxLocGe());
+  analysisManager->CreateNtupleDColumn("ywater", fEventAction->GetyLocWater());
+  analysisManager->CreateNtupleDColumn("ylar", fEventAction->GetyLocLar());
+  analysisManager->CreateNtupleDColumn("yular", fEventAction->GetyLocULar());
+  analysisManager->CreateNtupleDColumn("yge", fEventAction->GetyLocGe());
+  analysisManager->CreateNtupleDColumn("zwater", fEventAction->GetzLocWater());
+  analysisManager->CreateNtupleDColumn("zlar", fEventAction->GetzLocLar());
+  analysisManager->CreateNtupleDColumn("zular", fEventAction->GetzLocULar());
+  analysisManager->CreateNtupleDColumn("zge", fEventAction->GetzLocGe());
   analysisManager->FinishNtuple();
 
 }

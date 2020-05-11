@@ -21,11 +21,23 @@ public:
   virtual void  BeginOfEventAction(const G4Event* event);
   virtual void    EndOfEventAction(const G4Event* event);
     
-  std::vector<G4double>& GetAbsWithWeight() { return aWWeight; }
-  std::vector<G4double>& GetAbsNoWeight() { return aNWeight; }
-  std::vector<G4double>& GetxLocation() { return xLoc; }
-  std::vector<G4double>& GetyLocation() { return yLoc; }
-  std::vector<G4double>& GetzLocation() { return zLoc; }
+  // to create columns for Ntuple
+  std::vector<G4double>& GetEdepWater() { return edep_water; }
+  std::vector<G4double>& GetEdepLar() { return edep_lar; }
+  std::vector<G4double>& GetEdepULar() { return edep_ular; }
+  std::vector<G4double>& GetEdepGe() { return edep_ge; }
+  std::vector<G4double>& GetxLocWater() { return xLoc_water; }
+  std::vector<G4double>& GetxLocLar() { return xLoc_lar; }
+  std::vector<G4double>& GetxLocULar() { return xLoc_ular; }
+  std::vector<G4double>& GetxLocGe() { return xLoc_ge; }
+  std::vector<G4double>& GetyLocWater() { return yLoc_water; }
+  std::vector<G4double>& GetyLocLar() { return yLoc_lar; }
+  std::vector<G4double>& GetyLocULar() { return yLoc_ular; }
+  std::vector<G4double>& GetyLocGe() { return yLoc_ge; }
+  std::vector<G4double>& GetzLocWater() { return zLoc_water; }
+  std::vector<G4double>& GetzLocLar() { return zLoc_lar; }
+  std::vector<G4double>& GetzLocULar() { return zLoc_ular; }
+  std::vector<G4double>& GetzLocGe() { return zLoc_ge; }
 
 
 private:
