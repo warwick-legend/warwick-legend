@@ -9,7 +9,7 @@
 class WLGDActionInitialization : public G4VUserActionInitialization
 {
   public:
-    WLGDActionInitialization(WLGDDetectorConstruction* det);
+    WLGDActionInitialization(WLGDDetectorConstruction* det, G4String name);
     virtual ~WLGDActionInitialization();
 
     virtual void BuildForMaster() const;
@@ -17,6 +17,7 @@ class WLGDActionInitialization : public G4VUserActionInitialization
 
   private:
     WLGDDetectorConstruction* fDet;
+    G4String foutname;
 };
 
 

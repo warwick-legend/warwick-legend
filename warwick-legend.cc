@@ -96,7 +96,7 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(physicsList);
 
   // -- Set user action initialization class, forward random seed
-  auto actions = new WLGDActionInitialization(detector);
+  auto actions = new WLGDActionInitialization(detector, outputFileName);
   runManager->SetUserInitialization(actions);
 
   // Initialize G4 kernel
