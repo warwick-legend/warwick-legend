@@ -130,19 +130,19 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
   G4Material*        steelMat = G4NistManager::Instance()->FindOrBuildMaterial("G4_STAINLESS-STEEL");
   G4Material*       copperMat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Cu");
 
-  auto H = new G4Element(name="Hydrogen", symbol="H", z= 1., a=1.00794*g/mole);
-  auto C = new G4Element(name="Carbon", symbol="C", z= 6., a=12.011*g/mole);
-  auto O = new G4Element(name="Oxygen", symbol="O", z= 8., a=16.00*g/mole);
-  auto N = new G4Element(name="Nitrogen", symbol="N", z= 7., a=14.00*g/mole);
-  auto puMat = new G4Material("polyurethane", density=0.3*g/cm3, ncomponents=4); // high density foam
+  auto H = new G4Element("Hydrogen", "H", 1., 1.00794*g/mole);
+  auto C = new G4Element("Carbon", "C", 6., 12.011*g/mole);
+  auto O = new G4Element("Oxygen", "O", 8., 16.00*g/mole);
+  auto N = new G4Element("Nitrogen", "N", 7., 14.00*g/mole);
+  auto puMat = new G4Material("polyurethane", 0.3*g/cm3, 4); // high density foam
   puMat->AddElement(H, 16);
   puMat->AddElement(O, 2);
   puMat->AddElement(C, 8);
   puMat->AddElement(N, 2);
 
   // enriched Germanium from isotopes 
-  auto Ge_74 = new G4Isotope("Ge74", iz=32, n=74, a=74.0*g/mole);
-  auto Ge_76 = new G4Isotope("Ge76", iz=32, n=76, a=76.0*g/mole);
+  auto Ge_74 = new G4Isotope("Ge74", 32, 74, 74.0*g/mole);
+  auto Ge_76 = new G4Isotope("Ge76", 32, 76, 76.0*g/mole);
     
   auto eGe  = new G4Element("enriched Germanium", "enrGe", 2);
   eGe->AddIsotope(Ge_76, 88.*perCent);
@@ -189,7 +189,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
   //
   // Cavern
   //
-  G4VSolid* cavernSolid = new G4Box("Cavern", (hallside+stone)*cm, (hallside+stone)*cm, (hallside+stone)*cm);
+  G4VSolid* cavernSolid = new G4Box("Cavern", (hallhside+stone)*cm, (hallhside+stone)*cm, (hallhside+stone)*cm);
   auto fCavernLogical  = new G4LogicalVolume(cavernSolid, concreteWallMat, "Cavern_log");
   auto fCavernPhysical = new G4PVPlacement(0, G4ThreeVector(0., 0., offset*cm),
                        fCavernLogical, "Cavern_phys", fWorldLogical,false,0);
@@ -197,7 +197,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
   //
   // Hall 
   //
-  G4VSolid* hallSolid = new G4Box("Cavern", hallside*cm, hallside*cm, hallside*cm);
+  G4VSolid* hallSolid = new G4Box("Cavern", hallhside*cm, hallhside*cm, hallhside*cm);
   auto fHallLogical  = new G4LogicalVolume(hallSolid, airMat, "Hall_log");  
   auto fHallPhysical = new G4PVPlacement(0, G4ThreeVector(0., 0., offset*cm),
                        fHallLogical, "Hall_phys", fCavernLogical,false,0);
@@ -322,8 +322,8 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   G4Material*       copperMat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Cu");
 
   // enriched Germanium from isotopes
-  auto Ge_74 = new G4Isotope(name="Ge74", iz=32, n=74, a=74.0*g/mole);
-  auto Ge_76 = new G4Isotope(name="Ge76", iz=32, n=76, a=76.0*g/mole);
+  auto Ge_74 = new G4Isotope("Ge74", 32, 74, 74.0*g/mole);
+  auto Ge_76 = new G4Isotope("Ge76", 32, 76, 76.0*g/mole);
     
   auto eGe  = new G4Element("enriched Germanium", "enrGe", 2);
   eGe->AddIsotope(Ge_76, 88.*perCent);
@@ -394,7 +394,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   //
   // Tank
   //
-  G4VSolid* tankSolid = new G4Cons("Tank", 0.0*cm, (tankrad+tankwallbot)*cm, (tankrad+tankwalltop)*cm, tankhheight*cm, 
+  G4VSolid* tankSolid = new G4Cons("Tank", 0.0*cm, (tankrad+tankwallbot)*cm, 0.0*cm, (tankrad+tankwalltop)*cm, tankhheight*cm, 
                                      0.0, CLHEP::twopi);
   auto fTankLogical  = new G4LogicalVolume(tankSolid, steelMat, "Tank_log");
   auto fTankPhysical = new G4PVPlacement(0, G4ThreeVector(),
