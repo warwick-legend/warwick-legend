@@ -18,6 +18,7 @@
 
 // standard
 #include <algorithm>
+#include <string>
 
 // Geant4
 #include "G4UImanager.hh"
@@ -28,7 +29,7 @@
 // us
 #include "WLGDDetectorConstruction.hh"
 #include "WLGDActionInitialization.hh"
-#include "getopt_pp.h"
+#include "CLI11.hpp" // c++17 safe; https://github.com/CLIUtils/CLI11
 
 
 void showHelp() {
@@ -42,20 +43,17 @@ void showHelp() {
 int main(int argc,char** argv)
 {
   // command line interface
-  G4int nthreads = 4;
-  G4String outputFileName;
-  G4String macroName;
-  GetOpt::GetOpt_pp ops(argc, argv);
+  CLI::App app{"Muon Simulation for Legend"};
+  int nthreads = 4;
+  std::string outputFileName("lg.root");
+  std::string macroName;
 
-  // Check for help request
-  if (ops >> GetOpt::OptionPresent('h', "help")){
-    showHelp();
-    return 0;
-  }
+  app.add_option("-m,--macro", macroName, "<Geant4 macro filename> Default: None");
+  app.add_option("-o,--outputFile", outputFileName, "<FULL PATH ROOT FILENAME> Default: lg.root");
+  app.add_option("-t, --nthreads", nthreads, "<number of threads to use> Default: 4");
 
-  ops >> GetOpt::Option('m', "macro", macroName, "");
-  ops >> GetOpt::Option('o', "outputFile", outputFileName, "lg.root");
-  ops >> GetOpt::Option('t', "nthreads", nthreads, 4);
+  CLI11_PARSE(app, argc, argv);
+
 
   // GEANT4 code
   // -- Construct the run manager : MT or sequential one

@@ -16,7 +16,6 @@ add_executable(warwick-legend
   src/WLGDEventAction.cc
   src/WLGDPrimaryGeneratorAction.cc
   src/WLGDPSLocation.cc
-  src/WLGDRunAction.cc
-  src/getopt_pp.cpp)
+  src/WLGDRunAction.cc)
 target_include_directories(warwick-legend PRIVATE ${PROJECT_SOURCE_DIR}/include)
 target_link_libraries(warwick-legend PRIVATE ${Geant4_LIBRARIES})
