@@ -141,15 +141,15 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
   puMat->AddElement(N, 2);
 
   // enriched Germanium from isotopes 
-  auto 74Ge = new G4Isotope(name="Ge74", iz=32, n=74, a=74.0*g/mole);
-  auto 76Ge = new G4Isotope(name="Ge76", iz=32, n=76, a=76.0*g/mole);
+  auto Ge_74 = new G4Isotope("Ge74", iz=32, n=74, a=74.0*g/mole);
+  auto Ge_76 = new G4Isotope("Ge76", iz=32, n=76, a=76.0*g/mole);
     
-  auto eGe  = new G4Element(name="enriched Germanium", symbol="enrGe", ncomponents=2);
-  eGe->AddIsotope(76Ge, abundance= 88.*perCent);
-  eGe->AddIsotope(74Ge, abundance= 12.*perCent);
+  auto eGe  = new G4Element("enriched Germanium", "enrGe", 2);
+  eGe->AddIsotope(Ge_76, 88.*perCent);
+  eGe->AddIsotope(Ge_74, 12.*perCent);
     
-  density = 3.323*mg/cm3;
-  auto roiMat = new G4Material(name="enrGe", density, ncomponents=1);
+  G4double density = 3.323*mg/cm3;
+  auto roiMat = new G4Material("enrGe", density, 1);
   roiMat->AddElement(eGe, 1);
     
     // size parameter, unit [cm]
@@ -162,7 +162,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
     G4double insulation = 80.0;   // polyurethane foam
     G4double innerwall = 0.12;    // inner SS membrane
     // copper tubes with Germanium ROI
-    G4double copper = 0.05;      // tube thickness 0.5 mm
+    G4double copper = 0.35;      // tube thickness 0.5 mm
     G4double curad = 40.0;       // copper tube diam 80 cm
     G4double cuhheight = 334.34;  // copper tube height 7 m inside cryostat
     G4double cushift = 234.34;    // shift cu tube inside cryostat to top
@@ -239,7 +239,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
   // Copper tubes  
   //
   G4VSolid* copperSolid = new G4Tubs("Copper", 0.0*cm, curad*cm, cuhheight*cm,
-                                     0.0, CLHEP:twopi);
+                                     0.0, CLHEP::twopi);
   auto fCopperLogical  = new G4LogicalVolume(copperSolid, copperMat, "Copper_log");
   auto fCuPhysical_px  = new G4PVPlacement(0, G4ThreeVector(ringrad*cm, 0., cushift*cm),
                        fCopperLogical, "Copper_phys1", fLarLogical,false,0);
@@ -254,7 +254,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
   // ULAr bath
   // 
   G4VSolid* ularSolid = new G4Tubs("ULar", 0.0*cm, (curad-copper)*cm, cuhheight*cm,
-                                     0.0, CLHEP:twopi);
+                                     0.0, CLHEP::twopi);
   auto fUlarLogical  = new G4LogicalVolume(ularSolid, larMat, "ULar_log");
   auto fUlarPhysical_px  = new G4PVPlacement(0, G4ThreeVector(ringrad*cm, 0., cushift*cm),
                        fUlarLogical, "ULar_phys1", fCopperLogical,false,0);
@@ -269,7 +269,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
   // Germanium                       
   // 
   G4VSolid* geSolid = new G4Tubs("ROI", 0.0*cm, roiradius*cm, roihalfheight*cm,
-                                     0.0, CLHEP:twopi);
+                                     0.0, CLHEP::twopi);
   auto fGeLogical  = new G4LogicalVolume(geSolid, roiMat, "Ge_log");
   auto fGePhysical_px  = new G4PVPlacement(0, G4ThreeVector(ringrad*cm, 0., 0.),
                        fGeLogical, "Ge_phys1", fUlarLogical,false,0);
@@ -322,15 +322,15 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   G4Material*       copperMat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Cu");
 
   // enriched Germanium from isotopes
-  auto 74Ge = new G4Isotope(name="Ge74", iz=32, n=74, a=74.0*g/mole);
-  auto 76Ge = new G4Isotope(name="Ge76", iz=32, n=76, a=76.0*g/mole);
+  auto Ge_74 = new G4Isotope(name="Ge74", iz=32, n=74, a=74.0*g/mole);
+  auto Ge_76 = new G4Isotope(name="Ge76", iz=32, n=76, a=76.0*g/mole);
     
-  auto eGe  = new G4Element(name="enriched Germanium", symbol="enrGe", ncomponents=2);
-  eGe->AddIsotope(76Ge, abundance= 88.*perCent);
-  eGe->AddIsotope(74Ge, abundance= 12.*perCent);
+  auto eGe  = new G4Element("enriched Germanium", "enrGe", 2);
+  eGe->AddIsotope(Ge_76, 88.*perCent);
+  eGe->AddIsotope(Ge_74, 12.*perCent);
                         
-  density = 3.323*mg/cm3;
-  auto roiMat = new G4Material(name="enrGe", density, ncomponents=1);
+  G4double density = 3.323*mg/cm3;
+  auto roiMat = new G4Material("enrGe", density, 1);
   roiMat->AddElement(eGe, 1);
 
 
@@ -367,7 +367,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   // World
   //
   G4VSolid* worldSolid = new G4Tubs("World", 0.0*cm, (hallrad+stone+0.1)*cm, 
-                                    (hallheight+stone+offset+0.1)*cm, 0.0, CLHEP::twopi);
+                                    (hallhheight+stone+offset+0.1)*cm, 0.0, CLHEP::twopi);
   auto fWorldLogical = new G4LogicalVolume(worldSolid, worldMaterial, "World_log");
   auto fWorldPhysical = new G4PVPlacement(0, G4ThreeVector(), fWorldLogical, "World_phys",
                         0,false,0);
@@ -375,8 +375,8 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   //                               
   // Cavern
   //  
-  G4VSolid* cavernSolid = new G4Tubs("Cavern", 0.0*cm, (hallrad+stone)*cm, (hallheight+stone)*cm, 
-                                     0.0, CLHEP:twopi);
+  G4VSolid* cavernSolid = new G4Tubs("Cavern", 0.0*cm, (hallrad+stone)*cm, (hallhheight+stone)*cm, 
+                                     0.0, CLHEP::twopi);
   auto fCavernLogical  = new G4LogicalVolume(cavernSolid, concreteWallMat, "Cavern_log");
   auto fCavernPhysical = new G4PVPlacement(0, G4ThreeVector(0., 0., offset*cm),
                        fCavernLogical, "Cavern_phys", fWorldLogical,false,0);
@@ -384,8 +384,8 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   //
   // Hall
   //
-  G4VSolid* hallSolid = new G4Tubs("Hall", 0.0*cm, hallrad*cm, hallheight*cm,
-                                     0.0, CLHEP:twopi);
+  G4VSolid* hallSolid = new G4Tubs("Hall", 0.0*cm, hallrad*cm, hallhheight*cm,
+                                     0.0, CLHEP::twopi);
   auto fHallLogical  = new G4LogicalVolume(hallSolid, airMat, "Hall_log");
   auto fHallPhysical = new G4PVPlacement(0, G4ThreeVector(0., 0., offset*cm),
                        fHallLogical, "Hall_phys", fCavernLogical,false,0);
@@ -395,7 +395,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   // Tank
   //
   G4VSolid* tankSolid = new G4Cons("Tank", 0.0*cm, (tankrad+tankwallbot)*cm, (tankrad+tankwalltop)*cm, tankhheight*cm, 
-                                     0.0, CLHEP:twopi);
+                                     0.0, CLHEP::twopi);
   auto fTankLogical  = new G4LogicalVolume(tankSolid, steelMat, "Tank_log");
   auto fTankPhysical = new G4PVPlacement(0, G4ThreeVector(),
                        fTankLogical, "Tank_phys", fHallLogical,false,0);
@@ -404,7 +404,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   // Water
   //
   G4VSolid* waterSolid = new G4Tubs("Water", 0.0*cm, tankrad*cm, (tankhheight-tankwallbot)*cm,
-                                     0.0, CLHEP:twopi);
+                                     0.0, CLHEP::twopi);
   auto fWaterLogical  = new G4LogicalVolume(waterSolid, waterMat, "Water_log");
   auto fWaterPhysical = new G4PVPlacement(0, G4ThreeVector(),
                        fWaterLogical, "Water_phys", fTankLogical,false,0);
@@ -413,7 +413,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   // outer cryostat
   //
   G4VSolid* coutSolid = new G4Tubs("Cout", 0.0*cm, cryrad*cm, cryhheight*cm,
-                                     0.0, CLHEP:twopi);
+                                     0.0, CLHEP::twopi);
   auto fCoutLogical  = new G4LogicalVolume(coutSolid, steelMat, "Cout_log");
   auto fCoutPhysical = new G4PVPlacement(0, G4ThreeVector(),
                        fCoutLogical, "Cout_phys", fWaterLogical,false,0);
@@ -422,8 +422,8 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   // vacuum gap
   //
   G4VSolid* cvacSolid = new G4Tubs("Cvac", 0.0*cm, (cryrad-cryowall)*cm, cryhheight*cm,
-                                     0.0, CLHEP:twopi);
-  auto fCvacLogical  = new G4LogicalVolume(cvacSolid, worldMat, "Cvac_log");
+                                     0.0, CLHEP::twopi);
+  auto fCvacLogical  = new G4LogicalVolume(cvacSolid, worldMaterial, "Cvac_log");
   auto fCvacPhysical = new G4PVPlacement(0, G4ThreeVector(),
                        fCvacLogical, "Cvac_phys", fCoutLogical,false,0);
   
@@ -431,7 +431,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   // inner cryostat
   //
   G4VSolid* cinnSolid = new G4Tubs("Cinn", 0.0*cm, (cryrad-cryowall-vacgap)*cm, cryhheight*cm,
-                                     0.0, CLHEP:twopi);
+                                     0.0, CLHEP::twopi);
   auto fCinnLogical  = new G4LogicalVolume(cinnSolid, steelMat, "Cinn_log");
   auto fCinnPhysical = new G4PVPlacement(0, G4ThreeVector(),
                        fCinnLogical, "Cinn_phys", fCvacLogical,false,0);
@@ -440,7 +440,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   // LAr bath
   //
   G4VSolid* larSolid = new G4Tubs("LAr", 0.0*cm, (cryrad-2*cryowall-vacgap)*cm, cryhheight*cm,
-                                     0.0, CLHEP:twopi);
+                                     0.0, CLHEP::twopi);
   auto fLarLogical  = new G4LogicalVolume(larSolid, larMat, "Lar_log");
   auto fLarPhysical = new G4PVPlacement(0, G4ThreeVector(),
                        fLarLogical, "Lar_phys", fCinnLogical,false,0);
@@ -449,7 +449,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   // cryostat Lid
   //
   G4VSolid* lidSolid = new G4Tubs("Lid", 0.0*cm, cryrad*cm, cryowall/2.0*cm,
-                                     0.0, CLHEP:twopi);
+                                     0.0, CLHEP::twopi);
   auto fLidLogical  = new G4LogicalVolume(lidSolid, steelMat, "Lid_log");
   auto fLidPhysical = new G4PVPlacement(0, G4ThreeVector(0., 0., (cryhheight+cryowall/2.0)*cm),
                        fLidLogical, "Lid_phys", fWaterLogical,false,0);
@@ -461,7 +461,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   // copper tubes
   //
   G4VSolid* copperSolid = new G4Tubs("Copper", 0.0*cm, curad*cm, cuhheight*cm,
-                                     0.0, CLHEP:twopi);
+                                     0.0, CLHEP::twopi);
   auto fCopperLogical  = new G4LogicalVolume(copperSolid, copperMat, "Copper_log");
   auto fCuPhysical_px  = new G4PVPlacement(0, G4ThreeVector(ringrad*cm, 0., cushift*cm),
                        fCopperLogical, "Copper_phys1", fLarLogical,false,0);
@@ -476,7 +476,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   // ULAr bath
   //
   G4VSolid* ularSolid = new G4Tubs("ULar", 0.0*cm, (curad-copper)*cm, cuhheight*cm,
-                                     0.0, CLHEP:twopi);
+                                     0.0, CLHEP::twopi);
   auto fUlarLogical  = new G4LogicalVolume(ularSolid, larMat, "ULar_log");
   auto fUlarPhysical_px  = new G4PVPlacement(0, G4ThreeVector(ringrad*cm, 0., cushift*cm),
                        fUlarLogical, "ULar_phys1", fCopperLogical,false,0);
@@ -491,7 +491,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   // Germanium
   //
   G4VSolid* geSolid = new G4Tubs("ROI", 0.0*cm, roiradius*cm, roihalfheight*cm,
-                                     0.0, CLHEP:twopi);
+                                     0.0, CLHEP::twopi);
   auto fGeLogical  = new G4LogicalVolume(geSolid, roiMat, "Ge_log");
   auto fGePhysical_px  = new G4PVPlacement(0, G4ThreeVector(ringrad*cm, 0., 0.),
                        fGeLogical, "Ge_phys1", fUlarLogical,false,0);
@@ -523,7 +523,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   fWaterLogical->SetVisAttributes(greyVisAtt);
   fLarLogical->SetVisAttributes(greyVisAtt);
   fCoutLogical->SetVisAttributes(blueVisAtt);
-  fCvacical->SetVisAttributes(greyVisAtt);
+  fCvacLogical->SetVisAttributes(greyVisAtt);
   fCinnLogical->SetVisAttributes(blueVisAtt);
   fLidLogical->SetVisAttributes(blueVisAtt);
   fBotLogical->SetVisAttributes(blueVisAtt);

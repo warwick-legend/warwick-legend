@@ -26,6 +26,6 @@ void WLGDActionInitialization::Build() const
   SetUserAction(new WLGDPrimaryGeneratorAction(fDet));
   auto event = new WLGDEventAction;
   SetUserAction(event);
-  SetUserAction(new WLGDRunAction(event, foutname);
+  SetUserAction(new WLGDRunAction(event, foutname));
 }  
 

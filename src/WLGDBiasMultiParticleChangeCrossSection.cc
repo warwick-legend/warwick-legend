@@ -55,8 +55,6 @@ void WLGDBiasMultiParticleChangeCrossSection::StartTracking( const G4Track* trac
   fCurrentOperator = 0;
   if ( it != fBOptrForParticle.end() ) fCurrentOperator = (*it).second;
 
-  // -- reset count for number of biased interactions:
-  fnInteractions = 0;
 }
 
 

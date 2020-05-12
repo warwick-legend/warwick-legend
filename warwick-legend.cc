@@ -112,7 +112,7 @@ int main(int argc,char** argv)
   //
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
-  if (macroName.isNull())   // Define UI session for interactive mode
+  if (macroName.empty())   // Define UI session for interactive mode
     {
 #ifdef G4UI_USE
       G4UIExecutive * ui = new G4UIExecutive(argc,argv);
