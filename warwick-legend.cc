@@ -18,6 +18,7 @@
 
 // standard
 #include <algorithm>
+#include <string>
 
 // Geant4
 #include "G4UImanager.hh"
@@ -28,7 +29,7 @@
 // us
 #include "WLGDDetectorConstruction.hh"
 #include "WLGDActionInitialization.hh"
-#include "getopt_pp.h"
+#include "CLI11.hpp" // c++17 safe; https://github.com/CLIUtils/CLI11
 
 
 void showHelp() {
@@ -42,20 +43,17 @@ void showHelp() {
 int main(int argc,char** argv)
 {
   // command line interface
-  G4int nthreads = 4;
-  G4String outputFileName;
-  G4String macroName;
-  GetOpt::GetOpt_pp ops(argc, argv);
+  CLI::App app{"Muon Simulation for Legend"};
+  int nthreads = 4;
+  std::string outputFileName("lg.root");
+  std::string macroName;
 
-  // Check for help request
-  if (ops >> GetOpt::OptionPresent('h', "help")){
-    showHelp();
-    return 0;
-  }
+  app.add_option("-m,--macro", macroName, "<Geant4 macro filename> Default: None");
+  app.add_option("-o,--outputFile", outputFileName, "<FULL PATH ROOT FILENAME> Default: lg.root");
+  app.add_option("-t, --nthreads", nthreads, "<number of threads to use> Default: 4");
 
-  ops >> GetOpt::Option('m', "macro", macroName, "");
-  ops >> GetOpt::Option('o', "outputFile", outputFileName, "lg.root");
-  ops >> GetOpt::Option('t', "nthreads", nthreads, 4);
+  CLI11_PARSE(app, argc, argv);
+
 
   // GEANT4 code
   // -- Construct the run manager : MT or sequential one
@@ -79,19 +77,24 @@ int main(int argc,char** argv)
 
   auto physicsList = new Shielding;
 
-  // -- Setup biasing, first for neutrons, again for muons later
+  // -- Setup biasing, first for neutrons, again for muons
+  G4GenericBiasingPhysics* biasingPhysics = new G4GenericBiasingPhysics();
+
   G4String pname = "nCapture"; // neutron capture process name
   std::vector<G4String> pvec; // required vector,
   pvec.push_back(pname);      // here with single data member
-
-  G4GenericBiasingPhysics* biasingPhysics = new G4GenericBiasingPhysics();
-  biasingPhysics->NonPhysicsBias("neutron"); // geometry bias for neutrons
   biasingPhysics->Bias("neutron", pvec); // bias particle and process
+
+  pvec.clear();
+  pname = "muonNuclear";
+  pvec.push_back(pname);
+  biasingPhysics->Bias("mu-", pvec); // bias particle and process
+
   physicsList->RegisterPhysics(biasingPhysics);
   runManager->SetUserInitialization(physicsList);
 
   // -- Set user action initialization class, forward random seed
-  auto actions = new WLGDActionInitialization(detector);
+  auto actions = new WLGDActionInitialization(detector, outputFileName);
   runManager->SetUserInitialization(actions);
 
   // Initialize G4 kernel
@@ -109,7 +112,7 @@ int main(int argc,char** argv)
   //
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
-  if (macroName.isNull())   // Define UI session for interactive mode
+  if (macroName.empty())   // Define UI session for interactive mode
     {
 #ifdef G4UI_USE
       G4UIExecutive * ui = new G4UIExecutive(argc,argv);

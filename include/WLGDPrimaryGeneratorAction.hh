@@ -3,12 +3,13 @@
 
 // std c++ includes
 #include <cmath>
+#include <random>
 
 #include "G4VUserPrimaryGeneratorAction.hh"
+#include "G4GenericMessenger.hh"
 #include "globals.hh"
 
 class G4ParticleGun;
-class G4GenericMessenger;
 class G4Event;
 class G4ParticleDefinition;
 class WLGDDetectorConstruction;
@@ -94,6 +95,8 @@ G4VUserPrimaryGeneratorAction
     G4GenericMessenger* fMessenger;
     G4ParticleDefinition* fMuon;
 
+    std::random_device rd;
+    std::ranlux24 generator;
     G4double fDepth;
 };
 
