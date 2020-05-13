@@ -1,6 +1,3 @@
-// std
-#include <random>
-
 // us
 #include "WLGDPrimaryGeneratorAction.hh"
 #include "WLGDDetectorConstruction.hh"
@@ -10,7 +7,7 @@
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
-#include "G4GenericMessenger.hh"
+#include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 
 
@@ -21,8 +18,7 @@ WLGDPrimaryGeneratorAction::WLGDPrimaryGeneratorAction(WLGDDetectorConstruction*
   fMuon(nullptr), 
   fDepth(0.0) 
 {
-  std::random_device rd; // random seed generator
-  std::ranlux24 generator(rd()); // std random engine
+  generator.seed(rd()); // set a random seed
 
   G4int nofParticles = 1;
   fParticleGun  = new G4ParticleGun(nofParticles);
@@ -67,8 +63,7 @@ void WLGDPrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
   sintheta = std::sqrt(1. - costheta*costheta);
 
   std::uniform_real_distribution<> rndm(0.0, 1.0); // azimuth angle
-  double twopi = 2.0 * std::acos(-1.0);
-  double phi = twopi * rndm(generator);  // random uniform number
+  double phi = CLHEP::twopi * rndm(generator);  // random uniform number
   sinphi = std::sin(phi);
   cosphi = std::cos(phi);
   
@@ -85,7 +80,7 @@ void WLGDPrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
   // position, top of world, sample circle uniformly
   G4double zvertex = fDetector->GetWorldSizeZ(); // inline on WLGDDetectorConstruction
   G4double maxrad  = fDetector->GetWorldExtent(); // --"--
-  phi = twopi * rndm(generator); // another random angle
+  phi = CLHEP::twopi * rndm(generator); // another random angle
   G4double vx = maxrad * std::cos(phi);
   G4double vy = maxrad * std::sin(phi);
 

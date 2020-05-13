@@ -19,6 +19,9 @@ public:
   virtual G4VPhysicalVolume* Construct();
   virtual void     ConstructSDandField();
 
+  G4double GetWorldSizeZ() {return fvertexZ;} // inline
+  G4double GetWorldExtent() {return fmaxrad;}// --"--
+
 private:
 
   void DefineCommands();
@@ -27,6 +30,8 @@ private:
   G4VPhysicalVolume* SetupAlternative();
 
   G4GenericMessenger* fDetectorMessenger;
+  G4double            fvertexZ;
+  G4double            fmaxrad;
   G4bool              fBaseline;
 };
 
