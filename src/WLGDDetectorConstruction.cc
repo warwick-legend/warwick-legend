@@ -125,16 +125,25 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
     G4Material* worldMaterial =
         G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
     G4Material* larMat = G4NistManager::Instance()->FindOrBuildMaterial("G4_lAr");
-    G4Material* concreteWallMat =
-        G4NistManager::Instance()->FindOrBuildMaterial("G4_CONCRETE");
     G4Material* airMat = G4NistManager::Instance()->FindOrBuildMaterial("G4_AIR");
     G4Material* steelMat =
         G4NistManager::Instance()->FindOrBuildMaterial("G4_STAINLESS-STEEL");
     G4Material* copperMat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Cu");
 
-    auto H     = new G4Element("Hydrogen", "H", 1., 1.00794 * g / mole);
     auto C     = new G4Element("Carbon", "C", 6., 12.011 * g / mole);
     auto O     = new G4Element("Oxygen", "O", 8., 16.00 * g / mole);
+    auto Ca    = new G4Element("Calcium", "Ca", 20., 40.08 * g / mole);
+    auto Mg    = new G4Element("Magnesium", "Mg", 12., 24.31 * g / mole);
+
+    // Standard Rock definition, similar to Gran Sasso rock
+    // with density from PDG report
+    auto stdRock = new G4Material("StdRock", 2.65*g/cm3, 4);
+    stdRock->AddElement(O,  52.0*perCent);
+    stdRock->AddElement(Ca, 27.0*perCent);
+    stdRock->AddElement(C,  12.0*perCent);
+    stdRock->AddElement(Mg,  9.0*perCent);
+
+    auto H     = new G4Element("Hydrogen", "H", 1., 1.00794 * g / mole);
     auto N     = new G4Element("Nitrogen", "N", 7., 14.00 * g / mole);
     auto puMat = new G4Material("polyurethane", 0.3 * g / cm3, 4);  // high density foam
     puMat->AddElement(H, 16);
@@ -199,7 +208,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
     //
     G4VSolid* cavernSolid = new G4Box("Cavern", (hallhside + stone) * cm,
                                       (hallhside + stone) * cm, (hallhside + stone) * cm);
-    auto fCavernLogical = new G4LogicalVolume(cavernSolid, concreteWallMat, "Cavern_log");
+    auto fCavernLogical = new G4LogicalVolume(cavernSolid, stdRock, "Cavern_log");
     auto fCavernPhysical =
         new G4PVPlacement(0, G4ThreeVector(0., 0., offset * cm), fCavernLogical,
                           "Cavern_phys", fWorldLogical, false, 0);
@@ -342,15 +351,26 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
     G4Material* worldMaterial =
         G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
     G4Material* larMat = G4NistManager::Instance()->FindOrBuildMaterial("G4_lAr");
-    G4Material* concreteWallMat =
-        G4NistManager::Instance()->FindOrBuildMaterial("G4_CONCRETE");
     G4Material* airMat   = G4NistManager::Instance()->FindOrBuildMaterial("G4_AIR");
     G4Material* waterMat = G4NistManager::Instance()->FindOrBuildMaterial("G4_WATER");
     G4Material* steelMat =
         G4NistManager::Instance()->FindOrBuildMaterial("G4_STAINLESS-STEEL");
     G4Material* copperMat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Cu");
 
-    // enriched Germanium from isotopes
+    auto C     = new G4Element("Carbon", "C", 6., 12.011 * g / mole);
+    auto O     = new G4Element("Oxygen", "O", 8., 16.00 * g / mole);
+    auto Ca    = new G4Element("Calcium", "Ca", 20., 40.08 * g / mole);
+    auto Mg    = new G4Element("Magnesium", "Mg", 12., 24.31 * g / mole);
+    
+    // Standard Rock definition, similar to Gran Sasso rock
+    // with density from PDG report
+    auto stdRock = new G4Material("StdRock", 2.65*g/cm3, 4);
+    stdRock->AddElement(O,  52.0*perCent);
+    stdRock->AddElement(Ca, 27.0*perCent);
+    stdRock->AddElement(C,  12.0*perCent);
+    stdRock->AddElement(Mg,  9.0*perCent);
+
+   // enriched Germanium from isotopes
     auto Ge_74 = new G4Isotope("Ge74", 32, 74, 74.0 * g / mole);
     auto Ge_76 = new G4Isotope("Ge76", 32, 76, 76.0 * g / mole);
 
@@ -409,7 +429,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
     //
     G4VSolid* cavernSolid = new G4Tubs("Cavern", 0.0 * cm, (hallrad + stone) * cm,
                                        (hallhheight + stone) * cm, 0.0, CLHEP::twopi);
-    auto fCavernLogical = new G4LogicalVolume(cavernSolid, concreteWallMat, "Cavern_log");
+    auto fCavernLogical = new G4LogicalVolume(cavernSolid, stdRock, "Cavern_log");
     auto fCavernPhysical =
         new G4PVPlacement(0, G4ThreeVector(0., 0., offset * cm), fCavernLogical,
                           "Cavern_phys", fWorldLogical, false, 0);

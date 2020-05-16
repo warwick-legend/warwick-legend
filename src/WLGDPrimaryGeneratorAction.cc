@@ -82,7 +82,7 @@ void WLGDPrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
     G4double vx      = maxrad * std::cos(phi);
     G4double vy      = maxrad * std::sin(phi);
 
-    fParticleGun->SetParticlePosition(G4ThreeVector(vx, vy, zvertex));
+    fParticleGun->SetParticlePosition(G4ThreeVector(vx, vy, zvertex - 1.0*cm));
 
     fParticleGun->GeneratePrimaryVertex(event);
 }
