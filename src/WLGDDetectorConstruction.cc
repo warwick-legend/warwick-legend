@@ -81,7 +81,7 @@ void WLGDDetectorConstruction::ConstructSDandField()
         G4LogicalVolume* logicLar =
             G4LogicalVolumeStore::GetInstance()->GetVolume("Lar_log");
         G4LogicalVolume* logicULar =
-            G4LogicalVolumeStore::GetInstance()->GetVolume("Ular_log");
+            G4LogicalVolumeStore::GetInstance()->GetVolume("ULar_log");
         G4LogicalVolume* logicGe =
             G4LogicalVolumeStore::GetInstance()->GetVolume("Ge_log");
 
@@ -104,7 +104,7 @@ void WLGDDetectorConstruction::ConstructSDandField()
         G4LogicalVolume* logicLar =
             G4LogicalVolumeStore::GetInstance()->GetVolume("Lar_log");
         G4LogicalVolume* logicULar =
-            G4LogicalVolumeStore::GetInstance()->GetVolume("Ular_log");
+            G4LogicalVolumeStore::GetInstance()->GetVolume("ULar_log");
         G4LogicalVolume* logicGe =
             G4LogicalVolumeStore::GetInstance()->GetVolume("Ge_log");
 
