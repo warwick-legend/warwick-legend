@@ -130,6 +130,8 @@ void WLGDDetectorConstruction::ConstructSDandField()
         // neutron bias
         biasnXS->AttachTo(logicGe);
     }
+
+    G4SDManager::GetSDMpointer()->SetVerboseLevel(0);
 }
 
 G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
@@ -558,7 +560,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
 
     auto      fGeLogical_px  = new G4LogicalVolume(geSolid, roiMat, "Ge_log");
     auto      fGePhysical_px =
-        new G4PVPlacement(0, G4ThreeVector(0. * cm, 0. * cm, 0. * cm), fGeLogical_px, "Ge_phys",
+        new G4PVPlacement(0, G4ThreeVector(0. * cm, 0. * cm, -cushift * cm), fGeLogical_px, "Ge_phys",
                           fUlarLogical_px, false, 0, true);
 
     //
