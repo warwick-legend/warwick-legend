@@ -315,9 +315,6 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
     new G4PVPlacement(0, G4ThreeVector(0., ringrad * cm, cushift * cm), fUlarLogical,
                           "ULar_phys2", fLarLogical, false, 1, true);
     
-    new G4PVPlacement(0, G4ThreeVector(0. * cm, 0. * cm, -cushift * cm), fGeLogical, "Ge_phys2",
-                          fUlarLogical, false, 1, true);
-                                     
 
     // tower 3
     new G4PVPlacement(0, G4ThreeVector(-ringrad * cm, 0., cushift * cm),
@@ -326,9 +323,6 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
     new G4PVPlacement(0, G4ThreeVector(-ringrad * cm, 0., cushift * cm), fUlarLogical,
                           "ULar_phys3", fLarLogical, false, 2, true);
     
-    new G4PVPlacement(0, G4ThreeVector(0. * cm, 0. * cm, -cushift * cm), fGeLogical, "Ge_phys3",
-                          fUlarLogical, false, 2, true);
-    
     // tower 4
     new G4PVPlacement(0, G4ThreeVector(0., -ringrad * cm, cushift * cm),
                           fCopperLogical, "Copper_phys4", fLarLogical, false, 3, true);
@@ -336,9 +330,6 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
     new G4PVPlacement(0, G4ThreeVector(0., -ringrad * cm, cushift * cm), fUlarLogical,
                           "ULar_phys4", fLarLogical, false, 3, true);
     
-    new G4PVPlacement(0, G4ThreeVector(0. * cm, 0. * cm, -cushift * cm), fGeLogical, "Ge_phys4",
-                          fUlarLogical, false, 3, true);
-
     //
     // Visualization attributes
     //
@@ -576,9 +567,6 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
     new G4PVPlacement(0, G4ThreeVector(0., ringrad * cm, cushift * cm), fUlarLogical,
                           "ULar_phys2", fLarLogical, false, 1, true);
     
-    new G4PVPlacement(0, G4ThreeVector(0. * cm, 0. * cm, -cushift * cm), fGeLogical, "Ge_phys2",
-                          fUlarLogical, false, 1, true);
-
     // tower 3
     new G4PVPlacement(0, G4ThreeVector(-ringrad * cm, 0., cushift * cm),
                           fCopperLogical, "Copper_phys3", fLarLogical, false, 2, true);
@@ -586,9 +574,6 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
     new G4PVPlacement(0, G4ThreeVector(-ringrad * cm, 0., cushift * cm), fUlarLogical,   
                           "ULar_phys3", fLarLogical, false, 2, true);
     
-    new G4PVPlacement(0, G4ThreeVector(0. * cm, 0. * cm, -cushift * cm), fGeLogical, "Ge_phys3",
-                          fUlarLogical, false, 2, true);
-
     // tower 4
     new G4PVPlacement(0, G4ThreeVector(0., -ringrad * cm, cushift * cm),
                           fCopperLogical, "Copper_phys4", fLarLogical, false, 3, true);
@@ -596,8 +581,6 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
     new G4PVPlacement(0, G4ThreeVector(0., -ringrad * cm, cushift * cm), fUlarLogical,   
                           "ULar_phys4", fLarLogical, false, 3, true);
     
-    new G4PVPlacement(0, G4ThreeVector(0. * cm, 0. * cm, -cushift * cm), fGeLogical, "Ge_phys4",
-                          fUlarLogical, false, 3, true);
 
     //
     // Visualization attributes
