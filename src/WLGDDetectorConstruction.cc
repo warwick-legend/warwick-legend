@@ -235,7 +235,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
         new G4Box("Cavern", hallhside * cm, hallhside * cm, hallhside * cm);
     auto fHallLogical = new G4LogicalVolume(hallSolid, airMat, "Hall_log");
     auto fHallPhysical =
-        new G4PVPlacement(0, G4ThreeVector(0., 0., stone * cm), fHallLogical,
+        new G4PVPlacement(0, G4ThreeVector(0., 0., -stone * cm), fHallLogical,
                           "Hall_phys", fCavernLogical, false, 0, true);
 
     //
@@ -244,7 +244,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
     G4VSolid* tankSolid =
         new G4Box("Tank", tankhside * cm, tankhside * cm, tankhside * cm);
     auto fTankLogical  = new G4LogicalVolume(tankSolid, steelMat, "Tank_log");
-    auto fTankPhysical = new G4PVPlacement(0, G4ThreeVector(), fTankLogical, "Tank_phys",
+    auto fTankPhysical = new G4PVPlacement(0, G4ThreeVector(0., 0., -stone * cm), fTankLogical, "Tank_phys",
                                            fHallLogical, false, 0, true);
 
     //
@@ -462,7 +462,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
         new G4Tubs("Hall", 0.0 * cm, hallrad * cm, hallhheight * cm, 0.0, CLHEP::twopi);
     auto fHallLogical = new G4LogicalVolume(hallSolid, airMat, "Hall_log");
     auto fHallPhysical =
-        new G4PVPlacement(0, G4ThreeVector(0., 0., stone * cm), fHallLogical,
+        new G4PVPlacement(0, G4ThreeVector(0., 0., -stone * cm), fHallLogical,
                           "Hall_phys", fCavernLogical, false, 0, true);
 
     //
@@ -472,7 +472,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
         new G4Cons("Tank", 0.0 * cm, (tankrad + tankwallbot) * cm, 0.0 * cm,
                    (tankrad + tankwalltop) * cm, tankhheight * cm, 0.0, CLHEP::twopi);
     auto fTankLogical  = new G4LogicalVolume(tankSolid, steelMat, "Tank_log");
-    auto fTankPhysical = new G4PVPlacement(0, G4ThreeVector(), fTankLogical, "Tank_phys",
+    auto fTankPhysical = new G4PVPlacement(0, G4ThreeVector(0., 0., -stone * cm), fTankLogical, "Tank_phys",
                                            fHallLogical, false, 0, true);
 
     //
