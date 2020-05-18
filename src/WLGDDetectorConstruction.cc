@@ -20,6 +20,7 @@
 
 #include "WLGDBiasMultiParticleChangeCrossSection.hh"
 
+#include "G4UserLimits.hh"
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 
@@ -204,7 +205,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
         tankhside - outerwall - insulation - innerwall;  // cube side of LAr volume
 
     fvertexZ = (worldside - 0.1) * cm;  // max vertex height
-    fmaxrad  = fvertexZ;         // max vertex circle radius
+    fmaxrad  = fvertexZ - stone * cm;   // max vertex circle radius
 
     // Volumes for this geometry
 
@@ -331,6 +332,14 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
                           "ULar_phys4", fLarLogical, false, 3, true);
     
     //
+    // User limits
+    //
+    G4double maxTime = 1 * ms; // affects long-lived neutrons
+    G4UserLimits* outerlimit = new G4UserLimits(DBL_MAX,DBL_MAX,maxTime);
+    fCavernLogical->SetUserLimits(outerlimit);
+    fLarLogical->SetUserLimits(outerlimit);
+
+    //
     // Visualization attributes
     //
     fWorldLogical->SetVisAttributes(G4VisAttributes::GetInvisible());
@@ -422,7 +431,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
     G4double roihalfheight = 11.97;  // detector region height 24 cm
 
     fvertexZ = (hallhheight + stone + offset) * cm;
-    fmaxrad  = (hallrad + stone) * cm;
+    fmaxrad  = hallrad * cm;
 
     // Volumes for this geometry
 
@@ -581,6 +590,15 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
     new G4PVPlacement(0, G4ThreeVector(0., -ringrad * cm, cushift * cm), fUlarLogical,   
                           "ULar_phys4", fLarLogical, false, 3, true);
     
+
+    //
+    // User limits
+    //
+    G4double maxTime = 1 * ms; // affects long-lived neutrons
+    G4UserLimits* outerlimit = new G4UserLimits(DBL_MAX,DBL_MAX,maxTime);
+    fCavernLogical->SetUserLimits(outerlimit);
+    fWaterLogical->SetUserLimits(outerlimit);
+    fLarLogical->SetUserLimits(outerlimit);
 
     //
     // Visualization attributes
