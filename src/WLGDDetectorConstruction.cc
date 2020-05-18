@@ -203,7 +203,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
     G4double larside =
         tankhside - outerwall - insulation - innerwall;  // cube side of LAr volume
 
-    fvertexZ = worldside - 0.1;  // max vertex height
+    fvertexZ = (worldside - 0.1) * cm;  // max vertex height
     fmaxrad  = fvertexZ;         // max vertex circle radius
 
     // Volumes for this geometry
@@ -421,8 +421,8 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
     G4double roiradius     = 25.0;   // detector region diam 50 cm
     G4double roihalfheight = 11.97;  // detector region height 24 cm
 
-    fvertexZ = hallhheight + stone + offset;
-    fmaxrad  = hallrad + stone;
+    fvertexZ = (hallhheight + stone + offset) * cm;
+    fmaxrad  = (hallrad + stone) * cm;
 
     // Volumes for this geometry
 
