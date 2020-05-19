@@ -77,10 +77,10 @@ void WLGDPrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
 
     // position, top of world, sample circle uniformly
     G4double zvertex = fDetector->GetWorldSizeZ();   // inline on WLGDDetectorConstruction
-    G4double maxrad  = fDetector->GetWorldExtent();  // --"--
+    G4double radius  = fDetector->GetWorldExtent() * rndm(generator);  // fraction of max
     phi              = CLHEP::twopi * rndm(generator);  // another random angle
-    G4double vx      = maxrad * std::cos(phi);
-    G4double vy      = maxrad * std::sin(phi);
+    G4double vx      = radius * std::cos(phi);
+    G4double vy      = radius * std::sin(phi);
 
     fParticleGun->SetParticlePosition(G4ThreeVector(vx, vy, zvertex - 1.0*cm));
 

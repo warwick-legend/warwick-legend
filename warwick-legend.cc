@@ -22,6 +22,7 @@
 
 // Geant4
 #include "G4GenericBiasingPhysics.hh"
+#include "G4NeutronTrackingCut.hh"
 #include "G4Threading.hh"
 #include "G4UImanager.hh"
 #include "Shielding.hh"
@@ -70,9 +71,11 @@ int main(int argc, char** argv)
     auto detector = new WLGDDetectorConstruction;
     runManager->SetUserInitialization(detector);
 
+    // -- set user physics list
     auto physicsList = new Shielding;
+    physicsList->RegisterPhysics(new G4NeutronTrackingCut()); // allow G4UserLimits
 
-    // -- Setup biasing, first for neutrons, again for muons
+    // - Setup biasing, first for neutrons, again for muons
     G4GenericBiasingPhysics* biasingPhysics = new G4GenericBiasingPhysics();
 
     G4String              pname = "nCapture";  // neutron capture process name

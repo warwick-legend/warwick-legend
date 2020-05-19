@@ -20,6 +20,7 @@
 
 #include "WLGDBiasMultiParticleChangeCrossSection.hh"
 
+#include "G4UserLimits.hh"
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 
@@ -204,7 +205,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
         tankhside - outerwall - insulation - innerwall;  // cube side of LAr volume
 
     fvertexZ = (worldside - 0.1) * cm;  // max vertex height
-    fmaxrad  = fvertexZ;         // max vertex circle radius
+    fmaxrad  = fvertexZ - stone * cm;   // max vertex circle radius
 
     // Volumes for this geometry
 
@@ -234,7 +235,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
         new G4Box("Cavern", hallhside * cm, hallhside * cm, hallhside * cm);
     auto fHallLogical = new G4LogicalVolume(hallSolid, airMat, "Hall_log");
     auto fHallPhysical =
-        new G4PVPlacement(0, G4ThreeVector(0., 0., stone * cm), fHallLogical,
+        new G4PVPlacement(0, G4ThreeVector(0., 0., -stone * cm), fHallLogical,
                           "Hall_phys", fCavernLogical, false, 0, true);
 
     //
@@ -243,7 +244,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
     G4VSolid* tankSolid =
         new G4Box("Tank", tankhside * cm, tankhside * cm, tankhside * cm);
     auto fTankLogical  = new G4LogicalVolume(tankSolid, steelMat, "Tank_log");
-    auto fTankPhysical = new G4PVPlacement(0, G4ThreeVector(), fTankLogical, "Tank_phys",
+    auto fTankPhysical = new G4PVPlacement(0, G4ThreeVector(0., 0., -stone * cm), fTankLogical, "Tank_phys",
                                            fHallLogical, false, 0, true);
 
     //
@@ -330,6 +331,14 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
     new G4PVPlacement(0, G4ThreeVector(0., -ringrad * cm, cushift * cm), fUlarLogical,
                           "ULar_phys4", fLarLogical, false, 3, true);
     
+    //
+    // User limits
+    //
+    G4double maxTime = 1 * ms; // affects long-lived neutrons
+    G4UserLimits* outerlimit = new G4UserLimits(DBL_MAX,DBL_MAX,maxTime);
+    fCavernLogical->SetUserLimits(outerlimit);
+    fLarLogical->SetUserLimits(outerlimit);
+
     //
     // Visualization attributes
     //
@@ -422,7 +431,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
     G4double roihalfheight = 11.97;  // detector region height 24 cm
 
     fvertexZ = (hallhheight + stone + offset) * cm;
-    fmaxrad  = (hallrad + stone) * cm;
+    fmaxrad  = hallrad * cm;
 
     // Volumes for this geometry
 
@@ -453,7 +462,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
         new G4Tubs("Hall", 0.0 * cm, hallrad * cm, hallhheight * cm, 0.0, CLHEP::twopi);
     auto fHallLogical = new G4LogicalVolume(hallSolid, airMat, "Hall_log");
     auto fHallPhysical =
-        new G4PVPlacement(0, G4ThreeVector(0., 0., stone * cm), fHallLogical,
+        new G4PVPlacement(0, G4ThreeVector(0., 0., -stone * cm), fHallLogical,
                           "Hall_phys", fCavernLogical, false, 0, true);
 
     //
@@ -463,7 +472,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
         new G4Cons("Tank", 0.0 * cm, (tankrad + tankwallbot) * cm, 0.0 * cm,
                    (tankrad + tankwalltop) * cm, tankhheight * cm, 0.0, CLHEP::twopi);
     auto fTankLogical  = new G4LogicalVolume(tankSolid, steelMat, "Tank_log");
-    auto fTankPhysical = new G4PVPlacement(0, G4ThreeVector(), fTankLogical, "Tank_phys",
+    auto fTankPhysical = new G4PVPlacement(0, G4ThreeVector(0., 0., -stone * cm), fTankLogical, "Tank_phys",
                                            fHallLogical, false, 0, true);
 
     //
@@ -581,6 +590,15 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
     new G4PVPlacement(0, G4ThreeVector(0., -ringrad * cm, cushift * cm), fUlarLogical,   
                           "ULar_phys4", fLarLogical, false, 3, true);
     
+
+    //
+    // User limits
+    //
+    G4double maxTime = 1 * ms; // affects long-lived neutrons
+    G4UserLimits* outerlimit = new G4UserLimits(DBL_MAX,DBL_MAX,maxTime);
+    fCavernLogical->SetUserLimits(outerlimit);
+    fWaterLogical->SetUserLimits(outerlimit);
+    fLarLogical->SetUserLimits(outerlimit);
 
     //
     // Visualization attributes
