@@ -31,7 +31,8 @@ G4bool WLGDPSTime::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     if(aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary)
         return FALSE;  // all collisions
 
-    G4double tt = aStep->GetTrack()->GetGlobalTime();
+    // keep unit free for storage in ntuple
+    G4double tt = aStep->GetTrack()->GetGlobalTime() / GetUnitValue();
 
     G4int idx = GetIndex(aStep);
     EvtMap->add(idx, tt);
@@ -68,7 +69,7 @@ void WLGDPSTime::PrintAll()
     for(; itr != EvtMap->GetMap()->end(); itr++)
     {
         G4cout << "  key: " << itr->first << "  global time: "
-               << *(itr->second) / GetUnitValue()
+               << *(itr->second)
                << " [" << GetUnit() << "]" << G4endl;
     }
 }
