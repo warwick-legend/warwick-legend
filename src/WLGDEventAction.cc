@@ -5,6 +5,7 @@
 #include "G4HCofThisEvent.hh"
 #include "G4SDManager.hh"
 #include "G4UnitsTable.hh"
+#include "G4ios.hh"
 
 #include "Randomize.hh"
 #include <iomanip>
@@ -154,4 +155,16 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
 
     // fill the ntuple
     analysisManager->AddNtupleRow();
+
+    // printing
+    G4int eventID = event->GetEventID();
+    G4cout << ">>> Event: " << eventID << G4endl;
+    G4cout << "    " << edep_water.size() 
+               << " water hits stored in this event." << G4endl;
+    G4cout << "    " << edep_lar.size()
+               << " LAr hits stored in this event." << G4endl;
+    G4cout << "    " << edep_ular.size()
+               << " ULAr hits stored in this event." << G4endl;
+    G4cout << "    " << edep_ge.size()
+               << " germanium hits stored in this event." << G4endl;
 }
