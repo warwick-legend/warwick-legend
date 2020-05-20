@@ -28,8 +28,11 @@ WLGDPSTime::~WLGDPSTime() = default;
 
 G4bool WLGDPSTime::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+    // better comment here - what does "all collisions" mean?
     if(aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary)
-        return FALSE;  // all collisions
+    {
+        return FALSE;
+    }
 
     // keep unit free for storage in ntuple
     G4double tt = aStep->GetTrack()->GetGlobalTime() / GetUnitValue();
