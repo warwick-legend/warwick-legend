@@ -34,25 +34,22 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 GB01ActionInitialization::GB01ActionInitialization()
- : G4VUserActionInitialization()
+: G4VUserActionInitialization()
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-GB01ActionInitialization::~GB01ActionInitialization()
-{;}
+GB01ActionInitialization::~GB01ActionInitialization() { ; }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void GB01ActionInitialization::BuildForMaster() const
-{
-}
+void GB01ActionInitialization::BuildForMaster() const {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void GB01ActionInitialization::Build() const
 {
   SetUserAction(new GB01PrimaryGeneratorAction);
-}  
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

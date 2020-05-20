@@ -41,8 +41,8 @@
 
 /// Event action class
 ///
-/// In EndOfEventAction(), it prints the accumulated quantities of the energy 
-/// deposit and track lengths of charged particles in Absober and Gap layers 
+/// In EndOfEventAction(), it prints the accumulated quantities of the energy
+/// deposit and track lengths of charged particles in Absober and Gap layers
 /// stored in the hits collections.
 
 class B4dEventAction : public G4UserEventAction
@@ -51,35 +51,32 @@ public:
   B4dEventAction();
   virtual ~B4dEventAction();
 
-  virtual void  BeginOfEventAction(const G4Event* event);
-  virtual void    EndOfEventAction(const G4Event* event);
-    
+  virtual void BeginOfEventAction(const G4Event* event);
+  virtual void EndOfEventAction(const G4Event* event);
+
   std::vector<G4double>& GetAbsWithWeight() { return aWWeight; }
   std::vector<G4double>& GetAbsNoWeight() { return aNWeight; }
   std::vector<G4double>& GetGapWithWeight() { return gWWeight; }
   std::vector<G4double>& GetGapNoWeight() { return gNWeight; }
-  std::vector<G4int>& GetAbsNWID() { return aNWID; }
-  std::vector<G4int>& GetAbsWWID() { return aWWID; }
-  std::vector<G4int>& GetGapNWID() { return gNWID; }
-  std::vector<G4int>& GetGapWWID() { return gWWID; }
+  std::vector<G4int>&    GetAbsNWID() { return aNWID; }
+  std::vector<G4int>&    GetAbsWWID() { return aWWID; }
+  std::vector<G4int>&    GetGapNWID() { return gNWID; }
+  std::vector<G4int>&    GetGapWWID() { return gWWID; }
   std::vector<G4double>& GetxLocation() { return xLoc; }
   std::vector<G4double>& GetyLocation() { return yLoc; }
   std::vector<G4double>& GetzLocation() { return zLoc; }
 
-
 private:
   // methods
-  G4THitsMap<G4double>* GetHitsCollection(G4int hcID,
-                                          const G4Event* event) const;
-  G4THitsMap<G4ThreeVector>* GetVecHitsCollection(G4int hcID,
-						  const G4Event* event) const;
-  
-  // data members                   
-  G4int  fAbsoNWHCID;
-  G4int  fAbsoWWHCID;
-  G4int  fGapNWHCID;
-  G4int  fGapWWHCID;
-  G4int  fLocHCID;
+  G4THitsMap<G4double>*      GetHitsCollection(G4int hcID, const G4Event* event) const;
+  G4THitsMap<G4ThreeVector>* GetVecHitsCollection(G4int hcID, const G4Event* event) const;
+
+  // data members
+  G4int                 fAbsoNWHCID;
+  G4int                 fAbsoWWHCID;
+  G4int                 fGapNWHCID;
+  G4int                 fGapWWHCID;
+  G4int                 fLocHCID;
   std::vector<G4double> aWWeight;
   std::vector<G4double> aNWeight;
   std::vector<G4double> gWWeight;
@@ -87,15 +84,12 @@ private:
   std::vector<G4double> xLoc;
   std::vector<G4double> yLoc;
   std::vector<G4double> zLoc;
-  std::vector<G4int> aWWID;
-  std::vector<G4int> aNWID;
-  std::vector<G4int> gWWID;
-  std::vector<G4int> gNWID;
-
+  std::vector<G4int>    aWWID;
+  std::vector<G4int>    aNWID;
+  std::vector<G4int>    gWWID;
+  std::vector<G4int>    gNWID;
 };
-                     
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
-
-    

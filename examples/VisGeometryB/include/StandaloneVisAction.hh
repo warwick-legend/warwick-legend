@@ -34,9 +34,9 @@
 
 #include "G4VUserVisAction.hh"
 
-class StandaloneVisAction: public G4VUserVisAction {
+class StandaloneVisAction : public G4VUserVisAction
+{
   virtual void Draw();
 };
 
 #endif
-

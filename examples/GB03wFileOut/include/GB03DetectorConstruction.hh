@@ -43,63 +43,61 @@ class GB03DetectorMessenger;
 
 class GB03DetectorConstruction : public G4VUserDetectorConstruction
 {
-  public:
-    GB03DetectorConstruction();
-    virtual ~GB03DetectorConstruction();
+public:
+  GB03DetectorConstruction();
+  virtual ~GB03DetectorConstruction();
 
-    virtual G4VPhysicalVolume* Construct();
-    virtual void ConstructSDandField();
-  
-    void PrintCalorParameters() const;
-    void SetAbsorberMaterial(G4String materialChoice);     
-    G4String GetAbsorberMaterial() const;
-    void SetGapMaterial(G4String materialChoice);     
-    G4String GetGapMaterial() const;
-    void SetNumberOfLayers(G4int nl);
-    static G4int GetNumberOfLayers() { return fNumberOfLayers; }
+  virtual G4VPhysicalVolume* Construct();
+  virtual void               ConstructSDandField();
 
-    G4int GetVerboseLevel() const { return  fVerboseLevel; }
-    void SetVerboseLevel(G4int val) { fVerboseLevel = val; }
-     
-  private:
-    void DefineMaterials();
-    void SetupGeometry();
-    void SetupDetectors();
-    void SetupBiasing();
+  void         PrintCalorParameters() const;
+  void         SetAbsorberMaterial(G4String materialChoice);
+  G4String     GetAbsorberMaterial() const;
+  void         SetGapMaterial(G4String materialChoice);
+  G4String     GetGapMaterial() const;
+  void         SetNumberOfLayers(G4int nl);
+  static G4int GetNumberOfLayers() { return fNumberOfLayers; }
 
-    // data members
-    static G4int       fNumberOfLayers;
+  G4int GetVerboseLevel() const { return fVerboseLevel; }
+  void  SetVerboseLevel(G4int val) { fVerboseLevel = val; }
 
-    G4double           fTotalThickness; /// total thinkness of one calorimeter
-    G4double           fLayerThickness; /// = fTotalThickness / fNumberOfLayers
+private:
+  void DefineMaterials();
+  void SetupGeometry();
+  void SetupDetectors();
+  void SetupBiasing();
 
-    G4bool             fConstructed;
-    static G4ThreadLocal G4bool fConstructedSDandField;
-  
-    G4String           fCalName;
+  // data members
+  static G4int fNumberOfLayers;
 
-    G4Material*        fWorldMaterial;
-    G4Material*        fAbsorberMaterial;
-    G4Material*        fGapMaterial;
+  G4double fTotalThickness;  /// total thinkness of one calorimeter
+  G4double fLayerThickness;  /// = fTotalThickness / fNumberOfLayers
 
-    G4Box*             fLayerSolid;
-    G4Box*             fGapSolid;
+  G4bool               fConstructed;
+  static G4ThreadLocal G4bool fConstructedSDandField;
 
-    G4LogicalVolume*   fWorldLogical;
-    G4LogicalVolume*   fCalorLogical;
-    G4LogicalVolume*   fLayerLogical;
-    G4LogicalVolume*   fGapLogical;
+  G4String fCalName;
 
-    G4VPhysicalVolume* fWorldPhysical;
-    G4VPhysicalVolume* fCalorPhysical;
-    G4PVReplica*       fLayerPhysical;
-    G4VPhysicalVolume* fGapPhysical;
+  G4Material* fWorldMaterial;
+  G4Material* fAbsorberMaterial;
+  G4Material* fGapMaterial;
 
-    GB03DetectorMessenger* fDetectorMessenger; 
-    
-    G4int              fVerboseLevel;
-      
+  G4Box* fLayerSolid;
+  G4Box* fGapSolid;
+
+  G4LogicalVolume* fWorldLogical;
+  G4LogicalVolume* fCalorLogical;
+  G4LogicalVolume* fLayerLogical;
+  G4LogicalVolume* fGapLogical;
+
+  G4VPhysicalVolume* fWorldPhysical;
+  G4VPhysicalVolume* fCalorPhysical;
+  G4PVReplica*       fLayerPhysical;
+  G4VPhysicalVolume* fGapPhysical;
+
+  GB03DetectorMessenger* fDetectorMessenger;
+
+  G4int fVerboseLevel;
 };
 
 #endif
-

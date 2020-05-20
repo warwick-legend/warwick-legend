@@ -29,22 +29,22 @@
 /// \brief Implementation of the B4RunAction class
 
 #include "B4RunAction.hh"
-#include "B4dEventAction.hh"
 #include "B4Analysis.hh"
+#include "B4dEventAction.hh"
 
 #include "G4Run.hh"
 #include "G4RunManager.hh"
-#include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4UnitsTable.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B4RunAction::B4RunAction(B4dEventAction* eventAction)
- : G4UserRunAction(),
-   fEventAction(eventAction)
-{ 
+: G4UserRunAction()
+, fEventAction(eventAction)
+{
   // set printing event number per each event
-  G4RunManager::GetRunManager()->SetPrintProgress(1);     
+  G4RunManager::GetRunManager()->SetPrintProgress(1);
 
   // Create analysis manager
   // The choice of analysis technology is done via selectin of a namespace
@@ -52,10 +52,10 @@ B4RunAction::B4RunAction(B4dEventAction* eventAction)
   auto analysisManager = G4AnalysisManager::Instance();
   G4cout << "Using " << analysisManager->GetType() << G4endl;
 
-  // Create directories 
+  // Create directories
   analysisManager->SetVerboseLevel(1);
   analysisManager->SetNtupleMerging(true);
-    // Note: merging ntuples is available only with Root output
+  // Note: merging ntuples is available only with Root output
 
   // Creating ntuple with vector entries
   //
@@ -72,20 +72,16 @@ B4RunAction::B4RunAction(B4dEventAction* eventAction)
   analysisManager->CreateNtupleDColumn("ygap", fEventAction->GetyLocation());
   analysisManager->CreateNtupleDColumn("zgap", fEventAction->GetzLocation());
   analysisManager->FinishNtuple();
-
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B4RunAction::~B4RunAction()
-{
-  delete G4AnalysisManager::Instance();  
-}
+B4RunAction::~B4RunAction() { delete G4AnalysisManager::Instance(); }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B4RunAction::BeginOfRunAction(const G4Run* /*run*/)
-{ 
+{
   // Get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
 

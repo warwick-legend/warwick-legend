@@ -21,43 +21,42 @@ WLGDEventAction::WLGDEventAction()
 , fLocID_lar(-1)
 , fLocID_ular(-1)
 , fLocID_ge(-1)
-{
-}
+{}
 
 WLGDEventAction::~WLGDEventAction() {}
 
 G4THitsMap<G4double>* WLGDEventAction::GetHitsCollection(G4int          hcID,
                                                          const G4Event* event) const
 {
-    auto hitsCollection =
-        static_cast<G4THitsMap<G4double>*>(event->GetHCofThisEvent()->GetHC(hcID));
+  auto hitsCollection =
+    static_cast<G4THitsMap<G4double>*>(event->GetHCofThisEvent()->GetHC(hcID));
 
-    if(!hitsCollection)
-    {
-        G4ExceptionDescription msg;
-        msg << "Cannot access hitsCollection ID " << hcID;
-        G4Exception("WLGDEventAction::GetHitsCollection()", "MyCode0003", FatalException,
-                    msg);
-    }
+  if(!hitsCollection)
+  {
+    G4ExceptionDescription msg;
+    msg << "Cannot access hitsCollection ID " << hcID;
+    G4Exception("WLGDEventAction::GetHitsCollection()", "MyCode0003", FatalException,
+                msg);
+  }
 
-    return hitsCollection;
+  return hitsCollection;
 }
 
 G4THitsMap<G4ThreeVector>* WLGDEventAction::GetVecHitsCollection(
-    G4int hcID, const G4Event* event) const
+  G4int hcID, const G4Event* event) const
 {
-    auto hitsCollection =
-        static_cast<G4THitsMap<G4ThreeVector>*>(event->GetHCofThisEvent()->GetHC(hcID));
+  auto hitsCollection =
+    static_cast<G4THitsMap<G4ThreeVector>*>(event->GetHCofThisEvent()->GetHC(hcID));
 
-    if(!hitsCollection)
-    {
-        G4ExceptionDescription msg;
-        msg << "Cannot access hitsCollection ID " << hcID;
-        G4Exception("WLGDEventAction::GetVecHitsCollection()", "MyCode0003",
-                    FatalException, msg);
-    }
+  if(!hitsCollection)
+  {
+    G4ExceptionDescription msg;
+    msg << "Cannot access hitsCollection ID " << hcID;
+    G4Exception("WLGDEventAction::GetVecHitsCollection()", "MyCode0003", FatalException,
+                msg);
+  }
 
-    return hitsCollection;
+  return hitsCollection;
 }
 
 void WLGDEventAction::BeginOfEventAction(const G4Event* /*event*/) {}
@@ -67,15 +66,15 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
     // Get hist collections IDs
     if(fCollID_lar < 0)
     {
-        fCollID_water = G4SDManager::GetSDMpointer()->GetCollectionID("WaterDet/Edep");
-        fCollID_lar   = G4SDManager::GetSDMpointer()->GetCollectionID("LarDet/Edep");
-        fCollID_ular  = G4SDManager::GetSDMpointer()->GetCollectionID("ULarDet/Edep");
-        fCollID_ge    = G4SDManager::GetSDMpointer()->GetCollectionID("GeDet/Edep");
+      fCollID_water = G4SDManager::GetSDMpointer()->GetCollectionID("WaterDet/Edep");
+      fCollID_lar   = G4SDManager::GetSDMpointer()->GetCollectionID("LarDet/Edep");
+      fCollID_ular  = G4SDManager::GetSDMpointer()->GetCollectionID("ULarDet/Edep");
+      fCollID_ge    = G4SDManager::GetSDMpointer()->GetCollectionID("GeDet/Edep");
 
-        fLocID_water = G4SDManager::GetSDMpointer()->GetCollectionID("WaterDet/Loc");
-        fLocID_lar   = G4SDManager::GetSDMpointer()->GetCollectionID("LarDet/Loc");
-        fLocID_ular  = G4SDManager::GetSDMpointer()->GetCollectionID("ULarDet/Loc");
-        fLocID_ge    = G4SDManager::GetSDMpointer()->GetCollectionID("GeDet/Loc");
+      fLocID_water = G4SDManager::GetSDMpointer()->GetCollectionID("WaterDet/Loc");
+      fLocID_lar   = G4SDManager::GetSDMpointer()->GetCollectionID("LarDet/Loc");
+      fLocID_ular  = G4SDManager::GetSDMpointer()->GetCollectionID("ULarDet/Loc");
+      fLocID_ge    = G4SDManager::GetSDMpointer()->GetCollectionID("GeDet/Loc");
     }
 
     // Get entries from hits collections
@@ -95,62 +94,62 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
     // 8 columns to fill
     if(!edep_lar.empty())
     {  // clear vectors
-        edep_water.clear();
-        edep_lar.clear();
-        edep_ular.clear();
-        edep_ge.clear();
-        xLoc_water.clear();
-        xLoc_lar.clear();
-        xLoc_ular.clear();
-        xLoc_ge.clear();
-        yLoc_water.clear();
-        yLoc_lar.clear();
-        yLoc_ular.clear();
-        yLoc_ge.clear();
-        zLoc_water.clear();
-        zLoc_lar.clear();
-        zLoc_ular.clear();
-        zLoc_ge.clear();
+      edep_water.clear();
+      edep_lar.clear();
+      edep_ular.clear();
+      edep_ge.clear();
+      xLoc_water.clear();
+      xLoc_lar.clear();
+      xLoc_ular.clear();
+      xLoc_ge.clear();
+      yLoc_water.clear();
+      yLoc_lar.clear();
+      yLoc_ular.clear();
+      yLoc_ge.clear();
+      zLoc_water.clear();
+      zLoc_lar.clear();
+      zLoc_ular.clear();
+      zLoc_ge.clear();
     }
 
     for(auto it : *waterHitsMap->GetMap())
-        edep_water.push_back(*it.second);
+      edep_water.push_back(*it.second);
 
     for(auto it : *larHitsMap->GetMap())
-        edep_lar.push_back(*it.second);
+      edep_lar.push_back(*it.second);
 
     for(auto it : *ularHitsMap->GetMap())
-        edep_ular.push_back(*it.second);
+      edep_ular.push_back(*it.second);
 
     for(auto it : *geHitsMap->GetMap())
-        edep_ge.push_back(*it.second);
+      edep_ge.push_back(*it.second);
 
     for(auto it : *waterLocMap->GetMap())
     {
-        xLoc_water.push_back((*it.second).x());
-        yLoc_water.push_back((*it.second).y());
-        zLoc_water.push_back((*it.second).z());
+      xLoc_water.push_back((*it.second).x());
+      yLoc_water.push_back((*it.second).y());
+      zLoc_water.push_back((*it.second).z());
     }
 
     for(auto it : *larLocMap->GetMap())
     {
-        xLoc_lar.push_back((*it.second).x());
-        yLoc_lar.push_back((*it.second).y());
-        zLoc_lar.push_back((*it.second).z());
+      xLoc_lar.push_back((*it.second).x());
+      yLoc_lar.push_back((*it.second).y());
+      zLoc_lar.push_back((*it.second).z());
     }
 
     for(auto it : *ularLocMap->GetMap())
     {
-        xLoc_ular.push_back((*it.second).x());
-        yLoc_ular.push_back((*it.second).y());
-        zLoc_ular.push_back((*it.second).z());
+      xLoc_ular.push_back((*it.second).x());
+      yLoc_ular.push_back((*it.second).y());
+      zLoc_ular.push_back((*it.second).z());
     }
 
     for(auto it : *geLocMap->GetMap())
     {
-        xLoc_ge.push_back((*it.second).x());
-        yLoc_ge.push_back((*it.second).y());
-        zLoc_ge.push_back((*it.second).z());
+      xLoc_ge.push_back((*it.second).x());
+      yLoc_ge.push_back((*it.second).y());
+      zLoc_ge.push_back((*it.second).z());
     }
 
     // fill the ntuple
