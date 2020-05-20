@@ -9,15 +9,15 @@
 class WLGDActionInitialization : public G4VUserActionInitialization
 {
 public:
-    WLGDActionInitialization(WLGDDetectorConstruction* det, G4String name);
-    virtual ~WLGDActionInitialization();
+  WLGDActionInitialization(WLGDDetectorConstruction* det, G4String name);
+  virtual ~WLGDActionInitialization();
 
-    virtual void BuildForMaster() const;
-    virtual void Build() const;
+  virtual void BuildForMaster() const;
+  virtual void Build() const;
 
 private:
-    WLGDDetectorConstruction* fDet;
-    G4String                  foutname;
+  WLGDDetectorConstruction* fDet;
+  G4String                  foutname;
 };
 
 #endif

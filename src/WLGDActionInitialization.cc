@@ -8,22 +8,21 @@ WLGDActionInitialization::WLGDActionInitialization(WLGDDetectorConstruction* det
 : G4VUserActionInitialization()
 , fDet(det)
 , foutname(name)
-{
-}
+{}
 
 WLGDActionInitialization::~WLGDActionInitialization() {}
 
 void WLGDActionInitialization::BuildForMaster() const
 {
-    auto event = new WLGDEventAction;
-    SetUserAction(new WLGDRunAction(event, foutname));
+  auto event = new WLGDEventAction;
+  SetUserAction(new WLGDRunAction(event, foutname));
 }
 
 void WLGDActionInitialization::Build() const
 {
-    // forward detector
-    SetUserAction(new WLGDPrimaryGeneratorAction(fDet));
-    auto event = new WLGDEventAction;
-    SetUserAction(event);
-    SetUserAction(new WLGDRunAction(event, foutname));
+  // forward detector
+  SetUserAction(new WLGDPrimaryGeneratorAction(fDet));
+  auto event = new WLGDEventAction;
+  SetUserAction(event);
+  SetUserAction(new WLGDRunAction(event, foutname));
 }

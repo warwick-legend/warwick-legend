@@ -31,10 +31,10 @@
 #include "B4dEventAction.hh"
 #include "B4Analysis.hh"
 
-#include "G4RunManager.hh"
 #include "G4Event.hh"
-#include "G4SDManager.hh"
 #include "G4HCofThisEvent.hh"
+#include "G4RunManager.hh"
+#include "G4SDManager.hh"
 #include "G4UnitsTable.hh"
 
 #include "Randomize.hh"
@@ -44,95 +44,87 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B4dEventAction::B4dEventAction()
- : G4UserEventAction(),
-   fAbsoNWHCID(-1),
-   fAbsoWWHCID(-1),
-   fGapNWHCID(-1),
-   fGapWWHCID(-1),
-   fLocHCID(-1)
+: G4UserEventAction()
+, fAbsoNWHCID(-1)
+, fAbsoWWHCID(-1)
+, fGapNWHCID(-1)
+, fGapWWHCID(-1)
+, fLocHCID(-1)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B4dEventAction::~B4dEventAction()
-{}
+B4dEventAction::~B4dEventAction() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4THitsMap<G4double>* 
-B4dEventAction::GetHitsCollection(G4int hcID,
-                                  const G4Event* event) const
+G4THitsMap<G4double>* B4dEventAction::GetHitsCollection(G4int          hcID,
+                                                        const G4Event* event) const
 {
-  auto hitsCollection 
-    = static_cast<G4THitsMap<G4double>*>(
-        event->GetHCofThisEvent()->GetHC(hcID));
-  
-  if ( ! hitsCollection ) {
+  auto hitsCollection =
+    static_cast<G4THitsMap<G4double>*>(event->GetHCofThisEvent()->GetHC(hcID));
+
+  if(!hitsCollection)
+  {
     G4ExceptionDescription msg;
-    msg << "Cannot access hitsCollection ID " << hcID; 
-    G4Exception("B4dEventAction::GetHitsCollection()",
-      "MyCode0003", FatalException, msg);
-  }         
+    msg << "Cannot access hitsCollection ID " << hcID;
+    G4Exception("B4dEventAction::GetHitsCollection()", "MyCode0003", FatalException, msg);
+  }
 
   return hitsCollection;
-}    
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4THitsMap<G4ThreeVector>* 
-B4dEventAction::GetVecHitsCollection(G4int hcID,
-				     const G4Event* event) const
+G4THitsMap<G4ThreeVector>* B4dEventAction::GetVecHitsCollection(
+  G4int hcID, const G4Event* event) const
 {
-  auto hitsCollection 
-    = static_cast<G4THitsMap<G4ThreeVector>*>(
-        event->GetHCofThisEvent()->GetHC(hcID));
-  
-  if ( ! hitsCollection ) {
+  auto hitsCollection =
+    static_cast<G4THitsMap<G4ThreeVector>*>(event->GetHCofThisEvent()->GetHC(hcID));
+
+  if(!hitsCollection)
+  {
     G4ExceptionDescription msg;
-    msg << "Cannot access hitsCollection ID " << hcID; 
-    G4Exception("B4dEventAction::GetVecHitsCollection()",
-      "MyCode0003", FatalException, msg);
-  }         
+    msg << "Cannot access hitsCollection ID " << hcID;
+    G4Exception("B4dEventAction::GetVecHitsCollection()", "MyCode0003", FatalException,
+                msg);
+  }
 
   return hitsCollection;
-}    
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B4dEventAction::BeginOfEventAction(const G4Event* /*event*/)
-{}
+void B4dEventAction::BeginOfEventAction(const G4Event* /*event*/) {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B4dEventAction::EndOfEventAction(const G4Event* event)
-{  
-   // Get hist collections IDs
-  if ( fAbsoNWHCID == -1 ) {
-    fAbsoNWHCID 
-      = G4SDManager::GetSDMpointer()->GetCollectionID("Calor_abs/PopNW");
-    fAbsoWWHCID 
-      = G4SDManager::GetSDMpointer()->GetCollectionID("Calor_abs/PopWW");
-    fGapNWHCID 
-      = G4SDManager::GetSDMpointer()->GetCollectionID("Calor_gap/PopNW");
-    fGapWWHCID 
-      = G4SDManager::GetSDMpointer()->GetCollectionID("Calor_gap/PopWW");
-    fLocHCID 
-      = G4SDManager::GetSDMpointer()->GetCollectionID("Calor_abs/Loc");
+{
+  // Get hist collections IDs
+  if(fAbsoNWHCID == -1)
+  {
+    fAbsoNWHCID = G4SDManager::GetSDMpointer()->GetCollectionID("Calor_abs/PopNW");
+    fAbsoWWHCID = G4SDManager::GetSDMpointer()->GetCollectionID("Calor_abs/PopWW");
+    fGapNWHCID  = G4SDManager::GetSDMpointer()->GetCollectionID("Calor_gap/PopNW");
+    fGapWWHCID  = G4SDManager::GetSDMpointer()->GetCollectionID("Calor_gap/PopWW");
+    fLocHCID    = G4SDManager::GetSDMpointer()->GetCollectionID("Calor_abs/Loc");
   }
-  
+
   // Get entries from hits collections
   //
-  G4THitsMap<G4double>* absNWHitsMap = GetHitsCollection(fAbsoNWHCID, event);
-  G4THitsMap<G4double>* absWWHitsMap = GetHitsCollection(fAbsoWWHCID, event);
-  G4THitsMap<G4double>* gapNWHitsMap = GetHitsCollection(fGapNWHCID, event);
-  G4THitsMap<G4double>* gapWWHitsMap = GetHitsCollection(fGapWWHCID, event);
-  G4THitsMap<G4ThreeVector>* absLocMap = GetVecHitsCollection(fLocHCID, event);
+  G4THitsMap<G4double>*      absNWHitsMap = GetHitsCollection(fAbsoNWHCID, event);
+  G4THitsMap<G4double>*      absWWHitsMap = GetHitsCollection(fAbsoWWHCID, event);
+  G4THitsMap<G4double>*      gapNWHitsMap = GetHitsCollection(fGapNWHCID, event);
+  G4THitsMap<G4double>*      gapWWHitsMap = GetHitsCollection(fGapWWHCID, event);
+  G4THitsMap<G4ThreeVector>* absLocMap    = GetVecHitsCollection(fLocHCID, event);
 
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
 
   // 8 columns to fill
-  if (!aWWID.empty()) { // clear vectors
+  if(!aWWID.empty())
+  {  // clear vectors
     aWWeight.clear();
     aNWeight.clear();
     gWWeight.clear();
@@ -146,34 +138,39 @@ void B4dEventAction::EndOfEventAction(const G4Event* event)
     zLoc.clear();
   }
 
-  for ( auto it : *absWWHitsMap->GetMap() ) {
+  for(auto it : *absWWHitsMap->GetMap())
+  {
     aWWID.push_back(it.first);
     aWWeight.push_back(*it.second);
   }
 
-  for ( auto it : *absNWHitsMap->GetMap() ) {
+  for(auto it : *absNWHitsMap->GetMap())
+  {
     aNWID.push_back(it.first);
     aNWeight.push_back(*it.second);
   }
-  
-  for ( auto it : *gapWWHitsMap->GetMap() ) {
+
+  for(auto it : *gapWWHitsMap->GetMap())
+  {
     gWWID.push_back(it.first);
     gWWeight.push_back(*it.second);
   }
-  
-  for ( auto it : *gapNWHitsMap->GetMap() ) {
+
+  for(auto it : *gapNWHitsMap->GetMap())
+  {
     gNWID.push_back(it.first);
     gNWeight.push_back(*it.second);
   }
 
-  for ( auto it : *absLocMap->GetMap() ) { // transform coordinates before storing
+  for(auto it : *absLocMap->GetMap())
+  {  // transform coordinates before storing
     xLoc.push_back((*it.second).x());
     yLoc.push_back((*it.second).y());
     zLoc.push_back((*it.second).z());
   }
 
   // fill the ntuple
-  analysisManager->AddNtupleRow();  
-}  
+  analysisManager->AddNtupleRow();
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

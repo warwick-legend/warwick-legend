@@ -25,41 +25,40 @@
 //
 
 #ifdef G4MULTITHREADED
-#include "G4MTRunManager.hh"
+#  include "G4MTRunManager.hh"
 #else
-#include "G4RunManager.hh"
+#  include "G4RunManager.hh"
 #endif
 
 #ifdef G4VIS_USE
-#include "G4VisExecutive.hh"
+#  include "G4VisExecutive.hh"
 #endif
 
 #ifdef G4UI_USE
-#include "G4UIExecutive.hh"
+#  include "G4UIExecutive.hh"
 #endif
 
 #include "G4UImanager.hh"
 
-#include "GB03DetectorConstruction.hh"
-#include "GB03ActionInitialization.hh"
 #include "FTFP_BERT.hh"
 #include "G4GenericBiasingPhysics.hh"
+#include "GB03ActionInitialization.hh"
+#include "GB03DetectorConstruction.hh"
 
-int main(int argc,char** argv)
+int main(int argc, char** argv)
 {
-  
   // -- Construct the run manager : MT or sequential one
 #ifdef G4MULTITHREADED
-  G4MTRunManager * runManager = new G4MTRunManager;
+  G4MTRunManager* runManager = new G4MTRunManager;
   G4cout << "      ********** Run Manager constructed in MT mode ************ " << G4endl;
   // -- Choose 4 threads:
   runManager->SetNumberOfThreads(4);
 #else
-  G4RunManager * runManager = new G4RunManager;
-  G4cout << "      ********** Run Manager constructed in sequential mode ************ " << G4endl;
+  G4RunManager* runManager = new G4RunManager;
+  G4cout << "      ********** Run Manager constructed in sequential mode ************ "
+         << G4endl;
 #endif
-  
-  
+
   // -- Set mandatory initialization classes
   G4VUserDetectorConstruction* detector = new GB03DetectorConstruction;
   runManager->SetUserInitialization(detector);
@@ -71,48 +70,48 @@ int main(int argc,char** argv)
   biasingPhysics->NonPhysicsBias("neutron");
   physicsList->RegisterPhysics(biasingPhysics);
   runManager->SetUserInitialization(physicsList);
-  
+
   // -- Set user action initialization class
   G4VUserActionInitialization* actions = new GB03ActionInitialization;
   runManager->SetUserInitialization(actions);
-  
+
 #ifdef G4VIS_USE
   // Visualization manager
   //
   G4VisManager* visManager = new G4VisExecutive;
   visManager->Initialize();
 #endif
-  
+
   // Initialize G4 kernel
   //
   runManager->Initialize();
-  
+
   // Get the pointer to the User Interface manager
   //
-  G4UImanager* UImanager = G4UImanager::GetUIpointer();  
-  
-  if (argc==1)   // Define UI session for interactive mode
-    {
+  G4UImanager* UImanager = G4UImanager::GetUIpointer();
+
+  if(argc == 1)  // Define UI session for interactive mode
+  {
 #ifdef G4UI_USE
-      G4UIExecutive * ui = new G4UIExecutive(argc,argv);
-#ifdef G4VIS_USE
-      UImanager->ApplyCommand("/control/execute vis.mac");     
+    G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+#  ifdef G4VIS_USE
+    UImanager->ApplyCommand("/control/execute vis.mac");
+#  endif
+    ui->SessionStart();
+    delete ui;
 #endif
-      ui->SessionStart();
-      delete ui;
-#endif
-    }
-  else           // Batch mode
-    { 
-      G4String command = "/control/execute ";
-      G4String fileName = argv[1];
-      UImanager->ApplyCommand(command+fileName);
-    }
-  
+  }
+  else  // Batch mode
+  {
+    G4String command  = "/control/execute ";
+    G4String fileName = argv[1];
+    UImanager->ApplyCommand(command + fileName);
+  }
+
 #ifdef G4VIS_USE
   delete visManager;
 #endif
   delete runManager;
-  
+
   return 0;
 }
