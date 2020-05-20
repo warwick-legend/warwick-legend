@@ -37,10 +37,11 @@ WLGDDetectorConstruction::~WLGDDetectorConstruction() { delete fDetectorMessenge
 G4VPhysicalVolume* WLGDDetectorConstruction::Construct()
 {
   if(fBaseline)
+  {
     return SetupBaseline();
+  }
 
-  else
-    return SetupAlternative();
+  return SetupAlternative();
 }
 
 void WLGDDetectorConstruction::ConstructSDandField()
@@ -208,9 +209,9 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
   //
   G4VSolid* worldSolid =
     new G4Box("World", worldside * cm, worldside * cm, worldside * cm);
-  auto fWorldLogical = new G4LogicalVolume(worldSolid, worldMaterial, "World_log");
-  auto fWorldPhysical =
-    new G4PVPlacement(0, G4ThreeVector(), fWorldLogical, "World_phys", 0, false, 0);
+  auto fWorldLogical  = new G4LogicalVolume(worldSolid, worldMaterial, "World_log");
+  auto fWorldPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fWorldLogical,
+                                          "World_phys", nullptr, false, 0);
 
   //
   // Cavern
@@ -219,7 +220,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
                                     (hallhside + stone) * cm, (hallhside + stone) * cm);
   auto      fCavernLogical = new G4LogicalVolume(cavernSolid, stdRock, "Cavern_log");
   auto      fCavernPhysical =
-    new G4PVPlacement(0, G4ThreeVector(0., 0., offset * cm), fCavernLogical,
+    new G4PVPlacement(nullptr, G4ThreeVector(0., 0., offset * cm), fCavernLogical,
                       "Cavern_phys", fWorldLogical, false, 0);
 
   //
@@ -229,8 +230,8 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
     new G4Box("Cavern", hallhside * cm, hallhside * cm, hallhside * cm);
   auto fHallLogical = new G4LogicalVolume(hallSolid, airMat, "Hall_log");
   auto fHallPhysical =
-    new G4PVPlacement(0, G4ThreeVector(0., 0., -stone * cm), fHallLogical, "Hall_phys",
-                      fCavernLogical, false, 0, true);
+    new G4PVPlacement(nullptr, G4ThreeVector(0., 0., -stone * cm), fHallLogical,
+                      "Hall_phys", fCavernLogical, false, 0, true);
 
   //
   // Tank
@@ -238,8 +239,8 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
   G4VSolid* tankSolid = new G4Box("Tank", tankhside * cm, tankhside * cm, tankhside * cm);
   auto      fTankLogical = new G4LogicalVolume(tankSolid, steelMat, "Tank_log");
   auto      fTankPhysical =
-    new G4PVPlacement(0, G4ThreeVector(0., 0., -stone * cm), fTankLogical, "Tank_phys",
-                      fHallLogical, false, 0, true);
+    new G4PVPlacement(nullptr, G4ThreeVector(0., 0., -stone * cm), fTankLogical,
+                      "Tank_phys", fHallLogical, false, 0, true);
 
   //
   // Insulator
@@ -248,7 +249,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
     new G4Box("Insulator", (tankhside - outerwall) * cm, (tankhside - outerwall) * cm,
               (tankhside - outerwall) * cm);
   auto fPuLogical  = new G4LogicalVolume(puSolid, puMat, "Pu_log");
-  auto fPuPhysical = new G4PVPlacement(0, G4ThreeVector(), fPuLogical, "Pu_phys",
+  auto fPuPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fPuLogical, "Pu_phys",
                                        fTankLogical, false, 0, true);
 
   //
@@ -258,15 +259,15 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
     "Membrane", (tankhside - outerwall - insulation) * cm,
     (tankhside - outerwall - insulation) * cm, (tankhside - outerwall - insulation) * cm);
   auto fMembraneLogical  = new G4LogicalVolume(membraneSolid, steelMat, "Membrane_log");
-  auto fMembranePhysical = new G4PVPlacement(0, G4ThreeVector(), fMembraneLogical,
+  auto fMembranePhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fMembraneLogical,
                                              "Membrane_phys", fPuLogical, false, 0, true);
 
   //
   // LAr
   //
-  G4VSolid* larSolid     = new G4Box("LAr", larside * cm, larside * cm, larside * cm);
-  auto      fLarLogical  = new G4LogicalVolume(larSolid, larMat, "Lar_log");
-  auto      fLarPhysical = new G4PVPlacement(0, G4ThreeVector(), fLarLogical, "Lar_phys",
+  G4VSolid* larSolid    = new G4Box("LAr", larside * cm, larside * cm, larside * cm);
+  auto      fLarLogical = new G4LogicalVolume(larSolid, larMat, "Lar_log");
+  auto fLarPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fLarLogical, "Lar_phys",
                                         fMembraneLogical, false, 0, true);
 
   //
@@ -293,41 +294,41 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
   auto fGeLogical     = new G4LogicalVolume(geSolid, roiMat, "Ge_log");
 
   // placements
-  new G4PVPlacement(0, G4ThreeVector(ringrad * cm, 0., cushift * cm), fCopperLogical,
-                    "Copper_phys", fLarLogical, false, 0, true);
+  new G4PVPlacement(nullptr, G4ThreeVector(ringrad * cm, 0., cushift * cm),
+                    fCopperLogical, "Copper_phys", fLarLogical, false, 0, true);
 
-  new G4PVPlacement(0, G4ThreeVector(ringrad * cm, 0., cushift * cm), fUlarLogical,
+  new G4PVPlacement(nullptr, G4ThreeVector(ringrad * cm, 0., cushift * cm), fUlarLogical,
                     "ULar_phys", fLarLogical, false, 0, true);
 
-  new G4PVPlacement(0, G4ThreeVector(0. * cm, 0. * cm, -cushift * cm), fGeLogical,
+  new G4PVPlacement(nullptr, G4ThreeVector(0. * cm, 0. * cm, -cushift * cm), fGeLogical,
                     "Ge_phys", fUlarLogical, false, 0, true);
 
   // tower 2
-  new G4PVPlacement(0, G4ThreeVector(0., ringrad * cm, cushift * cm), fCopperLogical,
-                    "Copper_phys2", fLarLogical, false, 1, true);
+  new G4PVPlacement(nullptr, G4ThreeVector(0., ringrad * cm, cushift * cm),
+                    fCopperLogical, "Copper_phys2", fLarLogical, false, 1, true);
 
-  new G4PVPlacement(0, G4ThreeVector(0., ringrad * cm, cushift * cm), fUlarLogical,
+  new G4PVPlacement(nullptr, G4ThreeVector(0., ringrad * cm, cushift * cm), fUlarLogical,
                     "ULar_phys2", fLarLogical, false, 1, true);
 
   // tower 3
-  new G4PVPlacement(0, G4ThreeVector(-ringrad * cm, 0., cushift * cm), fCopperLogical,
-                    "Copper_phys3", fLarLogical, false, 2, true);
+  new G4PVPlacement(nullptr, G4ThreeVector(-ringrad * cm, 0., cushift * cm),
+                    fCopperLogical, "Copper_phys3", fLarLogical, false, 2, true);
 
-  new G4PVPlacement(0, G4ThreeVector(-ringrad * cm, 0., cushift * cm), fUlarLogical,
+  new G4PVPlacement(nullptr, G4ThreeVector(-ringrad * cm, 0., cushift * cm), fUlarLogical,
                     "ULar_phys3", fLarLogical, false, 2, true);
 
   // tower 4
-  new G4PVPlacement(0, G4ThreeVector(0., -ringrad * cm, cushift * cm), fCopperLogical,
-                    "Copper_phys4", fLarLogical, false, 3, true);
+  new G4PVPlacement(nullptr, G4ThreeVector(0., -ringrad * cm, cushift * cm),
+                    fCopperLogical, "Copper_phys4", fLarLogical, false, 3, true);
 
-  new G4PVPlacement(0, G4ThreeVector(0., -ringrad * cm, cushift * cm), fUlarLogical,
+  new G4PVPlacement(nullptr, G4ThreeVector(0., -ringrad * cm, cushift * cm), fUlarLogical,
                     "ULar_phys4", fLarLogical, false, 3, true);
 
   //
   // User limits
   //
-  G4double      maxTime    = 1 * ms;  // affects long-lived neutrons
-  G4UserLimits* outerlimit = new G4UserLimits(DBL_MAX, DBL_MAX, maxTime);
+  G4double maxTime    = 1 * ms;  // affects long-lived neutrons
+  auto     outerlimit = new G4UserLimits(DBL_MAX, DBL_MAX, maxTime);
   fCavernLogical->SetUserLimits(outerlimit);
   fLarLogical->SetUserLimits(outerlimit);
 
@@ -433,9 +434,9 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   G4VSolid* worldSolid =
     new G4Tubs("World", 0.0 * cm, (hallrad + stone + 0.1) * cm,
                (hallhheight + stone + offset + 0.1) * cm, 0.0, CLHEP::twopi);
-  auto fWorldLogical = new G4LogicalVolume(worldSolid, worldMaterial, "World_log");
-  auto fWorldPhysical =
-    new G4PVPlacement(0, G4ThreeVector(), fWorldLogical, "World_phys", 0, false, 0);
+  auto fWorldLogical  = new G4LogicalVolume(worldSolid, worldMaterial, "World_log");
+  auto fWorldPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fWorldLogical,
+                                          "World_phys", nullptr, false, 0);
 
   //
   // Cavern
@@ -444,7 +445,7 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
                                      (hallhheight + stone) * cm, 0.0, CLHEP::twopi);
   auto      fCavernLogical = new G4LogicalVolume(cavernSolid, stdRock, "Cavern_log");
   auto      fCavernPhysical =
-    new G4PVPlacement(0, G4ThreeVector(0., 0., offset * cm), fCavernLogical,
+    new G4PVPlacement(nullptr, G4ThreeVector(0., 0., offset * cm), fCavernLogical,
                       "Cavern_phys", fWorldLogical, false, 0);
 
   //
@@ -454,8 +455,8 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
     new G4Tubs("Hall", 0.0 * cm, hallrad * cm, hallhheight * cm, 0.0, CLHEP::twopi);
   auto fHallLogical = new G4LogicalVolume(hallSolid, airMat, "Hall_log");
   auto fHallPhysical =
-    new G4PVPlacement(0, G4ThreeVector(0., 0., -stone * cm), fHallLogical, "Hall_phys",
-                      fCavernLogical, false, 0, true);
+    new G4PVPlacement(nullptr, G4ThreeVector(0., 0., -stone * cm), fHallLogical,
+                      "Hall_phys", fCavernLogical, false, 0, true);
 
   //
   // Tank
@@ -465,17 +466,17 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
                (tankrad + tankwalltop) * cm, tankhheight * cm, 0.0, CLHEP::twopi);
   auto fTankLogical = new G4LogicalVolume(tankSolid, steelMat, "Tank_log");
   auto fTankPhysical =
-    new G4PVPlacement(0, G4ThreeVector(0., 0., -stone * cm), fTankLogical, "Tank_phys",
-                      fHallLogical, false, 0, true);
+    new G4PVPlacement(nullptr, G4ThreeVector(0., 0., -stone * cm), fTankLogical,
+                      "Tank_phys", fHallLogical, false, 0, true);
 
   //
   // Water
   //
-  G4VSolid* waterSolid    = new G4Tubs("Water", 0.0 * cm, tankrad * cm,
+  G4VSolid* waterSolid     = new G4Tubs("Water", 0.0 * cm, tankrad * cm,
                                     (tankhheight - tankwallbot) * cm, 0.0, CLHEP::twopi);
-  auto      fWaterLogical = new G4LogicalVolume(waterSolid, waterMat, "Water_log");
-  auto fWaterPhysical = new G4PVPlacement(0, G4ThreeVector(), fWaterLogical, "Water_phys",
-                                          fTankLogical, false, 0, true);
+  auto      fWaterLogical  = new G4LogicalVolume(waterSolid, waterMat, "Water_log");
+  auto      fWaterPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fWaterLogical,
+                                          "Water_phys", fTankLogical, false, 0, true);
 
   //
   // outer cryostat
@@ -483,17 +484,17 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   G4VSolid* coutSolid =
     new G4Tubs("Cout", 0.0 * cm, cryrad * cm, cryhheight * cm, 0.0, CLHEP::twopi);
   auto fCoutLogical  = new G4LogicalVolume(coutSolid, steelMat, "Cout_log");
-  auto fCoutPhysical = new G4PVPlacement(0, G4ThreeVector(), fCoutLogical, "Cout_phys",
-                                         fWaterLogical, false, 0, true);
+  auto fCoutPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fCoutLogical,
+                                         "Cout_phys", fWaterLogical, false, 0, true);
 
   //
   // vacuum gap
   //
-  G4VSolid* cvacSolid    = new G4Tubs("Cvac", 0.0 * cm, (cryrad - cryowall) * cm,
+  G4VSolid* cvacSolid     = new G4Tubs("Cvac", 0.0 * cm, (cryrad - cryowall) * cm,
                                    cryhheight * cm, 0.0, CLHEP::twopi);
-  auto      fCvacLogical = new G4LogicalVolume(cvacSolid, worldMaterial, "Cvac_log");
-  auto fCvacPhysical = new G4PVPlacement(0, G4ThreeVector(), fCvacLogical, "Cvac_phys",
-                                         fCoutLogical, false, 0, true);
+  auto      fCvacLogical  = new G4LogicalVolume(cvacSolid, worldMaterial, "Cvac_log");
+  auto      fCvacPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fCvacLogical,
+                                         "Cvac_phys", fCoutLogical, false, 0, true);
 
   //
   // inner cryostat
@@ -501,16 +502,16 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   G4VSolid* cinnSolid    = new G4Tubs("Cinn", 0.0 * cm, (cryrad - cryowall - vacgap) * cm,
                                    cryhheight * cm, 0.0, CLHEP::twopi);
   auto      fCinnLogical = new G4LogicalVolume(cinnSolid, steelMat, "Cinn_log");
-  auto fCinnPhysical = new G4PVPlacement(0, G4ThreeVector(), fCinnLogical, "Cinn_phys",
-                                         fCvacLogical, false, 0, true);
+  auto      fCinnPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fCinnLogical,
+                                         "Cinn_phys", fCvacLogical, false, 0, true);
 
   //
   // LAr bath
   //
   G4VSolid* larSolid = new G4Tubs("LAr", 0.0 * cm, (cryrad - 2 * cryowall - vacgap) * cm,
                                   cryhheight * cm, 0.0, CLHEP::twopi);
-  auto      fLarLogical  = new G4LogicalVolume(larSolid, larMat, "Lar_log");
-  auto      fLarPhysical = new G4PVPlacement(0, G4ThreeVector(), fLarLogical, "Lar_phys",
+  auto      fLarLogical = new G4LogicalVolume(larSolid, larMat, "Lar_log");
+  auto fLarPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fLarLogical, "Lar_phys",
                                         fCinnLogical, false, 0, true);
 
   //
@@ -520,11 +521,11 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
     new G4Tubs("Lid", 0.0 * cm, cryrad * cm, cryowall / 2.0 * cm, 0.0, CLHEP::twopi);
   auto fLidLogical = new G4LogicalVolume(lidSolid, steelMat, "Lid_log");
   auto fLidPhysical =
-    new G4PVPlacement(0, G4ThreeVector(0., 0., (cryhheight + cryowall / 2.0) * cm),
+    new G4PVPlacement(nullptr, G4ThreeVector(0., 0., (cryhheight + cryowall / 2.0) * cm),
                       fLidLogical, "Lid_phys", fWaterLogical, false, 0, true);
   auto fBotLogical = new G4LogicalVolume(lidSolid, steelMat, "Bot_log");
   auto fBotPhysical =
-    new G4PVPlacement(0, G4ThreeVector(0., 0., -(cryhheight + cryowall / 2.0) * cm),
+    new G4PVPlacement(nullptr, G4ThreeVector(0., 0., -(cryhheight + cryowall / 2.0) * cm),
                       fBotLogical, "Bot_phys", fWaterLogical, false, 0, true);
 
   //
@@ -551,41 +552,41 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   auto fGeLogical     = new G4LogicalVolume(geSolid, roiMat, "Ge_log");
 
   // placements
-  new G4PVPlacement(0, G4ThreeVector(ringrad * cm, 0., cushift * cm), fCopperLogical,
-                    "Copper_phys", fLarLogical, false, 0, true);
+  new G4PVPlacement(nullptr, G4ThreeVector(ringrad * cm, 0., cushift * cm),
+                    fCopperLogical, "Copper_phys", fLarLogical, false, 0, true);
 
-  new G4PVPlacement(0, G4ThreeVector(ringrad * cm, 0., cushift * cm), fUlarLogical,
+  new G4PVPlacement(nullptr, G4ThreeVector(ringrad * cm, 0., cushift * cm), fUlarLogical,
                     "ULar_phys", fLarLogical, false, 0, true);
 
-  new G4PVPlacement(0, G4ThreeVector(0. * cm, 0. * cm, -cushift * cm), fGeLogical,
+  new G4PVPlacement(nullptr, G4ThreeVector(0. * cm, 0. * cm, -cushift * cm), fGeLogical,
                     "Ge_phys", fUlarLogical, false, 0, true);
 
   // tower 2
-  new G4PVPlacement(0, G4ThreeVector(0., ringrad * cm, cushift * cm), fCopperLogical,
-                    "Copper_phys2", fLarLogical, false, 1, true);
+  new G4PVPlacement(nullptr, G4ThreeVector(0., ringrad * cm, cushift * cm),
+                    fCopperLogical, "Copper_phys2", fLarLogical, false, 1, true);
 
-  new G4PVPlacement(0, G4ThreeVector(0., ringrad * cm, cushift * cm), fUlarLogical,
+  new G4PVPlacement(nullptr, G4ThreeVector(0., ringrad * cm, cushift * cm), fUlarLogical,
                     "ULar_phys2", fLarLogical, false, 1, true);
 
   // tower 3
-  new G4PVPlacement(0, G4ThreeVector(-ringrad * cm, 0., cushift * cm), fCopperLogical,
-                    "Copper_phys3", fLarLogical, false, 2, true);
+  new G4PVPlacement(nullptr, G4ThreeVector(-ringrad * cm, 0., cushift * cm),
+                    fCopperLogical, "Copper_phys3", fLarLogical, false, 2, true);
 
-  new G4PVPlacement(0, G4ThreeVector(-ringrad * cm, 0., cushift * cm), fUlarLogical,
+  new G4PVPlacement(nullptr, G4ThreeVector(-ringrad * cm, 0., cushift * cm), fUlarLogical,
                     "ULar_phys3", fLarLogical, false, 2, true);
 
   // tower 4
-  new G4PVPlacement(0, G4ThreeVector(0., -ringrad * cm, cushift * cm), fCopperLogical,
-                    "Copper_phys4", fLarLogical, false, 3, true);
+  new G4PVPlacement(nullptr, G4ThreeVector(0., -ringrad * cm, cushift * cm),
+                    fCopperLogical, "Copper_phys4", fLarLogical, false, 3, true);
 
-  new G4PVPlacement(0, G4ThreeVector(0., -ringrad * cm, cushift * cm), fUlarLogical,
+  new G4PVPlacement(nullptr, G4ThreeVector(0., -ringrad * cm, cushift * cm), fUlarLogical,
                     "ULar_phys4", fLarLogical, false, 3, true);
 
   //
   // User limits
   //
-  G4double      maxTime    = 1 * ms;  // affects long-lived neutrons
-  G4UserLimits* outerlimit = new G4UserLimits(DBL_MAX, DBL_MAX, maxTime);
+  G4double maxTime    = 1 * ms;  // affects long-lived neutrons
+  auto     outerlimit = new G4UserLimits(DBL_MAX, DBL_MAX, maxTime);
   fCavernLogical->SetUserLimits(outerlimit);
   fWaterLogical->SetUserLimits(outerlimit);
   fLarLogical->SetUserLimits(outerlimit);

@@ -15,8 +15,8 @@
 class WLGDEventAction : public G4UserEventAction
 {
 public:
-  WLGDEventAction();
-  virtual ~WLGDEventAction();
+  WLGDEventAction()          = default;
+  virtual ~WLGDEventAction() = default;
 
   virtual void BeginOfEventAction(const G4Event* event);
   virtual void EndOfEventAction(const G4Event* event);
@@ -45,14 +45,14 @@ private:
   G4THitsMap<G4ThreeVector>* GetVecHitsCollection(G4int hcID, const G4Event* event) const;
 
   // data members
-  G4int                 fCollID_water;
-  G4int                 fCollID_lar;
-  G4int                 fCollID_ular;
-  G4int                 fCollID_ge;
-  G4int                 fLocID_water;
-  G4int                 fLocID_lar;
-  G4int                 fLocID_ular;
-  G4int                 fLocID_ge;
+  G4int                 fCollID_water = -1;
+  G4int                 fCollID_lar   = -1;
+  G4int                 fCollID_ular  = -1;
+  G4int                 fCollID_ge    = -1;
+  G4int                 fLocID_water  = -1;
+  G4int                 fLocID_lar    = -1;
+  G4int                 fLocID_ular   = -1;
+  G4int                 fLocID_ge     = -1;
   std::vector<G4double> edep_water;
   std::vector<G4double> edep_lar;
   std::vector<G4double> edep_ular;

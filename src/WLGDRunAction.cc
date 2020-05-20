@@ -10,7 +10,7 @@
 WLGDRunAction::WLGDRunAction(WLGDEventAction* eventAction, G4String name)
 : G4UserRunAction()
 , fEventAction(eventAction)
-, fout(name)
+, fout(std::move(name))
 {
   // Create analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
