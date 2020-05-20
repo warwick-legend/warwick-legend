@@ -9,7 +9,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 WLGDPSLocation::WLGDPSLocation(G4String name, G4int depth)
-: G4VPrimitiveScorer(name, depth)
+: G4VPrimitiveScorer(std::move(name), depth)
 , HCID(-1)
 , EvtMap(0)
 {
@@ -17,7 +17,7 @@ WLGDPSLocation::WLGDPSLocation(G4String name, G4int depth)
 }
 
 WLGDPSLocation::WLGDPSLocation(G4String name, const G4String& unit, G4int depth)
-: G4VPrimitiveScorer(name, depth)
+: G4VPrimitiveScorer(std::move(name), depth)
 , HCID(-1)
 , EvtMap(0)
 {

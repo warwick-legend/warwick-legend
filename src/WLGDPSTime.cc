@@ -9,7 +9,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 WLGDPSTime::WLGDPSTime(G4String name, G4int depth)
-: G4VPrimitiveScorer(name, depth)
+: G4VPrimitiveScorer(std::move(name), depth)
 , HCID(-1)
 , EvtMap(0)
 {
@@ -17,14 +17,14 @@ WLGDPSTime::WLGDPSTime(G4String name, G4int depth)
 }
 
 WLGDPSTime::WLGDPSTime(G4String name, const G4String& unit, G4int depth)
-: G4VPrimitiveScorer(name, depth)
+: G4VPrimitiveScorer(std::move(name), depth)
 , HCID(-1)
 , EvtMap(0)
 {
     SetUnit(unit);
 }
 
-WLGDPSTime::~WLGDPSTime() { ; }
+WLGDPSTime::~WLGDPSTime() = default;
 
 G4bool WLGDPSTime::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
