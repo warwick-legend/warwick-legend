@@ -5,23 +5,20 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Description:
 //   This is a primitive scorer class for scoring energy deposit location
-//   at termination of the track.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
 WLGDPSLocation::WLGDPSLocation(G4String name, G4int depth)
-: G4VPrimitiveScorer(name, depth)
+: G4VPrimitiveScorer(std::move(name), depth)
 , HCID(-1)
-, fcounter(0)
 , EvtMap(0)
 {
   SetUnit("m");
 }
 
 WLGDPSLocation::WLGDPSLocation(G4String name, const G4String& unit, G4int depth)
-: G4VPrimitiveScorer(name, depth)
+: G4VPrimitiveScorer(std::move(name), depth)
 , HCID(-1)
-, fcounter(0)
 , EvtMap(0)
 {
   SetUnit(unit);
@@ -36,19 +33,19 @@ G4bool WLGDPSLocation::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
   G4StepPoint*  preStepPoint = aStep->GetPreStepPoint();
   G4ThreeVector loc          = preStepPoint->GetPosition();  // location at track creation
+  // keep unit free for storage in ntuple
   loc.setX(loc.x() / GetUnitValue());                        // unit value used
   loc.setY(loc.y() / GetUnitValue());
   loc.setZ(loc.z() / GetUnitValue());
 
-  EvtMap->add(fcounter, loc);
+  G4int idx = GetIndex(aStep);
+  EvtMap->add(idx, loc);
 
-  fcounter++;  // next key to process
   return TRUE;
 }
 
 void WLGDPSLocation::Initialize(G4HCofThisEvent* HCE)
 {
-  fcounter = 0;
   EvtMap =
     new G4THitsMap<G4ThreeVector>(GetMultiFunctionalDetector()->GetName(), GetName());
   if(HCID < 0)
@@ -62,7 +59,6 @@ void WLGDPSLocation::EndOfEvent(G4HCofThisEvent*) { ; }
 
 void WLGDPSLocation::clear()
 {
-  fcounter = 0;
   EvtMap->clear();
 }
 

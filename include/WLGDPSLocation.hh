@@ -8,7 +8,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Description:
 //   This is a primitive scorer class for scoring energy deposit location
-//   at termination of the track.
+//   at every collision = non boundary step, of the track.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -32,8 +32,7 @@ public:
   virtual void SetUnit(const G4String& unit);
 
 private:
-  G4int                      HCID;
-  G4int                      fcounter;
-  G4THitsMap<G4ThreeVector>* EvtMap;
+    G4int                      HCID;
+    G4THitsMap<G4ThreeVector>* EvtMap;
 };
 #endif
