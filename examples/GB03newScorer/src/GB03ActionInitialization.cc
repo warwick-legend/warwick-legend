@@ -29,19 +29,17 @@
 /// \brief Implementation of the GB03ActionInitialization class
 
 #include "GB03ActionInitialization.hh"
-#include "GB03PrimaryGeneratorAction.hh"
 #include "B4RunAction.hh"
 #include "B4dEventAction.hh"
+#include "GB03PrimaryGeneratorAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-GB03ActionInitialization::GB03ActionInitialization()
-{}
+GB03ActionInitialization::GB03ActionInitialization() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-GB03ActionInitialization::~GB03ActionInitialization()
-{}
+GB03ActionInitialization::~GB03ActionInitialization() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -52,7 +50,6 @@ void GB03ActionInitialization::Build() const
   B4dEventAction* eventAction = new B4dEventAction;
   SetUserAction(eventAction);
   SetUserAction(new B4RunAction(eventAction));
-
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -64,4 +61,3 @@ void GB03ActionInitialization::BuildForMaster() const
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-

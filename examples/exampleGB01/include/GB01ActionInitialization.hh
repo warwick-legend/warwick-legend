@@ -38,14 +38,12 @@
 
 class GB01ActionInitialization : public G4VUserActionInitialization
 {
-  public:
-    GB01ActionInitialization();
-    virtual ~GB01ActionInitialization();
+public:
+  GB01ActionInitialization();
+  virtual ~GB01ActionInitialization();
 
-    virtual void BuildForMaster() const;
-    virtual void Build() const;
+  virtual void BuildForMaster() const;
+  virtual void Build() const;
 };
 
 #endif
-
-    
