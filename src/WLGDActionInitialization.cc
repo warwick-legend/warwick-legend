@@ -7,10 +7,10 @@ WLGDActionInitialization::WLGDActionInitialization(WLGDDetectorConstruction* det
                                                    G4String                  name)
 : G4VUserActionInitialization()
 , fDet(det)
-, foutname(name)
+, foutname(std::move(name))
 {}
 
-WLGDActionInitialization::~WLGDActionInitialization() {}
+WLGDActionInitialization::~WLGDActionInitialization() = default;
 
 void WLGDActionInitialization::BuildForMaster() const
 {

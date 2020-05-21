@@ -10,28 +10,28 @@
 
 #include "G4InteractionLawPhysical.hh"
 
-WLGDBiasChangeCrossSection::WLGDBiasChangeCrossSection(G4String particleName,
+WLGDBiasChangeCrossSection::WLGDBiasChangeCrossSection(G4String particleToBias,
                                                        G4String name)
-: G4VBiasingOperator(name)
+: G4VBiasingOperator(std::move(name))
 , fSetup(true)
-, fpname(particleName)
+, fpname(std::move(particleToBias))
 {
-  fParticleToBias = G4ParticleTable::GetParticleTable()->FindParticle(particleName);
+  fParticleToBias = G4ParticleTable::GetParticleTable()->FindParticle(fpname);
 
-  if(fParticleToBias == 0)
+  if(fParticleToBias == nullptr)
   {
     G4ExceptionDescription ed;
-    ed << "Particle `" << particleName << "' not found !" << G4endl;
+    ed << "Particle `" << fpname << "' not found !" << G4endl;
     G4Exception("WLGDBiasChangeCrossSection(...)", "exWLGD.01", JustWarning, ed);
   }
 }
 
 WLGDBiasChangeCrossSection::~WLGDBiasChangeCrossSection()
 {
-  for(std::map<const G4BiasingProcessInterface*, G4BOptnChangeCrossSection*>::iterator
-        it = fChangeCrossSectionOperations.begin();
-      it != fChangeCrossSectionOperations.end(); it++)
-    delete(*it).second;
+  for(auto& it : fChangeCrossSectionOperations)
+  {
+    delete it.second;
+  }
 }
 
 void WLGDBiasChangeCrossSection::StartRun()
@@ -46,16 +46,13 @@ void WLGDBiasChangeCrossSection::StartRun()
     const G4ProcessManager* processManager = fParticleToBias->GetProcessManager();
     const G4BiasingProcessSharedData* sharedData =
       G4BiasingProcessInterface::GetSharedData(processManager);
-    if(sharedData)  // -- sharedData tested, as is can happen a user attaches an
-                    // operator to a
-                    // -- volume but without defined BiasingProcessInterface
-                    // processes.
+    if(sharedData != nullptr)  // -- sharedData tested, as is can happen a user attaches
+                               // an operator to a
+                               // -- volume but without defined BiasingProcessInterface
+                               // processes.
     {
-      for(size_t i = 0; i < (sharedData->GetPhysicsBiasingProcessInterfaces()).size();
-          i++)
+      for(const auto* wrapperProcess : sharedData->GetPhysicsBiasingProcessInterfaces())
       {
-        const G4BiasingProcessInterface* wrapperProcess =
-          (sharedData->GetPhysicsBiasingProcessInterfaces())[i];
         G4String operationName =
           "XSchange-" + wrapperProcess->GetWrappedProcess()->GetProcessName();
         fChangeCrossSectionOperations[wrapperProcess] =
@@ -73,7 +70,9 @@ G4VBiasingOperation* WLGDBiasChangeCrossSection::ProposeOccurenceBiasingOperatio
   // -- Check if current particle type is the one to bias:
   // -----------------------------------------------------
   if(track->GetDefinition() != fParticleToBias)
-    return 0;
+  {
+    return nullptr;
+  }
 
   // ---------------------------------------------------------------------
   // -- select and setup the biasing operation for current callingProcess:
@@ -85,7 +84,9 @@ G4VBiasingOperation* WLGDBiasChangeCrossSection::ProposeOccurenceBiasingOperatio
   G4double analogInteractionLength =
     callingProcess->GetWrappedProcess()->GetCurrentInteractionLength();
   if(analogInteractionLength > DBL_MAX / 10.)
-    return 0;
+  {
+    return nullptr;
+  }
 
   // -- Analog cross-section is well-defined:
   G4double analogXS = 1. / analogInteractionLength;
@@ -95,13 +96,18 @@ G4VBiasingOperation* WLGDBiasChangeCrossSection::ProposeOccurenceBiasingOperatio
   // -- can be chosen differently, depending on the process, etc.
   G4double XStransformation;
   if(fpname.contains("mu-"))
+  {
     XStransformation = 1000.0;  // hard-code cross section boost factor
+  }
   else if(fpname.contains("neutron"))
+  {
     XStransformation =
       10.0 * 1.68;  // specific for this, boost n,gamma by 68% for 77Ge from 76Ge
+  }
   else
+  {
     XStransformation = 1.0;  // should never be needed
-
+  }
   // -- fetch the operation associated to this callingProcess:
   G4BOptnChangeCrossSection* operation = fChangeCrossSectionOperations[callingProcess];
   // -- get the operation that was proposed to the process in the previous step:
@@ -119,7 +125,7 @@ G4VBiasingOperation* WLGDBiasChangeCrossSection::ProposeOccurenceBiasingOperatio
   // -- only on the first time the operation is proposed, or if the interaction
   // -- occured. If the interaction did not occur for the process in the previous,
   // -- we update the number of interaction length instead of resampling.
-  if(previousOperation == 0)
+  if(previousOperation == nullptr)
   {
     operation->SetBiasedCrossSection(XStransformation * analogXS);
     operation->Sample();
@@ -133,7 +139,7 @@ G4VBiasingOperation* WLGDBiasChangeCrossSection::ProposeOccurenceBiasingOperatio
       ed << " Logic problem in operation handling !" << G4endl;
       G4Exception("WLGDBiasChangeCrossSection::ProposeOccurenceBiasingOperation(...)",
                   "exWLGD.02", JustWarning, ed);
-      return 0;
+      return nullptr;
     }
     if(operation->GetInteractionOccured())
     {
@@ -160,11 +166,13 @@ G4VBiasingOperation* WLGDBiasChangeCrossSection::ProposeOccurenceBiasingOperatio
 }
 
 void WLGDBiasChangeCrossSection::OperationApplied(
-  const G4BiasingProcessInterface* callingProcess, G4BiasingAppliedCase,
-  G4VBiasingOperation* occurenceOperationApplied, G4double, G4VBiasingOperation*,
-  const G4VParticleChange*)
+  const G4BiasingProcessInterface* callingProcess, G4BiasingAppliedCase /*unused*/,
+  G4VBiasingOperation*             occurenceOperationApplied, G4double /*unused*/,
+  G4VBiasingOperation* /*unused*/, const G4VParticleChange* /*unused*/)
 {
   G4BOptnChangeCrossSection* operation = fChangeCrossSectionOperations[callingProcess];
   if(operation == occurenceOperationApplied)
+  {
     operation->SetInteractionOccured();
+  }
 }

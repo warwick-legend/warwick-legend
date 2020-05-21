@@ -54,14 +54,14 @@ int main(int argc, char** argv)
     std::min(nthreads, G4Threading::G4GetNumberOfCores());  // limit thread number to
                                                             // max on machine
 
-  G4MTRunManager* runManager = new G4MTRunManager;
+  auto runManager = new G4MTRunManager;
   G4cout << "      ********* Run Manager constructed in MT mode: " << nthreads
          << " threads ***** " << G4endl;
   runManager->SetNumberOfThreads(nthreads);
 
 #else
 
-  G4RunManager* runManager = new G4RunManager;
+  auto runManager = new G4RunManager;
   G4cout << "      ********** Run Manager constructed in sequential mode ************ "
          << G4endl;
 
