@@ -21,10 +21,8 @@ WLGDRunAction::WLGDRunAction(WLGDEventAction* eventAction, G4String name)
 
   // Creating ntuple with vector entries
   //
-  analysisManager->CreateNtuple("Score", "Hit Location");
-  analysisManager->CreateNtupleDColumn("xloc", fEventAction->GetxLoc());
-  analysisManager->CreateNtupleDColumn("yloc", fEventAction->GetyLoc());
-  analysisManager->CreateNtupleDColumn("zloc", fEventAction->GetzLoc());
+  analysisManager->CreateNtuple("Score", "Hits");
+  analysisManager->CreateNtupleDColumn("Edep", fEventAction->GetEdep());
   analysisManager->FinishNtuple();
 }
 

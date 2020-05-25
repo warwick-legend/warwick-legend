@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "G4UserEventAction.hh"
-#include "G4PrimaryParticle.hh"
+#include "G4THitsMap.hh"
 #include "globals.hh"
 
 /// Event action class
@@ -19,21 +19,16 @@ public:
   virtual void BeginOfEventAction(const G4Event* event);
   virtual void EndOfEventAction(const G4Event* event);
 
-  std::vector<G4double>& GetxLoc() { return xLoc; }
-  std::vector<G4double>& GetyLoc() { return yLoc; }
-  std::vector<G4double>& GetzLoc() { return zLoc; }
+  // to create columns for Ntuple
+  std::vector<G4double>& GetEdep() { return edep; }
 
 private:
   // methods
-  void PrintPrimary(G4PrimaryParticle* pp, G4int ind)
+  G4THitsMap<G4double>*      GetHitsCollection(G4int hcID, const G4Event* event) const;
 
   // data members
-  G4int                 fCollID_lar   = -1;
-  G4int                 fCollID_ge    = -1;
-
-  std::vector<G4double> xLoc;
-  std::vector<G4double> yLoc;
-  std::vector<G4double> zLoc;
+  G4int                 fCollID   = -1;
+  std::vector<G4double> edep;
 
 };
 

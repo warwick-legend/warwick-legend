@@ -13,10 +13,10 @@
 #include "G4VisAttributes.hh"
 
 #include "G4MultiFunctionalDetector.hh"
-#include "G4PSEnergyDeposit.hh"
 #include "G4SDManager.hh"
+#include "G4SDParticleFilter.hh"
 #include "G4VPrimitiveScorer.hh"
-#include "WLGDPSLocation.hh"
+#include "WLGDPSEnergyDeposit.hh"
 
 #include "WLGDBiasMultiParticleChangeCrossSection.hh"
 
@@ -48,33 +48,17 @@ void WLGDDetectorConstruction::ConstructSDandField()
 {
   G4SDManager::GetSDMpointer()->SetVerboseLevel(1);
 
-  auto lardet = new G4MultiFunctionalDetector("LarDet");
-  G4SDManager::GetSDMpointer()->AddNewDetector(lardet);
-  auto primitive = new G4PSEnergyDeposit("Edep", "MeV");  // unit [MeV]
-  lardet->RegisterPrimitive(primitive);
-  auto locprimitive = new WLGDPSLocation("Loc", "m");  // unit [m]
-  lardet->RegisterPrimitive(locprimitive);
+  auto det = new G4MultiFunctionalDetector("Det");
+  G4SDManager::GetSDMpointer()->AddNewDetector(det);
 
-  auto ulardet = new G4MultiFunctionalDetector("ULarDet");
-  G4SDManager::GetSDMpointer()->AddNewDetector(ulardet);
-  primitive = new G4PSEnergyDeposit("Edep", "MeV");  // unit [MeV]
-  ulardet->RegisterPrimitive(primitive);
-  locprimitive = new WLGDPSLocation("Loc", "m");  // unit [m]
-  ulardet->RegisterPrimitive(locprimitive);
+  G4SDParticleFilter* vertexFilter = new G4SDParticleFilter("vtxfilt");
+  vertexFilter->add("neutron");
+  vertexFilter->add("mu-");
+  vertexFilter->addIon(32, 77);  // register 77Ge production
 
-  auto gedet = new G4MultiFunctionalDetector("GeDet");
-  G4SDManager::GetSDMpointer()->AddNewDetector(gedet);
-  primitive = new G4PSEnergyDeposit("Edep", "MeV");  // unit [MeV]
-  gedet->RegisterPrimitive(primitive);
-  locprimitive = new WLGDPSLocation("Loc", "m");  // unit [m]
-  gedet->RegisterPrimitive(locprimitive);
-
-  auto waterdet = new G4MultiFunctionalDetector("WaterDet");
-  G4SDManager::GetSDMpointer()->AddNewDetector(waterdet);
-  primitive = new G4PSEnergyDeposit("Edep", "MeV");  // unit [MeV]
-  waterdet->RegisterPrimitive(primitive);
-  locprimitive = new WLGDPSLocation("Loc", "m");  // unit [m]
-  waterdet->RegisterPrimitive(locprimitive);
+  auto primitive = new WLGDPSEnergyDeposit("Edep", "MeV");  // unit [MeV]
+  primitive->SetFilter(particleFilter);
+  det->RegisterPrimitive(primitive);
 
   // ----------------------------------------------
   // -- operator creation and attachment to volume:
@@ -102,10 +86,10 @@ void WLGDDetectorConstruction::ConstructSDandField()
     G4LogicalVolume* logicGe = G4LogicalVolumeStore::GetInstance()->GetVolume("Ge_log");
     biasnXS->AttachTo(logicGe);
 
-    SetSensitiveDetector(logicWater, waterdet);
-    SetSensitiveDetector(logicLar, lardet);
-    SetSensitiveDetector(logicULar, ulardet);
-    SetSensitiveDetector(logicGe, gedet);
+    SetSensitiveDetector(logicWater, det);
+    SetSensitiveDetector(logicLar, det);
+    SetSensitiveDetector(logicULar, det);
+    SetSensitiveDetector(logicGe, det);
   }
 
   else
@@ -116,15 +100,16 @@ void WLGDDetectorConstruction::ConstructSDandField()
       G4LogicalVolumeStore::GetInstance()->GetVolume("ULar_log");
     G4LogicalVolume* logicGe = G4LogicalVolumeStore::GetInstance()->GetVolume("Ge_log");
 
-    SetSensitiveDetector(logicLar, lardet);
-    SetSensitiveDetector(logicULar, ulardet);
-    SetSensitiveDetector(logicGe, gedet);
-
     // muon bias
     biasmuXS->AttachTo(logicLar);
     biasmuXS->AttachTo(logicULar);
     // neutron bias
     biasnXS->AttachTo(logicGe);
+
+    SetSensitiveDetector(logicLar, det);
+    SetSensitiveDetector(logicULar, det);
+    SetSensitiveDetector(logicGe, det); 
+
   }
 
   G4SDManager::GetSDMpointer()->SetVerboseLevel(0);
@@ -327,10 +312,10 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
   //
   // User limits
   //
-  G4double maxTime    = 1 * ms;  // affects long-lived neutrons
-  auto     outerlimit = new G4UserLimits(DBL_MAX, DBL_MAX, maxTime);
-  fCavernLogical->SetUserLimits(outerlimit);
-  fLarLogical->SetUserLimits(outerlimit);
+//  G4double maxTime    = 1 * ms;  // affects long-lived neutrons
+//  auto     outerlimit = new G4UserLimits(DBL_MAX, DBL_MAX, maxTime);
+//  fCavernLogical->SetUserLimits(outerlimit);
+//  fLarLogical->SetUserLimits(outerlimit);
 
   //
   // Visualization attributes
@@ -585,11 +570,11 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   //
   // User limits
   //
-  G4double maxTime    = 1 * ms;  // affects long-lived neutrons
-  auto     outerlimit = new G4UserLimits(DBL_MAX, DBL_MAX, maxTime);
-  fCavernLogical->SetUserLimits(outerlimit);
-  fWaterLogical->SetUserLimits(outerlimit);
-  fLarLogical->SetUserLimits(outerlimit);
+//  G4double maxTime    = 1 * ms;  // affects long-lived neutrons
+//  auto     outerlimit = new G4UserLimits(DBL_MAX, DBL_MAX, maxTime);
+//  fCavernLogical->SetUserLimits(outerlimit);
+//  fWaterLogical->SetUserLimits(outerlimit);
+//  fLarLogical->SetUserLimits(outerlimit);
 
   //
   // Visualization attributes
