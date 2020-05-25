@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "G4UserEventAction.hh"
 #include "G4THitsMap.hh"
+#include "G4UserEventAction.hh"
 #include "globals.hh"
 
 /// Event action class
@@ -24,12 +24,11 @@ public:
 
 private:
   // methods
-  G4THitsMap<G4double>*      GetHitsCollection(G4int hcID, const G4Event* event) const;
+  G4THitsMap<G4double>* GetHitsCollection(G4int hcID, const G4Event* event) const;
 
   // data members
-  G4int                 fCollID   = -1;
+  G4int                 fCollID = -1;
   std::vector<G4double> edep;
-
 };
 
 #endif

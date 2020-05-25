@@ -71,13 +71,11 @@ int main(int argc, char** argv)
   auto detector = new WLGDDetectorConstruction;
   runManager->SetUserInitialization(detector);
 
-
   // -- set user physics list
   auto physicsList = new Shielding;
   auto neutronCut  = new G4NeutronTrackingCut(1);
   neutronCut->SetTimeLimit(1.0 * CLHEP::us);  // 1 micro sec limit
   physicsList->RegisterPhysics(neutronCut);   // allow G4UserLimits
-
 
   // - Setup biasing, first for neutrons, again for muons
   G4GenericBiasingPhysics* biasingPhysics = new G4GenericBiasingPhysics();

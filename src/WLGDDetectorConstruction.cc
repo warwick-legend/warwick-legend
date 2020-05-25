@@ -108,8 +108,7 @@ void WLGDDetectorConstruction::ConstructSDandField()
 
     SetSensitiveDetector(logicLar, det);
     SetSensitiveDetector(logicULar, det);
-    SetSensitiveDetector(logicGe, det); 
-
+    SetSensitiveDetector(logicGe, det);
   }
 
   G4SDManager::GetSDMpointer()->SetVerboseLevel(0);
@@ -312,10 +311,10 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupAlternative()
   //
   // User limits
   //
-//  G4double maxTime    = 1 * ms;  // affects long-lived neutrons
-//  auto     outerlimit = new G4UserLimits(DBL_MAX, DBL_MAX, maxTime);
-//  fCavernLogical->SetUserLimits(outerlimit);
-//  fLarLogical->SetUserLimits(outerlimit);
+  //  G4double maxTime    = 1 * ms;  // affects long-lived neutrons
+  //  auto     outerlimit = new G4UserLimits(DBL_MAX, DBL_MAX, maxTime);
+  //  fCavernLogical->SetUserLimits(outerlimit);
+  //  fLarLogical->SetUserLimits(outerlimit);
 
   //
   // Visualization attributes
@@ -570,11 +569,11 @@ G4VPhysicalVolume* WLGDDetectorConstruction::SetupBaseline()
   //
   // User limits
   //
-//  G4double maxTime    = 1 * ms;  // affects long-lived neutrons
-//  auto     outerlimit = new G4UserLimits(DBL_MAX, DBL_MAX, maxTime);
-//  fCavernLogical->SetUserLimits(outerlimit);
-//  fWaterLogical->SetUserLimits(outerlimit);
-//  fLarLogical->SetUserLimits(outerlimit);
+  //  G4double maxTime    = 1 * ms;  // affects long-lived neutrons
+  //  auto     outerlimit = new G4UserLimits(DBL_MAX, DBL_MAX, maxTime);
+  //  fCavernLogical->SetUserLimits(outerlimit);
+  //  fWaterLogical->SetUserLimits(outerlimit);
+  //  fLarLogical->SetUserLimits(outerlimit);
 
   //
   // Visualization attributes
