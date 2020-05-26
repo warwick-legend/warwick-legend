@@ -3,6 +3,7 @@
 #include "WLGDPrimaryGeneratorAction.hh"
 #include "WLGDRunAction.hh"
 #include "WLGDTrackingAction.hh"
+#include "WLGDStackingAction.hh"
 
 WLGDActionInitialization::WLGDActionInitialization(WLGDDetectorConstruction* det,
                                                    G4String                  name)

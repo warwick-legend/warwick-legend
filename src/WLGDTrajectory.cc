@@ -50,7 +50,7 @@ WLGDTrajectory::~WLGDTrajectory()
 void WLGDTrajectory::ShowTrajectory(std::ostream& os) const
 {
   os << G4endl << "TrackID =" << fTrackID << " : ParentID=" << fParentID
-     << " : TrackStatus=" << fTrackStatus << G4endl;
+     << G4endl;
 
   os << "Particle name : " << fParticleName << "  PDG code : " << fPDGEncoding
      << G4endl;

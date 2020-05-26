@@ -61,7 +61,7 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   G4cout << "    " << edep.size() << " hits stored in this event." << G4endl;
 
   // get number of stored trajectories
-  G4TrajectoryContainer* trajectoryContainer = evt->GetTrajectoryContainer();
+  G4TrajectoryContainer* trajectoryContainer = event->GetTrajectoryContainer();
   G4int                  n_trajectories      = 0;
   if(trajectoryContainer)
     n_trajectories = trajectoryContainer->entries();
@@ -73,7 +73,7 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
 
   for(G4int i = 0; i < n_trajectories; i++)
   {
-    RE01Trajectory* trj = (RE01Trajectory*) ((*(evt->GetTrajectoryContainer()))[i]);
+    WLGDTrajectory* trj = (WLGDTrajectory*) ((*(event->GetTrajectoryContainer()))[i]);
     trj->ShowTrajectory();
   }
 }

@@ -13,7 +13,7 @@ class WLGDTrackInformation : public G4VUserTrackInformation
 public:
   WLGDTrackInformation();
   WLGDTrackInformation(const G4Track* aTrack);
-  WLGDTrackInformation(const RE01TrackInformation* aTrackInfo);
+  WLGDTrackInformation(const WLGDTrackInformation* aTrackInfo);
   virtual ~WLGDTrackInformation();
 
   inline void* operator new(size_t);

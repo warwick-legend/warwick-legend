@@ -57,7 +57,7 @@ void WLGDDetectorConstruction::ConstructSDandField()
   vertexFilter->addIon(32, 77);  // register 77Ge production
 
   auto primitive = new WLGDPSEnergyDeposit("Edep", "MeV");  // unit [MeV]
-  primitive->SetFilter(particleFilter);
+  primitive->SetFilter(vertexFilter);
   det->RegisterPrimitive(primitive);
 
   // ----------------------------------------------
