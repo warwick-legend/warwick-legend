@@ -26,5 +26,6 @@ void WLGDActionInitialization::Build() const
   auto event = new WLGDEventAction;
   SetUserAction(event);
   SetUserAction(new WLGDRunAction(event, foutname));
+  SetUserAction(new WLGDStackingAction);
   SetUserAction(new WLGDTrackingAction);
 }
