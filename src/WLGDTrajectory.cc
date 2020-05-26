@@ -10,9 +10,7 @@
 #include "WLGDTrackInformation.hh"
 #include "WLGDTrajectory.hh"
 
-
 G4ThreadLocal G4Allocator<WLGDTrajectory>* myTrajectoryAllocator = 0;
-
 
 WLGDTrajectory::WLGDTrajectory(const G4Track* aTrack)
 : G4VTrajectory()
@@ -33,7 +31,6 @@ WLGDTrajectory::WLGDTrajectory(const G4Track* aTrack)
   fGlobalTime     = aTrack->GetGlobalTime();
 }
 
-
 WLGDTrajectory::~WLGDTrajectory()
 {
   size_t i;
@@ -46,14 +43,11 @@ WLGDTrajectory::~WLGDTrajectory()
   delete fPositionRecord;
 }
 
-
 void WLGDTrajectory::ShowTrajectory(std::ostream& os) const
 {
-  os << G4endl << "TrackID =" << fTrackID << " : ParentID=" << fParentID
-     << G4endl;
+  os << G4endl << "TrackID =" << fTrackID << " : ParentID=" << fParentID << G4endl;
 
-  os << "Particle name : " << fParticleName << "  PDG code : " << fPDGEncoding
-     << G4endl;
+  os << "Particle name : " << fParticleName << "  PDG code : " << fPDGEncoding << G4endl;
 
   os << "Original momentum : " << G4BestUnit(fMomentum, "Energy") << G4endl;
 
@@ -69,7 +63,6 @@ void WLGDTrajectory::ShowTrajectory(std::ostream& os) const
        << " Position= " << aTrajectoryPoint->GetPosition() << G4endl;
   }
 }
-
 
 void WLGDTrajectory::DrawTrajectory() const
 {
@@ -108,13 +101,11 @@ void WLGDTrajectory::DrawTrajectory() const
     pVVisManager->Draw(pPolyline);
 }
 
-
 void WLGDTrajectory::AppendStep(const G4Step* aStep)
 {
   fPositionRecord->push_back(
     new G4TrajectoryPoint(aStep->GetPostStepPoint()->GetPosition()));
 }
-
 
 void WLGDTrajectory::MergeTrajectory(G4VTrajectory* secondTrajectory)
 {

@@ -24,7 +24,6 @@ public:
   virtual void Print() const;
 
 public:
-
 private:
   G4int                 fTrackID;
   G4ParticleDefinition* fParticleDefinition;
@@ -32,7 +31,6 @@ private:
   G4ThreeVector         fMomentum;
   G4double              fEnergy;
   G4double              fTime;
-
 };
 
 extern G4ThreadLocal G4Allocator<WLGDTrackInformation>* aTrackInformationAllocator;

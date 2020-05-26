@@ -1,9 +1,8 @@
+#include "WLGDTrackInformation.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4ios.hh"
-#include "WLGDTrackInformation.hh"
 
 G4ThreadLocal G4Allocator<WLGDTrackInformation>* aTrackInformationAllocator = 0;
-
 
 WLGDTrackInformation::WLGDTrackInformation()
 : G4VUserTrackInformation()
@@ -16,7 +15,6 @@ WLGDTrackInformation::WLGDTrackInformation()
   fTime               = 0.;
 }
 
-
 WLGDTrackInformation::WLGDTrackInformation(const G4Track* aTrack)
 : G4VUserTrackInformation()
 {
@@ -27,7 +25,6 @@ WLGDTrackInformation::WLGDTrackInformation(const G4Track* aTrack)
   fEnergy             = aTrack->GetTotalEnergy();
   fTime               = aTrack->GetGlobalTime();
 }
-
 
 WLGDTrackInformation ::WLGDTrackInformation(const WLGDTrackInformation* aTrackInfo)
 : G4VUserTrackInformation()
@@ -40,9 +37,7 @@ WLGDTrackInformation ::WLGDTrackInformation(const WLGDTrackInformation* aTrackIn
   fTime               = aTrackInfo->fTime;
 }
 
-
 WLGDTrackInformation::~WLGDTrackInformation() { ; }
-
 
 WLGDTrackInformation& WLGDTrackInformation ::operator=(
   const WLGDTrackInformation& aTrackInfo)
@@ -57,10 +52,8 @@ WLGDTrackInformation& WLGDTrackInformation ::operator=(
   return *this;
 }
 
-
 void WLGDTrackInformation::Print() const
 {
-  G4cout << "Track ID " << fTrackID << " ("
-         << fParticleDefinition->GetParticleName() << "," << fEnergy / GeV
-         << "[GeV]) at " << fPosition << G4endl;
+  G4cout << "Track ID " << fTrackID << " (" << fParticleDefinition->GetParticleName()
+         << "," << fEnergy / GeV << "[GeV]) at " << fPosition << G4endl;
 }

@@ -15,19 +15,17 @@
 
 class G4Polyline;
 
-
 class WLGDTrajectory : public G4VTrajectory
 {
 public:
   using WLGDTrajectoryPointContainer = std::vector<G4VTrajectoryPoint*>;
-
 
   WLGDTrajectory(const G4Track* aTrack);
   virtual ~WLGDTrajectory();
 
   virtual void ShowTrajectory(std::ostream& os = G4cout) const;
   virtual void DrawTrajectory() const;
-  virtual void                                AppendStep(const G4Step* aStep);
+  virtual void AppendStep(const G4Step* aStep);
   virtual void MergeTrajectory(G4VTrajectory* secondTrajectory);
 
   inline void* operator new(size_t);

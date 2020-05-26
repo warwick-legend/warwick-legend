@@ -2,8 +2,8 @@
 #include "WLGDEventAction.hh"
 #include "WLGDPrimaryGeneratorAction.hh"
 #include "WLGDRunAction.hh"
-#include "WLGDTrackingAction.hh"
 #include "WLGDStackingAction.hh"
+#include "WLGDTrackingAction.hh"
 
 WLGDActionInitialization::WLGDActionInitialization(WLGDDetectorConstruction* det,
                                                    G4String                  name)

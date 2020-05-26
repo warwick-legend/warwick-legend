@@ -1,10 +1,9 @@
-#include "WLGDTrackInformation.hh"
 #include "WLGDTrackingAction.hh"
+#include "WLGDTrackInformation.hh"
 #include "WLGDTrajectory.hh"
 
 #include "G4Track.hh"
 #include "G4TrackingManager.hh"
-
 
 WLGDTrackingAction::WLGDTrackingAction()
 : G4UserTrackingAction()

@@ -1,31 +1,26 @@
 #include "WLGDStackingAction.hh"
 #include "WLGDTrackInformation.hh"
 
-
 WLGDStackingAction::WLGDStackingAction()
-  :G4UserStackingAction()
-{;}
+: G4UserStackingAction()
+{
+  ;
+}
 
+WLGDStackingAction::~WLGDStackingAction() { ; }
 
-WLGDStackingAction::~WLGDStackingAction()
-{;}
-
-
-G4ClassificationOfNewTrack WLGDStackingAction
-::ClassifyNewTrack(const G4Track * aTrack)
+G4ClassificationOfNewTrack WLGDStackingAction ::ClassifyNewTrack(const G4Track* aTrack)
 {
   G4ClassificationOfNewTrack classification = fUrgent;
 
-  if(aTrack->GetParentID()==0) // Primary particle
+  if(aTrack->GetParentID() == 0)  // Primary particle
   {
     WLGDTrackInformation* trackInfo = new WLGDTrackInformation(aTrack);
-    aTrack->SetUserInformation(trackInfo); // attach own track info
+    aTrack->SetUserInformation(trackInfo);  // attach own track info
   }
   return classification;
 }
 
-
 void WLGDStackingAction::NewStage() { ; }
 
 void WLGDStackingAction::PrepareNewEvent() { ; }
-
