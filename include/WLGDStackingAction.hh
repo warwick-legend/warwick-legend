@@ -3,8 +3,7 @@
 
 #include "globals.hh"
 #include "G4UserStackingAction.hh"
-
-class G4Track;
+#include "G4Track.hh"
 
 class WLGDStackingAction : public G4UserStackingAction
 {

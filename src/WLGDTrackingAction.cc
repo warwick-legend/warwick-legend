@@ -1,47 +1,37 @@
-#include "RE01TrackInformation.hh"
-#include "RE01TrackingAction.hh"
-#include "RE01Trajectory.hh"
+#include "WLGDTrackInformation.hh"
+#include "WLGDTrackingAction.hh"
+#include "WLGDTrajectory.hh"
 
 #include "G4Track.hh"
 #include "G4TrackingManager.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-RE01TrackingAction::RE01TrackingAction()
+
+WLGDTrackingAction::WLGDTrackingAction()
 : G4UserTrackingAction()
 {
   ;
 }
 
-void RE01TrackingAction::PreUserTrackingAction(const G4Track* aTrack)
+void WLGDTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
-  // Create trajectory only for track in tracking region
-  RE01TrackInformation* trackInfo =
-    (RE01TrackInformation*) (aTrack->GetUserInformation());
+  // Create trajectory for track
 
-  if(trackInfo->GetTrackingStatus() > 0)
-  {
-    fpTrackingManager->SetStoreTrajectory(true);
-    fpTrackingManager->SetTrajectory(new RE01Trajectory(aTrack));
-  }
-  else
-  {
-    fpTrackingManager->SetStoreTrajectory(false);
-  }
+  fpTrackingManager->SetStoreTrajectory(true);
+  fpTrackingManager->SetTrajectory(new WLGDTrajectory(aTrack));
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void RE01TrackingAction::PostUserTrackingAction(const G4Track* aTrack)
+void WLGDTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 {
   G4TrackVector* secondaries = fpTrackingManager->GimmeSecondaries();
   if(secondaries)
   {
-    RE01TrackInformation* info  = (RE01TrackInformation*) (aTrack->GetUserInformation());
+    WLGDTrackInformation* info  = (WLGDTrackInformation*) (aTrack->GetUserInformation());
     size_t                nSeco = secondaries->size();
     if(nSeco > 0)
     {
       for(size_t i = 0; i < nSeco; i++)
       {
-        RE01TrackInformation* infoNew = new RE01TrackInformation(info);
+        WLGDTrackInformation* infoNew = new WLGDTrackInformation(info);
         (*secondaries)[i]->SetUserInformation(infoNew);
       }
     }
