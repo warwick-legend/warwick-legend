@@ -16,7 +16,8 @@
 #include "G4SDManager.hh"
 #include "G4SDParticleFilter.hh"
 #include "G4VPrimitiveScorer.hh"
-#include "WLGDPSEnergyDeposit.hh"
+#include "WLGDPSParentID.hh"
+#include "WLGDPSTrackID.hh"
 
 #include "WLGDBiasMultiParticleChangeCrossSection.hh"
 
@@ -52,11 +53,15 @@ void WLGDDetectorConstruction::ConstructSDandField()
   G4SDManager::GetSDMpointer()->AddNewDetector(det);
 
   G4SDParticleFilter* vertexFilter = new G4SDParticleFilter("vtxfilt");
-  vertexFilter->add("neutron");
-  vertexFilter->add("mu-");
+  vertexFilter->add("neutron");  // remove later
+  vertexFilter->add("mu-");      // remove later
   vertexFilter->addIon(32, 77);  // register 77Ge production
 
-  auto primitive = new WLGDPSEnergyDeposit("Edep", "MeV");  // unit [MeV]
+  auto tprimitive = new WLGDPSTrackID("TrackID");
+  tprimitive->SetFilter(vertexFilter);
+  det->RegisterPrimitive(tprimitive);
+
+  auto primitive = new WLGDPSParentID("ParentID");
   primitive->SetFilter(vertexFilter);
   det->RegisterPrimitive(primitive);
 
@@ -86,9 +91,9 @@ void WLGDDetectorConstruction::ConstructSDandField()
     G4LogicalVolume* logicGe = G4LogicalVolumeStore::GetInstance()->GetVolume("Ge_log");
     biasnXS->AttachTo(logicGe);
 
-    SetSensitiveDetector(logicWater, det);
-    SetSensitiveDetector(logicLar, det);
-    SetSensitiveDetector(logicULar, det);
+    SetSensitiveDetector(logicWater, det); // remove later
+    SetSensitiveDetector(logicLar, det);   // remove later
+    SetSensitiveDetector(logicULar, det);  // remove later
     SetSensitiveDetector(logicGe, det);
   }
 
@@ -106,8 +111,8 @@ void WLGDDetectorConstruction::ConstructSDandField()
     // neutron bias
     biasnXS->AttachTo(logicGe);
 
-    SetSensitiveDetector(logicLar, det);
-    SetSensitiveDetector(logicULar, det);
+    SetSensitiveDetector(logicLar, det);  // remove later
+    SetSensitiveDetector(logicULar, det); // remove later
     SetSensitiveDetector(logicGe, det);
   }
 

@@ -22,7 +22,10 @@ WLGDRunAction::WLGDRunAction(WLGDEventAction* eventAction, G4String name)
   // Creating ntuple with vector entries
   //
   analysisManager->CreateNtuple("Score", "Hits");
-  analysisManager->CreateNtupleDColumn("Edep", fEventAction->GetEdep());
+  analysisManager->CreateNtupleIColumn("Htrid", fEventAction->GetHitTrackID());   // Hit score
+  analysisManager->CreateNtupleIColumn("Hptid", fEventAction->GetHitParentID());  // Hit score
+  analysisManager->CreateNtupleIColumn("Trjtid", fEventAction->GetTrjTrackID());  // Trajectory score
+  analysisManager->CreateNtupleIColumn("Trjpid", fEventAction->GetTrjParentID()); // Trajectory score
   analysisManager->FinishNtuple();
 }
 

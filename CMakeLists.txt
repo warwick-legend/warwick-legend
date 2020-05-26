@@ -14,7 +14,8 @@ add_executable(warwick-legend
   src/WLGDBiasMultiParticleChangeCrossSection.cc
   src/WLGDDetectorConstruction.cc
   src/WLGDEventAction.cc
-  src/WLGDPSEnergyDeposit.cc
+  src/WLGDPSTrackID.cc
+  src/WLGDPSParentID.cc
   src/WLGDPrimaryGeneratorAction.cc
   src/WLGDRunAction.cc
   src/WLGDStackingAction.cc

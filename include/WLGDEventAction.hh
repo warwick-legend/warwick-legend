@@ -20,15 +20,22 @@ public:
   virtual void EndOfEventAction(const G4Event* event);
 
   // to create columns for Ntuple
-  std::vector<G4double>& GetEdep() { return edep; }
+  std::vector<G4int>& GetHitTrackID()  { return htrid; }
+  std::vector<G4int>& GetHitParentID() { return hpaid; }
+  std::vector<G4int>& GetTrjTrackID()  { return trjtid; }
+  std::vector<G4int>& GetTrjParentID() { return trjpid; }
 
 private:
   // methods
-  G4THitsMap<G4double>* GetHitsCollection(G4int hcID, const G4Event* event) const;
+  G4THitsMap<G4int>* GetIntHitsCollection(G4int hcID, const G4Event* event) const;
 
   // data members
-  G4int                 fCollID = -1;
-  std::vector<G4double> edep;
+  G4int                 fTidID = -1;
+  G4int                 fPidID = -1;
+  std::vector<G4int>    htrid;
+  std::vector<G4int>    hpaid;
+  std::vector<G4int>    trjtid;
+  std::vector<G4int>    trjpid;
 };
 
 #endif

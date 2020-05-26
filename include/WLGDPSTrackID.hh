@@ -1,21 +1,20 @@
-#ifndef WLGDPSEnergyDeposit_h
-#define WLGDPSEnergyDeposit_h 1
+#ifndef WLGDPSTrackID_h
+#define WLGDPSTrackID_h 1
 
 #include "G4THitsMap.hh"
 #include "G4VPrimitiveScorer.hh"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Description:
-//   This is a primitive scorer class for scoring total energy deposit
+//   This is a primitive scorer class for scoring TrackID
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-class WLGDPSEnergyDeposit : public G4VPrimitiveScorer
+class WLGDPSTrackID : public G4VPrimitiveScorer
 {
-public:                                                 // with description
-  WLGDPSEnergyDeposit(G4String name, G4int depth = 0);  // default unit
-  WLGDPSEnergyDeposit(G4String name, const G4String& unit, G4int depth = 0);
-  virtual ~WLGDPSEnergyDeposit();
+public:
+  WLGDPSTrackID(G4String name, G4int depth = 0);  // default unit
+  virtual ~WLGDPSTrackID();
 
 protected:  // with description
   virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
@@ -30,9 +29,8 @@ public:
   virtual void SetUnit(const G4String& unit);
 
 private:
-  int                   fCounter;
-  G4int                 HCID;
-  G4THitsMap<G4double>* EvtMap;
+  int                fCounter;
+  G4int              HCID;
+  G4THitsMap<G4int>* EvtMap;
 };
-
 #endif
