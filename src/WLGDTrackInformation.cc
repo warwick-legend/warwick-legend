@@ -1,112 +1,66 @@
 #include "G4SystemOfUnits.hh"
 #include "G4ios.hh"
-#include "RE01TrackInformation.hh"
+#include "WLGDTrackInformation.hh"
 
-G4ThreadLocal G4Allocator<RE01TrackInformation>* aTrackInformationAllocator = 0;
+G4ThreadLocal G4Allocator<WLGDTrackInformation>* aTrackInformationAllocator = 0;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-RE01TrackInformation::RE01TrackInformation()
+
+WLGDTrackInformation::WLGDTrackInformation()
 : G4VUserTrackInformation()
 {
-  fOriginalTrackID    = 0;
+  fTrackID            = 0;
   fParticleDefinition = 0;
-  fOriginalPosition   = G4ThreeVector(0., 0., 0.);
-  fOriginalMomentum   = G4ThreeVector(0., 0., 0.);
-  fOriginalEnergy     = 0.;
-  fOriginalTime       = 0.;
-  fTrackingStatus     = 1;
-  fSourceTrackID      = -1;
-  fSourceDefinition   = 0;
-  fSourcePosition     = G4ThreeVector(0., 0., 0.);
-  fSourceMomentum     = G4ThreeVector(0., 0., 0.);
-  fSourceEnergy       = 0.;
-  fSourceTime         = 0.;
-  fSuspendedStepID    = -1;
+  fPosition           = G4ThreeVector(0., 0., 0.);
+  fMomentum           = G4ThreeVector(0., 0., 0.);
+  fEnergy             = 0.;
+  fTime               = 0.;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-RE01TrackInformation::RE01TrackInformation(const G4Track* aTrack)
+
+WLGDTrackInformation::WLGDTrackInformation(const G4Track* aTrack)
 : G4VUserTrackInformation()
 {
-  fOriginalTrackID    = aTrack->GetTrackID();
+  fTrackID            = aTrack->GetTrackID();
   fParticleDefinition = aTrack->GetDefinition();
-  fOriginalPosition   = aTrack->GetPosition();
-  fOriginalMomentum   = aTrack->GetMomentum();
-  fOriginalEnergy     = aTrack->GetTotalEnergy();
-  fOriginalTime       = aTrack->GetGlobalTime();
-  fTrackingStatus     = 1;
-  fSourceTrackID      = -1;
-  fSourceDefinition   = 0;
-  fSourcePosition     = G4ThreeVector(0., 0., 0.);
-  fSourceMomentum     = G4ThreeVector(0., 0., 0.);
-  fSourceEnergy       = 0.;
-  fSourceTime         = 0.;
-  fSuspendedStepID    = -1;
+  fPosition           = aTrack->GetPosition();
+  fMomentum           = aTrack->GetMomentum();
+  fEnergy             = aTrack->GetTotalEnergy();
+  fTime               = aTrack->GetGlobalTime();
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-RE01TrackInformation ::RE01TrackInformation(const RE01TrackInformation* aTrackInfo)
+
+WLGDTrackInformation ::WLGDTrackInformation(const WLGDTrackInformation* aTrackInfo)
 : G4VUserTrackInformation()
 {
-  fOriginalTrackID    = aTrackInfo->fOriginalTrackID;
+  fTrackID            = aTrackInfo->fTrackID;
   fParticleDefinition = aTrackInfo->fParticleDefinition;
-  fOriginalPosition   = aTrackInfo->fOriginalPosition;
-  fOriginalMomentum   = aTrackInfo->fOriginalMomentum;
-  fOriginalEnergy     = aTrackInfo->fOriginalEnergy;
-  fOriginalTime       = aTrackInfo->fOriginalTime;
-  fTrackingStatus     = aTrackInfo->fTrackingStatus;
-  fSourceTrackID      = aTrackInfo->fSourceTrackID;
-  fSourceDefinition   = aTrackInfo->fSourceDefinition;
-  fSourcePosition     = aTrackInfo->fSourcePosition;
-  fSourceMomentum     = aTrackInfo->fSourceMomentum;
-  fSourceEnergy       = aTrackInfo->fSourceEnergy;
-  fSourceTime         = aTrackInfo->fSourceTime;
-  fSuspendedStepID    = -1;
+  fPosition           = aTrackInfo->fPosition;
+  fMomentum           = aTrackInfo->fMomentum;
+  fEnergy             = aTrackInfo->fEnergy;
+  fTime               = aTrackInfo->fTime;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-RE01TrackInformation::~RE01TrackInformation() { ; }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-RE01TrackInformation& RE01TrackInformation ::operator=(
-  const RE01TrackInformation& aTrackInfo)
+WLGDTrackInformation::~WLGDTrackInformation() { ; }
+
+
+WLGDTrackInformation& WLGDTrackInformation ::operator=(
+  const WLGDTrackInformation& aTrackInfo)
 {
-  fOriginalTrackID    = aTrackInfo.fOriginalTrackID;
+  fTrackID            = aTrackInfo.fTrackID;
   fParticleDefinition = aTrackInfo.fParticleDefinition;
-  fOriginalPosition   = aTrackInfo.fOriginalPosition;
-  fOriginalMomentum   = aTrackInfo.fOriginalMomentum;
-  fOriginalEnergy     = aTrackInfo.fOriginalEnergy;
-  fOriginalTime       = aTrackInfo.fOriginalTime;
-  fTrackingStatus     = aTrackInfo.fTrackingStatus;
-  fSourceTrackID      = aTrackInfo.fSourceTrackID;
-  fSourceDefinition   = aTrackInfo.fSourceDefinition;
-  fSourcePosition     = aTrackInfo.fSourcePosition;
-  fSourceMomentum     = aTrackInfo.fSourceMomentum;
-  fSourceEnergy       = aTrackInfo.fSourceEnergy;
-  fSourceTime         = aTrackInfo.fSourceTime;
-  fSuspendedStepID    = -1;
+  fPosition           = aTrackInfo.fPosition;
+  fMomentum           = aTrackInfo.fMomentum;
+  fEnergy             = aTrackInfo.fEnergy;
+  fTime               = aTrackInfo.fTime;
 
   return *this;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void RE01TrackInformation::SetSourceTrackInformation(const G4Track* aTrack)
-{
-  fSourceTrackID    = aTrack->GetTrackID();
-  fSourceDefinition = aTrack->GetDefinition();
-  fSourcePosition   = aTrack->GetPosition();
-  fSourceMomentum   = aTrack->GetMomentum();
-  fSourceEnergy     = aTrack->GetTotalEnergy();
-  fSourceTime       = aTrack->GetGlobalTime();
-}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void RE01TrackInformation::Print() const
+void WLGDTrackInformation::Print() const
 {
-  G4cout << "Source track ID " << fSourceTrackID << " ("
-         << fSourceDefinition->GetParticleName() << "," << fSourceEnergy / GeV
-         << "[GeV]) at " << fSourcePosition << G4endl;
-  G4cout << "Original primary track ID " << fOriginalTrackID << " ("
-         << fParticleDefinition->GetParticleName() << "," << fOriginalEnergy / GeV
-         << "[GeV])" << G4endl;
+  G4cout << "Track ID " << fTrackID << " ("
+         << fParticleDefinition->GetParticleName() << "," << fEnergy / GeV
+         << "[GeV]) at " << fPosition << G4endl;
 }
