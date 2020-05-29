@@ -137,7 +137,18 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
     {
       trjtid.push_back(trj->GetTrackID());
       trjpid.push_back(trj->GetParentID());
-      trj->ShowTrajectory();
+      trjpdg.push_back(trj->GetPDGEncoding());
+      trjxvtx.push_back((trj->GetVertex()).x());
+      trjyvtx.push_back((trj->GetVertex()).y());
+      trjzvtx.push_back((trj->GetVertex()).z());
+      trjnpts.push_back(trj->GetPointEntries());
+      for (int nn=0; nn<trj->GetPointEntries(); ++nn)
+      {
+        trjxpos.push_back((trj->GetPoint(nn)->GetPosition()).x());
+        trjypos.push_back((trj->GetPoint(nn)->GetPosition()).y());
+        trjzpos.push_back((trj->GetPoint(nn)->GetPosition()).z());
+      }
+      //  trj->ShowTrajectory(); // long output to stdout
     }
   }
 

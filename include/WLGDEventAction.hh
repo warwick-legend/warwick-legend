@@ -30,8 +30,16 @@ public:
   std::vector<G4double>& GetHitzLoc() { return zloc; }
 
   // tajectory methods
-  std::vector<G4int>& GetTrjTrackID() { return trjtid; }
-  std::vector<G4int>& GetTrjParentID() { return trjpid; }
+  std::vector<G4int>&    GetTrjTrackID() { return trjtid; }
+  std::vector<G4int>&    GetTrjParentID() { return trjpid; }
+  std::vector<G4int>&    GetTrjPDG()     { return trjpdg; }
+  std::vector<G4int>&    GetTrjEntries() { return trjnpts; }
+  std::vector<G4double>& GetTrjXVtx()    { return trjxvtx; }
+  std::vector<G4double>& GetTrjYVtx()    { return trjyvtx; }
+  std::vector<G4double>& GetTrjZVtx()    { return trjzvtx; }
+  std::vector<G4double>& GetTrjXPos()    { return trjxpos; }
+  std::vector<G4double>& GetTrjYPos()    { return trjypos; }
+  std::vector<G4double>& GetTrjZPos()    { return trjzpos; }
 
 private:
   // methods
@@ -40,6 +48,7 @@ private:
   G4THitsMap<G4ThreeVector>* GetVecHitsCollection(G4int hcID, const G4Event* event) const;
 
   // data members
+  // hit data
   G4int                 fTidID  = -1;
   G4int                 fPidID  = -1;
   G4int                 fLocID  = -1;
@@ -53,8 +62,17 @@ private:
   std::vector<G4double> yloc;
   std::vector<G4double> zloc;
 
-  std::vector<G4int> trjtid;
-  std::vector<G4int> trjpid;
+  // trajectory data
+  std::vector<G4int>    trjtid;
+  std::vector<G4int>    trjpid;
+  std::vector<G4int>    trjpdg;
+  std::vector<G4int>    trjnpts;
+  std::vector<G4double> trjxvtx;
+  std::vector<G4double> trjyvtx;
+  std::vector<G4double> trjzvtx;
+  std::vector<G4double> trjxpos;
+  std::vector<G4double> trjypos;
+  std::vector<G4double> trjzpos;
 };
 
 #endif

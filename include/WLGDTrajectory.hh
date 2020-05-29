@@ -37,6 +37,7 @@ public:
   virtual G4String            GetParticleName() const { return fParticleName; }
   virtual G4int               GetPDGEncoding() const { return fPDGEncoding; }
   virtual G4double            GetCharge() const { return fPDGCharge; }
+  virtual G4ThreeVector       GetVertex() const { return fVertexPosition; }
   virtual G4ThreeVector       GetInitialMomentum() const { return fMomentum; }
   virtual int                 GetPointEntries() const { return fPositionRecord->size(); }
   virtual G4VTrajectoryPoint* GetPoint(G4int i) const { return (*fPositionRecord)[i]; }
