@@ -21,16 +21,16 @@ public:
   virtual void EndOfEventAction(const G4Event* event);
 
   // to create columns for Ntuple
-  std::vector<G4int>&    GetHitTrackID()  { return htrid; }
+  std::vector<G4int>&    GetHitTrackID() { return htrid; }
   std::vector<G4int>&    GetHitParentID() { return hpaid; }
-  std::vector<G4double>& GetHitEdep()     { return edep; }
-  std::vector<G4double>& GetHitTime()     { return thit; }
-  std::vector<G4double>& GetHitxLoc()     { return xloc; }
-  std::vector<G4double>& GetHityLoc()     { return yloc; }
-  std::vector<G4double>& GetHitzLoc()     { return zloc; }
+  std::vector<G4double>& GetHitEdep() { return edep; }
+  std::vector<G4double>& GetHitTime() { return thit; }
+  std::vector<G4double>& GetHitxLoc() { return xloc; }
+  std::vector<G4double>& GetHityLoc() { return yloc; }
+  std::vector<G4double>& GetHitzLoc() { return zloc; }
 
   // tajectory methods
-  std::vector<G4int>& GetTrjTrackID()  { return trjtid; }
+  std::vector<G4int>& GetTrjTrackID() { return trjtid; }
   std::vector<G4int>& GetTrjParentID() { return trjpid; }
 
 private:
@@ -53,8 +53,8 @@ private:
   std::vector<G4double> yloc;
   std::vector<G4double> zloc;
 
-  std::vector<G4int>    trjtid;
-  std::vector<G4int>    trjpid;
+  std::vector<G4int> trjtid;
+  std::vector<G4int> trjpid;
 };
 
 #endif

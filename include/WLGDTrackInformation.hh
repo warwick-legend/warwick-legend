@@ -24,12 +24,12 @@ public:
   virtual void Print() const;
 
 private:
-  G4int                 fTrackID = 0;
+  G4int                 fTrackID            = 0;
   G4ParticleDefinition* fParticleDefinition = nullptr;
-  G4ThreeVector         fPosition =  G4ThreeVector(0., 0., 0.);
-  G4ThreeVector         fMomentum =  G4ThreeVector(0., 0., 0.);
-  G4double              fEnergy = 0.0;
-  G4double              fTime = 0.0;
+  G4ThreeVector         fPosition           = G4ThreeVector(0., 0., 0.);
+  G4ThreeVector         fMomentum           = G4ThreeVector(0., 0., 0.);
+  G4double              fEnergy             = 0.0;
+  G4double              fTime               = 0.0;
 };
 
 extern G4ThreadLocal G4Allocator<WLGDTrackInformation>* aTrackInformationAllocator;

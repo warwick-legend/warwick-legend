@@ -8,8 +8,8 @@
 class WLGDStackingAction : public G4UserStackingAction
 {
 public:
-  WLGDStackingAction()           = default;
-  virtual ~WLGDStackingAction()  = default;
+  WLGDStackingAction()          = default;
+  virtual ~WLGDStackingAction() = default;
 
 public:
   virtual G4ClassificationOfNewTrack ClassifyNewTrack(const G4Track* aTrack);

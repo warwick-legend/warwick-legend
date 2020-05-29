@@ -77,4 +77,3 @@ void WLGDPSTime::PrintAll()
 }
 
 void WLGDPSTime::SetUnit(const G4String& unit) { CheckAndSetUnit(unit, "Time"); }
-

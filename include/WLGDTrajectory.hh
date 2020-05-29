@@ -41,7 +41,7 @@ public:
   virtual int                 GetPointEntries() const { return fPositionRecord->size(); }
   virtual G4VTrajectoryPoint* GetPoint(G4int i) const { return (*fPositionRecord)[i]; }
 
-  G4ParticleDefinition*       GetParticleDefinition() const { return fParticleDefinition; }
+  G4ParticleDefinition* GetParticleDefinition() const { return fParticleDefinition; }
 
 private:
   WLGDTrajectoryPointContainer* fPositionRecord;

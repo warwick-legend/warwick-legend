@@ -16,11 +16,11 @@
 #include "G4SDManager.hh"
 #include "G4SDParticleFilter.hh"
 #include "G4VPrimitiveScorer.hh"
-#include "WLGDPSParentID.hh"
-#include "WLGDPSTrackID.hh"
 #include "WLGDPSEnergyDeposit.hh"
 #include "WLGDPSLocation.hh"
+#include "WLGDPSParentID.hh"
 #include "WLGDPSTime.hh"
+#include "WLGDPSTrackID.hh"
 
 #include "WLGDBiasMultiParticleChangeCrossSection.hh"
 
@@ -64,14 +64,14 @@ void WLGDDetectorConstruction::ConstructSDandField()
   eprimitive->SetFilter(vertexFilter);
   det->RegisterPrimitive(eprimitive);
 
-  auto tprimitive = new WLGDPSTime("Time");  
-  tprimitive->SetFilter(vertexFilter);  
-  det->RegisterPrimitive(tprimitive);  
-  
-  auto lprimitive = new WLGDPSLocation("Loc");  
-  lprimitive->SetFilter(vertexFilter);  
-  det->RegisterPrimitive(lprimitive);  
-  
+  auto tprimitive = new WLGDPSTime("Time");
+  tprimitive->SetFilter(vertexFilter);
+  det->RegisterPrimitive(tprimitive);
+
+  auto lprimitive = new WLGDPSLocation("Loc");
+  lprimitive->SetFilter(vertexFilter);
+  det->RegisterPrimitive(lprimitive);
+
   auto idprimitive = new WLGDPSTrackID("TrackID");
   idprimitive->SetFilter(vertexFilter);
   det->RegisterPrimitive(idprimitive);

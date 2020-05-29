@@ -22,15 +22,19 @@ WLGDRunAction::WLGDRunAction(WLGDEventAction* eventAction, G4String name)
   // Creating ntuple with vector entries
   //
   analysisManager->CreateNtuple("Score", "Hits");
-  analysisManager->CreateNtupleIColumn("Htrid", fEventAction->GetHitTrackID());   // Hit score
-  analysisManager->CreateNtupleIColumn("Hptid", fEventAction->GetHitParentID());  // Hit score
-  analysisManager->CreateNtupleDColumn("Edep",  fEventAction->GetHitEdep());
-  analysisManager->CreateNtupleDColumn("Time",  fEventAction->GetHitTime());
-  analysisManager->CreateNtupleDColumn("xloc",  fEventAction->GetHitxLoc());
-  analysisManager->CreateNtupleDColumn("yloc",  fEventAction->GetHityLoc());
-  analysisManager->CreateNtupleDColumn("zloc",  fEventAction->GetHitzLoc());
-  analysisManager->CreateNtupleIColumn("Trjtid", fEventAction->GetTrjTrackID());  // Trajectory score
-  analysisManager->CreateNtupleIColumn("Trjpid", fEventAction->GetTrjParentID()); // Trajectory score
+  analysisManager->CreateNtupleIColumn("Htrid",
+                                       fEventAction->GetHitTrackID());  // Hit score
+  analysisManager->CreateNtupleIColumn("Hptid",
+                                       fEventAction->GetHitParentID());  // Hit score
+  analysisManager->CreateNtupleDColumn("Edep", fEventAction->GetHitEdep());
+  analysisManager->CreateNtupleDColumn("Time", fEventAction->GetHitTime());
+  analysisManager->CreateNtupleDColumn("xloc", fEventAction->GetHitxLoc());
+  analysisManager->CreateNtupleDColumn("yloc", fEventAction->GetHityLoc());
+  analysisManager->CreateNtupleDColumn("zloc", fEventAction->GetHitzLoc());
+  analysisManager->CreateNtupleIColumn(
+    "Trjtid", fEventAction->GetTrjTrackID());  // Trajectory score
+  analysisManager->CreateNtupleIColumn(
+    "Trjpid", fEventAction->GetTrjParentID());  // Trajectory score
   analysisManager->FinishNtuple();
 }
 

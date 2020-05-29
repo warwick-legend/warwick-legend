@@ -64,15 +64,14 @@ G4THitsMap<G4ThreeVector>* WLGDEventAction::GetVecHitsCollection(
   return hitsCollection;
 }
 
-void WLGDEventAction::BeginOfEventAction(const 
-G4Event* 
-/*event*/) 
-{ 
+void WLGDEventAction::BeginOfEventAction(const G4Event*
+                                         /*event*/)
+{
   edep.clear();
-  htrid.clear(); 
+  htrid.clear();
   hpaid.clear();
   thit.clear();
-  xloc.clear(); 
+  xloc.clear();
   yloc.clear();
   zloc.clear();
 }
@@ -126,15 +125,15 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
 
   // fill trajectory data
   G4TrajectoryContainer* trajectoryContainer = event->GetTrajectoryContainer();
-  G4int n_trajectories = trajectoryContainer->entries();
-  
+  G4int                  n_trajectories      = trajectoryContainer->entries();
+
   for(G4int i = 0; i < n_trajectories; i++)
   {
-    WLGDTrajectory* trj = (WLGDTrajectory*) ((*(event->GetTrajectoryContainer()))[i]);
-    G4String pname = trj->GetParticleName(); // filter on particle name
-    G4int Z        = trj->GetParticleDefinition()->GetAtomicNumber();
-    G4int A        = trj->GetParticleDefinition()->GetAtomicMass();
-    if (pname == "neutron" || (Z==32 && A==77))
+    WLGDTrajectory* trj   = (WLGDTrajectory*) ((*(event->GetTrajectoryContainer()))[i]);
+    G4String        pname = trj->GetParticleName();  // filter on particle name
+    G4int           Z     = trj->GetParticleDefinition()->GetAtomicNumber();
+    G4int           A     = trj->GetParticleDefinition()->GetAtomicMass();
+    if(pname == "neutron" || (Z == 32 && A == 77))
     {
       trjtid.push_back(trj->GetTrackID());
       trjpid.push_back(trj->GetParentID());
