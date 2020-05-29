@@ -30,10 +30,51 @@ G4THitsMap<G4int>* WLGDEventAction::GetIntHitsCollection(G4int          hcID,
   return hitsCollection;
 }
 
-void WLGDEventAction::BeginOfEventAction(const G4Event* /*event*/) 
+G4THitsMap<G4double>* WLGDEventAction::GetHitsCollection(G4int          hcID,
+                                                         const G4Event* event) const
+{
+  auto hitsCollection =
+    static_cast<G4THitsMap<G4double>*>(event->GetHCofThisEvent()->GetHC(hcID));
+
+  if(hitsCollection == nullptr)
+  {
+    G4ExceptionDescription msg;
+    msg << "Cannot access hitsCollection ID " << hcID;
+    G4Exception("WLGDEventAction::GetHitsCollection()", "MyCode0003", FatalException,
+                msg);
+  }
+
+  return hitsCollection;
+}
+
+G4THitsMap<G4ThreeVector>* WLGDEventAction::GetVecHitsCollection(
+  G4int hcID, const G4Event* event) const
+{
+  auto hitsCollection =
+    static_cast<G4THitsMap<G4ThreeVector>*>(event->GetHCofThisEvent()->GetHC(hcID));
+
+  if(hitsCollection == nullptr)
+  {
+    G4ExceptionDescription msg;
+    msg << "Cannot access hitsCollection ID " << hcID;
+    G4Exception("WLGDEventAction::GetVecHitsCollection()", "MyCode0003", FatalException,
+                msg);
+  }
+
+  return hitsCollection;
+}
+
+void WLGDEventAction::BeginOfEventAction(const 
+G4Event* 
+/*event*/) 
 { 
+  edep.clear();
   htrid.clear(); 
-  hpaid.clear(); 
+  hpaid.clear();
+  thit.clear();
+  xloc.clear(); 
+  yloc.clear();
+  zloc.clear();
 }
 
 void WLGDEventAction::EndOfEventAction(const G4Event* event)
@@ -41,19 +82,39 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   // Get hist collections IDs
   if(fTidID < 0)
   {
-    fTidID = G4SDManager::GetSDMpointer()->GetCollectionID("Det/TrackID");
-    fPidID = G4SDManager::GetSDMpointer()->GetCollectionID("Det/ParentID");
+    fTidID  = G4SDManager::GetSDMpointer()->GetCollectionID("Det/TrackID");
+    fPidID  = G4SDManager::GetSDMpointer()->GetCollectionID("Det/ParentID");
+    fLocID  = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Loc");
+    fEdepID = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Edep");
+    fTimeID = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Time");
   }
 
   // Get entries from hits collections
   //
-  G4THitsMap<G4int>* THitsMap = GetIntHitsCollection(fTidID, event);
-  G4THitsMap<G4int>* PHitsMap = GetIntHitsCollection(fPidID, event);
+  G4THitsMap<G4int>*         THitsMap = GetIntHitsCollection(fTidID, event);
+  G4THitsMap<G4int>*         PHitsMap = GetIntHitsCollection(fPidID, event);
+  G4THitsMap<G4double>*      HitsMap  = GetHitsCollection(fEdepID, event);
+  G4THitsMap<G4ThreeVector>* LocMap   = GetVecHitsCollection(fLocID, event);
+  G4THitsMap<G4double>*      TimeMap  = GetHitsCollection(fTimeID, event);
 
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
 
   // fill Hits output from SD
+  for(auto it : *HitsMap->GetMap())
+  {
+    edep.push_back((*it.second));
+  }
+  for(auto it : *TimeMap->GetMap())
+  {
+    thit.push_back((*it.second));
+  }
+  for(auto it : *LocMap->GetMap())
+  {
+    xloc.push_back((*it.second).x());
+    yloc.push_back((*it.second).y());
+    zloc.push_back((*it.second).z());
+  }
   for(auto it : *THitsMap->GetMap())
   {
     htrid.push_back((*it.second));

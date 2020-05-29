@@ -18,6 +18,9 @@
 #include "G4VPrimitiveScorer.hh"
 #include "WLGDPSParentID.hh"
 #include "WLGDPSTrackID.hh"
+#include "WLGDPSEnergyDeposit.hh"
+#include "WLGDPSLocation.hh"
+#include "WLGDPSTime.hh"
 
 #include "WLGDBiasMultiParticleChangeCrossSection.hh"
 
@@ -53,13 +56,25 @@ void WLGDDetectorConstruction::ConstructSDandField()
   G4SDManager::GetSDMpointer()->AddNewDetector(det);
 
   auto vertexFilter = new G4SDParticleFilter("vtxfilt");
-  vertexFilter->add("neutron");  // remove later
-  vertexFilter->add("mu-");      // remove later
+  vertexFilter->add("neutron");  // neutrons in Ge of interest
+  // vertexFilter->add("mu-");      // muons in Ge of no interest
   vertexFilter->addIon(32, 77);  // register 77Ge production
 
-  auto tprimitive = new WLGDPSTrackID("TrackID");
-  tprimitive->SetFilter(vertexFilter);
-  det->RegisterPrimitive(tprimitive);
+  auto eprimitive = new WLGDPSEnergyDeposit("Edep");
+  eprimitive->SetFilter(vertexFilter);
+  det->RegisterPrimitive(eprimitive);
+
+  auto tprimitive = new WLGDPSTime("Time");  
+  tprimitive->SetFilter(vertexFilter);  
+  det->RegisterPrimitive(tprimitive);  
+  
+  auto lprimitive = new WLGDPSLocation("Loc");  
+  lprimitive->SetFilter(vertexFilter);  
+  det->RegisterPrimitive(lprimitive);  
+  
+  auto idprimitive = new WLGDPSTrackID("TrackID");
+  idprimitive->SetFilter(vertexFilter);
+  det->RegisterPrimitive(idprimitive);
 
   auto primitive = new WLGDPSParentID("ParentID");
   primitive->SetFilter(vertexFilter);
@@ -91,9 +106,9 @@ void WLGDDetectorConstruction::ConstructSDandField()
     G4LogicalVolume* logicGe = G4LogicalVolumeStore::GetInstance()->GetVolume("Ge_log");
     biasnXS->AttachTo(logicGe);
 
-    SetSensitiveDetector(logicWater, det); // remove later
-    SetSensitiveDetector(logicLar, det);   // remove later
-    SetSensitiveDetector(logicULar, det);  // remove later
+    // SetSensitiveDetector(logicWater, det); // remove later
+    // SetSensitiveDetector(logicLar, det);   // remove later
+    // SetSensitiveDetector(logicULar, det);  // remove later
     SetSensitiveDetector(logicGe, det);
   }
 
@@ -111,8 +126,8 @@ void WLGDDetectorConstruction::ConstructSDandField()
     // neutron bias
     biasnXS->AttachTo(logicGe);
 
-    SetSensitiveDetector(logicLar, det);  // remove later
-    SetSensitiveDetector(logicULar, det); // remove later
+    // SetSensitiveDetector(logicLar, det);  // remove later
+    // SetSensitiveDetector(logicULar, det); // remove later
     SetSensitiveDetector(logicGe, det);
   }
 
