@@ -1,10 +1,6 @@
 #include "WLGDStackingAction.hh"
 #include "WLGDTrackInformation.hh"
 
-WLGDStackingAction::WLGDStackingAction()
-: G4UserStackingAction() {}
-
-WLGDStackingAction::~WLGDStackingAction()  = default;
 
 G4ClassificationOfNewTrack WLGDStackingAction ::ClassifyNewTrack(const G4Track* aTrack)
 {
