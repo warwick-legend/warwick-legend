@@ -1,15 +1,34 @@
 #include "WLGDEventAction.hh"
+#include "WLGDTrajectory.hh"
 #include "g4root.hh"
 
 #include "G4Event.hh"
 #include "G4HCofThisEvent.hh"
 #include "G4SDManager.hh"
+#include "G4TrajectoryContainer.hh"
 #include "G4UnitsTable.hh"
 #include "G4ios.hh"
 
 #include "Randomize.hh"
 #include <iomanip>
 #include <vector>
+
+G4THitsMap<G4int>* WLGDEventAction::GetIntHitsCollection(G4int          hcID,
+                                                         const G4Event* event) const
+{
+  auto hitsCollection =
+    static_cast<G4THitsMap<G4int>*>(event->GetHCofThisEvent()->GetHC(hcID));
+
+  if(hitsCollection == nullptr)
+  {
+    G4ExceptionDescription msg;
+    msg << "Cannot access hitsCollection ID " << hcID;
+    G4Exception("WLGDEventAction::GetHitsCollection()", "MyCode0003", FatalException,
+                msg);
+  }
+
+  return hitsCollection;
+}
 
 G4THitsMap<G4double>* WLGDEventAction::GetHitsCollection(G4int          hcID,
                                                          const G4Event* event) const
@@ -45,105 +64,92 @@ G4THitsMap<G4ThreeVector>* WLGDEventAction::GetVecHitsCollection(
   return hitsCollection;
 }
 
-void WLGDEventAction::BeginOfEventAction(const G4Event* /*event*/) {}
+void WLGDEventAction::BeginOfEventAction(const G4Event*
+                                         /*event*/)
+{
+  edep.clear();
+  htrid.clear();
+  hpaid.clear();
+  thit.clear();
+  xloc.clear();
+  yloc.clear();
+  zloc.clear();
+}
 
 void WLGDEventAction::EndOfEventAction(const G4Event* event)
 {
   // Get hist collections IDs
-  if(fCollID_lar < 0)
+  if(fTidID < 0)
   {
-    fCollID_water = G4SDManager::GetSDMpointer()->GetCollectionID("WaterDet/Edep");
-    fCollID_lar   = G4SDManager::GetSDMpointer()->GetCollectionID("LarDet/Edep");
-    fCollID_ular  = G4SDManager::GetSDMpointer()->GetCollectionID("ULarDet/Edep");
-    fCollID_ge    = G4SDManager::GetSDMpointer()->GetCollectionID("GeDet/Edep");
-
-    fLocID_water = G4SDManager::GetSDMpointer()->GetCollectionID("WaterDet/Loc");
-    fLocID_lar   = G4SDManager::GetSDMpointer()->GetCollectionID("LarDet/Loc");
-    fLocID_ular  = G4SDManager::GetSDMpointer()->GetCollectionID("ULarDet/Loc");
-    fLocID_ge    = G4SDManager::GetSDMpointer()->GetCollectionID("GeDet/Loc");
+    fTidID  = G4SDManager::GetSDMpointer()->GetCollectionID("Det/TrackID");
+    fPidID  = G4SDManager::GetSDMpointer()->GetCollectionID("Det/ParentID");
+    fLocID  = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Loc");
+    fEdepID = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Edep");
+    fTimeID = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Time");
   }
 
   // Get entries from hits collections
   //
-  G4THitsMap<G4double>*      waterHitsMap = GetHitsCollection(fCollID_water, event);
-  G4THitsMap<G4double>*      larHitsMap   = GetHitsCollection(fCollID_lar, event);
-  G4THitsMap<G4double>*      ularHitsMap  = GetHitsCollection(fCollID_ular, event);
-  G4THitsMap<G4double>*      geHitsMap    = GetHitsCollection(fCollID_ge, event);
-  G4THitsMap<G4ThreeVector>* waterLocMap  = GetVecHitsCollection(fLocID_water, event);
-  G4THitsMap<G4ThreeVector>* larLocMap    = GetVecHitsCollection(fLocID_lar, event);
-  G4THitsMap<G4ThreeVector>* ularLocMap   = GetVecHitsCollection(fLocID_ular, event);
-  G4THitsMap<G4ThreeVector>* geLocMap     = GetVecHitsCollection(fLocID_ge, event);
+  G4THitsMap<G4int>*         THitsMap = GetIntHitsCollection(fTidID, event);
+  G4THitsMap<G4int>*         PHitsMap = GetIntHitsCollection(fPidID, event);
+  G4THitsMap<G4double>*      HitsMap  = GetHitsCollection(fEdepID, event);
+  G4THitsMap<G4ThreeVector>* LocMap   = GetVecHitsCollection(fLocID, event);
+  G4THitsMap<G4double>*      TimeMap  = GetHitsCollection(fTimeID, event);
 
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
 
-  // 8 columns to fill
-  if(!edep_lar.empty())
-  {  // clear vectors
-    edep_water.clear();
-    edep_lar.clear();
-    edep_ular.clear();
-    edep_ge.clear();
-    xLoc_water.clear();
-    xLoc_lar.clear();
-    xLoc_ular.clear();
-    xLoc_ge.clear();
-    yLoc_water.clear();
-    yLoc_lar.clear();
-    yLoc_ular.clear();
-    yLoc_ge.clear();
-    zLoc_water.clear();
-    zLoc_lar.clear();
-    zLoc_ular.clear();
-    zLoc_ge.clear();
+  // fill Hits output from SD
+  for(auto it : *HitsMap->GetMap())
+  {
+    edep.push_back((*it.second));
+  }
+  for(auto it : *TimeMap->GetMap())
+  {
+    thit.push_back((*it.second));
+  }
+  for(auto it : *LocMap->GetMap())
+  {
+    xloc.push_back((*it.second).x());
+    yloc.push_back((*it.second).y());
+    zloc.push_back((*it.second).z());
+  }
+  for(auto it : *THitsMap->GetMap())
+  {
+    htrid.push_back((*it.second));
+  }
+  for(auto it : *PHitsMap->GetMap())
+  {
+    hpaid.push_back((*it.second));
   }
 
-  for(auto it : *waterHitsMap->GetMap())
-  {
-    edep_water.push_back(*it.second);
-  }
+  // fill trajectory data
+  G4TrajectoryContainer* trajectoryContainer = event->GetTrajectoryContainer();
+  G4int                  n_trajectories      = trajectoryContainer->entries();
 
-  for(auto it : *larHitsMap->GetMap())
+  for(G4int i = 0; i < n_trajectories; i++)
   {
-    edep_lar.push_back(*it.second);
-  }
-
-  for(auto it : *ularHitsMap->GetMap())
-  {
-    edep_ular.push_back(*it.second);
-  }
-
-  for(auto it : *geHitsMap->GetMap())
-  {
-    edep_ge.push_back(*it.second);
-  }
-
-  for(auto it : *waterLocMap->GetMap())
-  {
-    xLoc_water.push_back((*it.second).x());
-    yLoc_water.push_back((*it.second).y());
-    zLoc_water.push_back((*it.second).z());
-  }
-
-  for(auto it : *larLocMap->GetMap())
-  {
-    xLoc_lar.push_back((*it.second).x());
-    yLoc_lar.push_back((*it.second).y());
-    zLoc_lar.push_back((*it.second).z());
-  }
-
-  for(auto it : *ularLocMap->GetMap())
-  {
-    xLoc_ular.push_back((*it.second).x());
-    yLoc_ular.push_back((*it.second).y());
-    zLoc_ular.push_back((*it.second).z());
-  }
-
-  for(auto it : *geLocMap->GetMap())
-  {
-    xLoc_ge.push_back((*it.second).x());
-    yLoc_ge.push_back((*it.second).y());
-    zLoc_ge.push_back((*it.second).z());
+    WLGDTrajectory* trj   = (WLGDTrajectory*) ((*(event->GetTrajectoryContainer()))[i]);
+    G4String        pname = trj->GetParticleName();  // filter on particle name
+    G4int           Z     = trj->GetParticleDefinition()->GetAtomicNumber();
+    G4int           A     = trj->GetParticleDefinition()->GetAtomicMass();
+    if(pname == "neutron" || (Z == 32 && A == 77))
+    {
+      trjtid.push_back(trj->GetTrackID());
+      trjpid.push_back(trj->GetParentID());
+      trjpdg.push_back(trj->GetPDGEncoding());
+      trjxvtx.push_back((trj->GetVertex()).x());
+      trjyvtx.push_back((trj->GetVertex()).y());
+      trjzvtx.push_back((trj->GetVertex()).z());
+      trjnpts.push_back(trj->GetPointEntries());
+      for(int nn = 0; nn < trj->GetPointEntries(); ++nn)
+      {
+        trjxpos.push_back((trj->GetPoint(nn)->GetPosition()).x());
+        trjypos.push_back((trj->GetPoint(nn)->GetPosition()).y());
+        trjzpos.push_back((trj->GetPoint(nn)->GetPosition()).z());
+      }
+      //  trj->ShowTrajectory(); // long output to stdout
+    }
   }
 
   // fill the ntuple
@@ -152,8 +158,9 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   // printing
   G4int eventID = event->GetEventID();
   G4cout << ">>> Event: " << eventID << G4endl;
-  G4cout << "    " << edep_water.size() << " water hits stored in this event." << G4endl;
-  G4cout << "    " << edep_lar.size() << " LAr hits stored in this event." << G4endl;
-  G4cout << "    " << edep_ular.size() << " ULAr hits stored in this event." << G4endl;
-  G4cout << "    " << edep_ge.size() << " germanium hits stored in this event." << G4endl;
+  G4cout << "    " << htrid.size() << " hits stored in this event." << G4endl;
+
+  // extract the trajectories and print them out
+  G4cout << G4endl;
+  G4cout << "Trajectories in tracker: " << n_trajectories << G4endl;
 }

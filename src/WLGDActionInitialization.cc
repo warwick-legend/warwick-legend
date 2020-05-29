@@ -2,6 +2,8 @@
 #include "WLGDEventAction.hh"
 #include "WLGDPrimaryGeneratorAction.hh"
 #include "WLGDRunAction.hh"
+#include "WLGDStackingAction.hh"
+#include "WLGDTrackingAction.hh"
 
 WLGDActionInitialization::WLGDActionInitialization(WLGDDetectorConstruction* det,
                                                    G4String                  name)
@@ -25,4 +27,6 @@ void WLGDActionInitialization::Build() const
   auto event = new WLGDEventAction;
   SetUserAction(event);
   SetUserAction(new WLGDRunAction(event, foutname));
+  SetUserAction(new WLGDStackingAction);
+  SetUserAction(new WLGDTrackingAction);
 }

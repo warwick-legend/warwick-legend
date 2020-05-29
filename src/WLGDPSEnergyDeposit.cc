@@ -1,23 +1,23 @@
-// WLGDPSTime
-#include "WLGDPSTime.hh"
+// WLGDPSEnergyDeposit
+#include "WLGDPSEnergyDeposit.hh"
 #include "G4UnitsTable.hh"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Description:
-//   This is a primitive scorer class for scoring global track time
+//   This is a primitive scorer class for scoring total energy deposit
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-WLGDPSTime::WLGDPSTime(G4String name, G4int depth)
+WLGDPSEnergyDeposit::WLGDPSEnergyDeposit(G4String name, G4int depth)
 : G4VPrimitiveScorer(std::move(name), depth)
 , fCounter(0)
 , HCID(-1)
 , EvtMap(nullptr)
 {
-  SetUnit("ns");
+  SetUnit("MeV");
 }
 
-WLGDPSTime::WLGDPSTime(G4String name, const G4String& unit, G4int depth)
+WLGDPSEnergyDeposit::WLGDPSEnergyDeposit(G4String name, const G4String& unit, G4int depth)
 : G4VPrimitiveScorer(std::move(name), depth)
 , fCounter(0)
 , HCID(-1)
@@ -26,22 +26,21 @@ WLGDPSTime::WLGDPSTime(G4String name, const G4String& unit, G4int depth)
   SetUnit(unit);
 }
 
-WLGDPSTime::~WLGDPSTime() = default;
+WLGDPSEnergyDeposit::~WLGDPSEnergyDeposit() = default;
 
-G4bool WLGDPSTime::ProcessHits(G4Step* aStep, G4TouchableHistory* /*unused*/)
+G4bool WLGDPSEnergyDeposit::ProcessHits(G4Step* aStep, G4TouchableHistory* /*unused*/)
 {
-  if(aStep->GetTotalEnergyDeposit() == 0.)
+  G4double edep = aStep->GetTotalEnergyDeposit();
+  if(edep == 0.)
     return false;  // not for zero edep
 
-  // global time since start of event
-  G4double tt = aStep->GetTrack()->GetGlobalTime();
-
-  EvtMap->add(fCounter, tt);
+  edep *= aStep->GetPreStepPoint()->GetWeight();  // (Particle Weight)
+  EvtMap->add(fCounter, edep);
   fCounter++;
   return true;
 }
 
-void WLGDPSTime::Initialize(G4HCofThisEvent* HCE)
+void WLGDPSEnergyDeposit::Initialize(G4HCofThisEvent* HCE)
 {
   EvtMap = new G4THitsMap<G4double>(GetMultiFunctionalDetector()->GetName(), GetName());
   if(HCID < 0)
@@ -52,17 +51,17 @@ void WLGDPSTime::Initialize(G4HCofThisEvent* HCE)
   fCounter = 0;
 }
 
-void WLGDPSTime::EndOfEvent(G4HCofThisEvent* /*unused*/) { ; }
+void WLGDPSEnergyDeposit::EndOfEvent(G4HCofThisEvent* /*unused*/) { ; }
 
-void WLGDPSTime::clear()
+void WLGDPSEnergyDeposit::clear()
 {
   fCounter = 0;
   EvtMap->clear();
 }
 
-void WLGDPSTime::DrawAll() { ; }
+void WLGDPSEnergyDeposit::DrawAll() { ; }
 
-void WLGDPSTime::PrintAll()
+void WLGDPSEnergyDeposit::PrintAll()
 {
   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
   G4cout << " PrimitiveScorer " << GetName() << G4endl;
@@ -71,9 +70,12 @@ void WLGDPSTime::PrintAll()
   for(; itr != EvtMap->GetMap()->end(); itr++)
   {
     G4cout << "  key: " << itr->first
-           << "  global time: " << *(itr->second) / GetUnitValue() << " [" << GetUnit()
+           << "  energy deposit: " << *(itr->second) / GetUnitValue() << " [" << GetUnit()
            << "]" << G4endl;
   }
 }
 
-void WLGDPSTime::SetUnit(const G4String& unit) { CheckAndSetUnit(unit, "Time"); }
+void WLGDPSEnergyDeposit::SetUnit(const G4String& unit)
+{
+  CheckAndSetUnit(unit, "Energy");
+}

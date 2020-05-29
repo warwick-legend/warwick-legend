@@ -14,9 +14,16 @@ add_executable(warwick-legend
   src/WLGDBiasMultiParticleChangeCrossSection.cc
   src/WLGDDetectorConstruction.cc
   src/WLGDEventAction.cc
-  src/WLGDPrimaryGeneratorAction.cc
+  src/WLGDPSEnergyDeposit.cc
   src/WLGDPSLocation.cc
+  src/WLGDPSParentID.cc
   src/WLGDPSTime.cc
-  src/WLGDRunAction.cc)
+  src/WLGDPSTrackID.cc
+  src/WLGDPrimaryGeneratorAction.cc
+  src/WLGDRunAction.cc
+  src/WLGDStackingAction.cc
+  src/WLGDTrackInformation.cc
+  src/WLGDTrackingAction.cc
+  src/WLGDTrajectory.cc)
 target_include_directories(warwick-legend PRIVATE ${PROJECT_SOURCE_DIR}/include)
 target_link_libraries(warwick-legend PRIVATE ${Geant4_LIBRARIES})

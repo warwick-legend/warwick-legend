@@ -8,13 +8,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Description:
 //   This is a primitive scorer class for scoring energy deposit location
-//   at every collision = non boundary step, of the track.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
 class WLGDPSLocation : public G4VPrimitiveScorer
 {
-public:                                            // with description
+public:
   WLGDPSLocation(G4String name, G4int depth = 0);  // default unit
   WLGDPSLocation(G4String name, const G4String& unit, G4int depth = 0);
   virtual ~WLGDPSLocation();
@@ -32,7 +31,8 @@ public:
   virtual void SetUnit(const G4String& unit);
 
 private:
-    G4int                      HCID;
-    G4THitsMap<G4ThreeVector>* EvtMap;
+  int                        fCounter;
+  G4int                      HCID;
+  G4THitsMap<G4ThreeVector>* EvtMap;
 };
 #endif

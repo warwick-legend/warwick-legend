@@ -10,6 +10,7 @@
 
 WLGDPSLocation::WLGDPSLocation(G4String name, G4int depth)
 : G4VPrimitiveScorer(std::move(name), depth)
+, fCounter(0)
 , HCID(-1)
 , EvtMap(nullptr)
 {
@@ -18,32 +19,26 @@ WLGDPSLocation::WLGDPSLocation(G4String name, G4int depth)
 
 WLGDPSLocation::WLGDPSLocation(G4String name, const G4String& unit, G4int depth)
 : G4VPrimitiveScorer(std::move(name), depth)
+, fCounter(0)
 , HCID(-1)
 , EvtMap(nullptr)
 {
   SetUnit(unit);
 }
 
-WLGDPSLocation::~WLGDPSLocation() { ; }
+WLGDPSLocation::~WLGDPSLocation() = default;
 
 G4bool WLGDPSLocation::ProcessHits(G4Step* aStep, G4TouchableHistory* /*unused*/)
 {
-  if(aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary)
-  {
-    return FALSE;  // collisions
-  }
+  if(aStep->GetTotalEnergyDeposit() == 0.)
+    return false;  // not for zero edep
 
   G4StepPoint*  preStepPoint = aStep->GetPreStepPoint();
   G4ThreeVector loc          = preStepPoint->GetPosition();  // location at track creation
-  // keep unit free for storage in ntuple
-  loc.setX(loc.x() / GetUnitValue());  // unit value used
-  loc.setY(loc.y() / GetUnitValue());
-  loc.setZ(loc.z() / GetUnitValue());
 
-  G4int idx = GetIndex(aStep);
-  EvtMap->add(idx, loc);
-
-  return TRUE;
+  EvtMap->add(fCounter, loc);
+  fCounter++;
+  return true;
 }
 
 void WLGDPSLocation::Initialize(G4HCofThisEvent* HCE)
@@ -55,11 +50,16 @@ void WLGDPSLocation::Initialize(G4HCofThisEvent* HCE)
     HCID = GetCollectionID(0);
   }
   HCE->AddHitsCollection(HCID, (G4VHitsCollection*) EvtMap);
+  fCounter = 0;
 }
 
 void WLGDPSLocation::EndOfEvent(G4HCofThisEvent* /*unused*/) { ; }
 
-void WLGDPSLocation::clear() { EvtMap->clear(); }
+void WLGDPSLocation::clear()
+{
+  fCounter = 0;
+  EvtMap->clear();
+}
 
 void WLGDPSLocation::DrawAll() { ; }
 
@@ -71,8 +71,10 @@ void WLGDPSLocation::PrintAll()
   auto itr = EvtMap->GetMap()->begin();
   for(; itr != EvtMap->GetMap()->end(); itr++)
   {
-    G4cout << "  key: " << itr->first << "  energy deposit at: (" << (*(itr->second)).x()
-           << ", " << (*(itr->second)).y() << ", " << (*(itr->second)).z() << ")"
+    G4cout << "  key: " << itr->first << "  energy deposit at: ("
+           << (*(itr->second)).x() / GetUnitValue() << ", "
+           << (*(itr->second)).y() / GetUnitValue() << ", "
+           << (*(itr->second)).z() / GetUnitValue() << ")"
            << " [" << GetUnit() << "]" << G4endl;
   }
 }
