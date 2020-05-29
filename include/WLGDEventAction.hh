@@ -32,14 +32,14 @@ public:
   // tajectory methods
   std::vector<G4int>&    GetTrjTrackID() { return trjtid; }
   std::vector<G4int>&    GetTrjParentID() { return trjpid; }
-  std::vector<G4int>&    GetTrjPDG()     { return trjpdg; }
+  std::vector<G4int>&    GetTrjPDG() { return trjpdg; }
   std::vector<G4int>&    GetTrjEntries() { return trjnpts; }
-  std::vector<G4double>& GetTrjXVtx()    { return trjxvtx; }
-  std::vector<G4double>& GetTrjYVtx()    { return trjyvtx; }
-  std::vector<G4double>& GetTrjZVtx()    { return trjzvtx; }
-  std::vector<G4double>& GetTrjXPos()    { return trjxpos; }
-  std::vector<G4double>& GetTrjYPos()    { return trjypos; }
-  std::vector<G4double>& GetTrjZPos()    { return trjzpos; }
+  std::vector<G4double>& GetTrjXVtx() { return trjxvtx; }
+  std::vector<G4double>& GetTrjYVtx() { return trjyvtx; }
+  std::vector<G4double>& GetTrjZVtx() { return trjzvtx; }
+  std::vector<G4double>& GetTrjXPos() { return trjxpos; }
+  std::vector<G4double>& GetTrjYPos() { return trjypos; }
+  std::vector<G4double>& GetTrjZPos() { return trjzpos; }
 
 private:
   // methods

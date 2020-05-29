@@ -33,24 +33,15 @@ WLGDRunAction::WLGDRunAction(WLGDEventAction* eventAction, G4String name)
   analysisManager->CreateNtupleDColumn("Hitzloc", fEventAction->GetHitzLoc());
   analysisManager->CreateNtupleIColumn(
     "Trjtid", fEventAction->GetTrjTrackID());  // Trajectory score
-  analysisManager->CreateNtupleIColumn(
-    "Trjpid", fEventAction->GetTrjParentID());
-  analysisManager->CreateNtupleIColumn(
-    "Trjpdg", fEventAction->GetTrjPDG());
-  analysisManager->CreateNtupleIColumn(   
-    "Trjentries", fEventAction->GetTrjEntries());
-  analysisManager->CreateNtupleDColumn(
-    "TrjXVtx", fEventAction->GetTrjXVtx());
-  analysisManager->CreateNtupleDColumn(
-    "TrjYVtx", fEventAction->GetTrjYVtx());
-  analysisManager->CreateNtupleDColumn(
-    "TrjZVtx", fEventAction->GetTrjZVtx());
-  analysisManager->CreateNtupleDColumn(
-    "TrjXPos", fEventAction->GetTrjXPos());
-  analysisManager->CreateNtupleDColumn(
-    "TrjYPos", fEventAction->GetTrjYPos());
-  analysisManager->CreateNtupleDColumn(
-    "TrjZPos", fEventAction->GetTrjZPos());
+  analysisManager->CreateNtupleIColumn("Trjpid", fEventAction->GetTrjParentID());
+  analysisManager->CreateNtupleIColumn("Trjpdg", fEventAction->GetTrjPDG());
+  analysisManager->CreateNtupleIColumn("Trjentries", fEventAction->GetTrjEntries());
+  analysisManager->CreateNtupleDColumn("TrjXVtx", fEventAction->GetTrjXVtx());
+  analysisManager->CreateNtupleDColumn("TrjYVtx", fEventAction->GetTrjYVtx());
+  analysisManager->CreateNtupleDColumn("TrjZVtx", fEventAction->GetTrjZVtx());
+  analysisManager->CreateNtupleDColumn("TrjXPos", fEventAction->GetTrjXPos());
+  analysisManager->CreateNtupleDColumn("TrjYPos", fEventAction->GetTrjYPos());
+  analysisManager->CreateNtupleDColumn("TrjZPos", fEventAction->GetTrjZPos());
 
   analysisManager->FinishNtuple();
 }

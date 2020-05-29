@@ -142,7 +142,7 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
       trjyvtx.push_back((trj->GetVertex()).y());
       trjzvtx.push_back((trj->GetVertex()).z());
       trjnpts.push_back(trj->GetPointEntries());
-      for (int nn=0; nn<trj->GetPointEntries(); ++nn)
+      for(int nn = 0; nn < trj->GetPointEntries(); ++nn)
       {
         trjxpos.push_back((trj->GetPoint(nn)->GetPosition()).x());
         trjypos.push_back((trj->GetPoint(nn)->GetPosition()).y());
