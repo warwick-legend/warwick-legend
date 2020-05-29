@@ -60,8 +60,10 @@ extern G4ThreadLocal G4Allocator<WLGDTrajectory>* myTrajectoryAllocator;
 
 inline void* WLGDTrajectory::operator new(size_t)
 {
-  if(!myTrajectoryAllocator)
+  if(myTrajectoryAllocator == nullptr)
+  {
     myTrajectoryAllocator = new G4Allocator<WLGDTrajectory>;
+  }
   return (void*) myTrajectoryAllocator->MallocSingle();
 }
 

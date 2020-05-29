@@ -23,22 +23,23 @@ public:
 
   virtual void Print() const;
 
-public:
 private:
-  G4int                 fTrackID;
-  G4ParticleDefinition* fParticleDefinition;
-  G4ThreeVector         fPosition;
-  G4ThreeVector         fMomentum;
-  G4double              fEnergy;
-  G4double              fTime;
+  G4int                 fTrackID = 0;
+  G4ParticleDefinition* fParticleDefinition = nullptr;
+  G4ThreeVector         fPosition =  G4ThreeVector(0., 0., 0.);
+  G4ThreeVector         fMomentum =  G4ThreeVector(0., 0., 0.);
+  G4double              fEnergy = 0.0;
+  G4double              fTime = 0.0;
 };
 
 extern G4ThreadLocal G4Allocator<WLGDTrackInformation>* aTrackInformationAllocator;
 
 inline void* WLGDTrackInformation::operator new(size_t)
 {
-  if(!aTrackInformationAllocator)
+  if(aTrackInformationAllocator == nullptr)
+  {
     aTrackInformationAllocator = new G4Allocator<WLGDTrackInformation>;
+  }
   return (void*) aTrackInformationAllocator->MallocSingle();
 }
 

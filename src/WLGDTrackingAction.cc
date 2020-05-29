@@ -5,11 +5,7 @@
 #include "G4Track.hh"
 #include "G4TrackingManager.hh"
 
-WLGDTrackingAction::WLGDTrackingAction()
-: G4UserTrackingAction()
-{
-  ;
-}
+WLGDTrackingAction::WLGDTrackingAction() = default;
 
 void WLGDTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
@@ -22,7 +18,7 @@ void WLGDTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 void WLGDTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 {
   G4TrackVector* secondaries = fpTrackingManager->GimmeSecondaries();
-  if(secondaries)
+  if(secondaries != nullptr)
   {
     WLGDTrackInformation* info  = (WLGDTrackInformation*) (aTrack->GetUserInformation());
     size_t                nSeco = secondaries->size();

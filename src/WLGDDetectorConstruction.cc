@@ -52,7 +52,7 @@ void WLGDDetectorConstruction::ConstructSDandField()
   auto det = new G4MultiFunctionalDetector("Det");
   G4SDManager::GetSDMpointer()->AddNewDetector(det);
 
-  G4SDParticleFilter* vertexFilter = new G4SDParticleFilter("vtxfilt");
+  auto vertexFilter = new G4SDParticleFilter("vtxfilt");
   vertexFilter->add("neutron");  // remove later
   vertexFilter->add("mu-");      // remove later
   vertexFilter->addIon(32, 77);  // register 77Ge production

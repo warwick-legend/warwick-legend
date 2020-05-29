@@ -56,8 +56,7 @@ void WLGDPSTrackID::PrintAll()
   G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
   G4cout << " PrimitiveScorer " << GetName() << G4endl;
   G4cout << " Number of entries " << EvtMap->entries() << G4endl;
-  auto itr = EvtMap->GetMap()->begin();
-  for(; itr != EvtMap->GetMap()->end(); itr++)
+  for(auto itr : *(EvtMap->GetMap()))
   {
     G4cout << "  key: " << itr->first << "  track ID: " << *(itr->second) << G4endl;
   }

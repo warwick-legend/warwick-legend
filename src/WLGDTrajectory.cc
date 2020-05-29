@@ -10,25 +10,22 @@
 #include "WLGDTrackInformation.hh"
 #include "WLGDTrajectory.hh"
 
-G4ThreadLocal G4Allocator<WLGDTrajectory>* myTrajectoryAllocator = 0;
+G4ThreadLocal G4Allocator<WLGDTrajectory>* myTrajectoryAllocator = nullptr;
 
 WLGDTrajectory::WLGDTrajectory(const G4Track* aTrack)
-: G4VTrajectory()
-, fPositionRecord(0)
-, fParticleDefinition(0)
+: G4VTrajectory(),
+  fPositionRecord{new WLGDTrajectoryPointContainer()},
+  fTrackID{aTrack->GetTrackID()},
+  fParentID{aTrack->GetParentID()},
+  fParticleDefinition{aTrack->GetDefinition()},
+  fParticleName{fParticleDefinition->GetParticleName()},
+  fPDGCharge{fParticleDefinition->GetPDGCharge()},
+  fPDGEncoding{fParticleDefinition->GetPDGEncoding()},
+  fMomentum{aTrack->GetMomentum()},
+  fVertexPosition{aTrack->GetVertexPosition()},
+  fGlobalTime{aTrack->GetGlobalTime()}
 {
-  fParticleDefinition = aTrack->GetDefinition();
-  fParticleName       = fParticleDefinition->GetParticleName();
-  fPDGEncoding        = fParticleDefinition->GetPDGEncoding();
-  fTrackID            = aTrack->GetTrackID();
-  fParentID           = aTrack->GetParentID();
-
-  fPositionRecord = new WLGDTrajectoryPointContainer();
   fPositionRecord->push_back(new G4TrajectoryPoint(aTrack->GetPosition()));
-
-  fMomentum       = aTrack->GetMomentum();
-  fVertexPosition = aTrack->GetVertexPosition();
-  fGlobalTime     = aTrack->GetGlobalTime();
 }
 
 WLGDTrajectory::~WLGDTrajectory()
