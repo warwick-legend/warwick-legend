@@ -58,7 +58,7 @@ void WLGDPSParentID::PrintAll()
   G4cout << " Number of entries " << EvtMap->entries() << G4endl;
   for(auto itr : *(EvtMap->GetMap()))
   {
-    G4cout << "  key: " << itr->first << "  parent ID: " << *(itr->second) << G4endl;
+    G4cout << "  key: " << itr.first << "  parent ID: " << *(itr.second) << G4endl;
   }
 }
 
