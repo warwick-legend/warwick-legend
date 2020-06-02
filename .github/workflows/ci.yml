@@ -21,7 +21,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install cvmfs cvmfs-config-default
           sudo cvmfs_config setup
-          echo  "CVMFS_REPOSITORIES=sft.cern.ch" | sudo tee -a  /etc/cvmfs/default.local > /dev/null
+          echo  "CVMFS_REPOSITORIES=sft.cern.ch,geant4.cern.ch" | sudo tee -a  /etc/cvmfs/default.local > /dev/null
           echo  "CVMFS_HTTP_PROXY=DIRECT"  | sudo tee -a  /etc/cvmfs/default.local > /dev/null
           sudo service autofs restart
           sudo cvmfs_config probe
