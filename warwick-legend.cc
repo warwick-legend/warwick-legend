@@ -1,5 +1,11 @@
 // ********************************************************************
 // warwick-legend project
+
+// standard
+#include <algorithm>
+#include <string>
+
+// Geant4
 #include "G4Types.hh"
 
 #ifdef G4MULTITHREADED
@@ -8,19 +14,9 @@
 #  include "G4RunManager.hh"
 #endif
 
-#ifdef G4VIS_USE
-#  include "G4VisExecutive.hh"
-#endif
+#include "G4UIExecutive.hh"
+#include "G4VisExecutive.hh"
 
-#ifdef G4UI_USE
-#  include "G4UIExecutive.hh"
-#endif
-
-// standard
-#include <algorithm>
-#include <string>
-
-// Geant4
 #include "G4GenericBiasingPhysics.hh"
 #include "G4NeutronTrackingCut.hh"
 #include "G4Threading.hh"
@@ -48,37 +44,46 @@ int main(int argc, char** argv)
   CLI11_PARSE(app, argc, argv);
 
   // GEANT4 code
+  // If we're in interactive mode (no macroName), create a UIexecutive
+  // Constructing it here ensures all G4cout/cerr is delivered to it, so in GUI
+  // modes we don't get a mix of terminal/GUI info
+  G4UIExecutive* ui = nullptr;
+  if(macroName.empty())
+  {
+    ui = new G4UIExecutive(argc, argv);
+  }
+
   // -- Construct the run manager : MT or sequential one
 #ifdef G4MULTITHREADED
   nthreads =
     std::min(nthreads, G4Threading::G4GetNumberOfCores());  // limit thread number to
                                                             // max on machine
 
-  auto runManager = new G4MTRunManager;
+  auto runManager = std::make_unique<G4MTRunManager>();
   G4cout << "      ********* Run Manager constructed in MT mode: " << nthreads
          << " threads ***** " << G4endl;
   runManager->SetNumberOfThreads(nthreads);
 
 #else
 
-  auto runManager = new G4RunManager;
+  auto runManager = std::make_unique<G4RunManager>();
   G4cout << "      ********** Run Manager constructed in sequential mode ************ "
          << G4endl;
 
 #endif
 
   // -- Set mandatory initialization classes
-  auto detector = new WLGDDetectorConstruction;
+  auto* detector = new WLGDDetectorConstruction;
   runManager->SetUserInitialization(detector);
 
   // -- set user physics list
-  auto physicsList = new Shielding;
-  auto neutronCut  = new G4NeutronTrackingCut(1);
+  auto* physicsList = new Shielding;
+  auto* neutronCut  = new G4NeutronTrackingCut(1);
   neutronCut->SetTimeLimit(1.0 * CLHEP::us);  // 1 micro sec limit
   physicsList->RegisterPhysics(neutronCut);   // allow G4UserLimits
 
   // - Setup biasing, first for neutrons, again for muons
-  G4GenericBiasingPhysics* biasingPhysics = new G4GenericBiasingPhysics();
+  auto* biasingPhysics = new G4GenericBiasingPhysics();
 
   G4String              pname = "nCapture";  // neutron capture process name
   std::vector<G4String> pvec;                // required vector,
@@ -94,45 +99,34 @@ int main(int argc, char** argv)
   runManager->SetUserInitialization(physicsList);
 
   // -- Set user action initialization class, forward random seed
-  auto actions = new WLGDActionInitialization(detector, outputFileName);
+  auto* actions = new WLGDActionInitialization(detector, outputFileName);
   runManager->SetUserInitialization(actions);
 
   // Initialize G4 kernel
   //
   runManager->Initialize();
 
-#ifdef G4VIS_USE
   // Visualization manager
   //
-  G4VisManager* visManager = new G4VisExecutive;
+  auto visManager = std::make_unique<G4VisExecutive>();
   visManager->Initialize();
-#endif
 
   // Get the pointer to the User Interface manager
   //
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
-  if(macroName.empty())  // Define UI session for interactive mode
+  if(ui != nullptr)  // Define UI session for interactive mode
   {
-#ifdef G4UI_USE
-    G4UIExecutive* ui = new G4UIExecutive(argc, argv);
-#  ifdef G4VIS_USE
     UImanager->ApplyCommand("/control/execute vis.mac");
-#  endif
     ui->SessionStart();
+    // UI must be deleted *before* the vis manager
     delete ui;
-#endif
   }
   else  // Batch mode
   {
     G4String command = "/control/execute ";
     UImanager->ApplyCommand(command + macroName);
   }
-
-#ifdef G4VIS_USE
-  delete visManager;
-#endif
-  delete runManager;
 
   return 0;
 }
