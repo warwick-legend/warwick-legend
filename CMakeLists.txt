@@ -39,9 +39,7 @@ target_link_libraries(warwick-legend PRIVATE ${Geant4_LIBRARIES})
 # where warwick-legend is run from.
 configure_file(vis.mac vis.mac COPYONLY)
 
-
 # Test
 if(BUILD_TESTING)
-  # 1. Check that we can run the most trivial example
-  add_test(NAME minimal-run COMMAND warwick-legend -m "${PROJECT_SOURCE_DIR}/test0.mac")
+  add_subdirectory(test)
 endif()

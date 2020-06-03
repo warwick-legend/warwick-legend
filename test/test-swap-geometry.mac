@@ -1,0 +1,11 @@
+# minimal commands to change geometry between runs
+# baseline
+/run/beamOn 1
+
+# alternative
+/WLGD/detector/setGeometry alternative
+/run/beamOn 1
+
+# restore baseline
+/WLGD/detector/setGeometry baseline
+/run/beamOn 1

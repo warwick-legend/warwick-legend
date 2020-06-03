@@ -19,6 +19,7 @@ public:
 
   G4double GetWorldSizeZ() { return fvertexZ; }  // inline
   G4double GetWorldExtent() { return fmaxrad; }  // --"--
+  void     SetGeometry(const G4String& name);
 
 private:
   void DefineCommands();
@@ -26,10 +27,10 @@ private:
   G4VPhysicalVolume* SetupBaseline();
   G4VPhysicalVolume* SetupAlternative();
 
-  G4GenericMessenger* fDetectorMessenger;
-  G4double            fvertexZ;
-  G4double            fmaxrad;
-  G4bool              fBaseline;
+  G4GenericMessenger* fDetectorMessenger = nullptr;
+  G4double            fvertexZ           = -1.0;
+  G4double            fmaxrad            = -1.0;
+  G4String            fGeometryName      = "baseline";
 };
 
 #endif
