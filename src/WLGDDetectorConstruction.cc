@@ -6,11 +6,14 @@
 
 #include "G4Box.hh"
 #include "G4Cons.hh"
+#include "G4GeometryManager.hh"
 #include "G4LogicalVolume.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4Material.hh"
 #include "G4NistManager.hh"
 #include "G4PVPlacement.hh"
+#include "G4PhysicalVolumeStore.hh"
+#include "G4SolidStore.hh"
 #include "G4Tubs.hh"
 
 #include "G4Colour.hh"
@@ -38,6 +41,12 @@ WLGDDetectorConstruction::~WLGDDetectorConstruction() { delete fDetectorMessenge
 
 auto WLGDDetectorConstruction::Construct() -> G4VPhysicalVolume*
 {
+  // Cleanup old geometry
+  G4GeometryManager::GetInstance()->OpenGeometry();
+  G4PhysicalVolumeStore::GetInstance()->Clean();
+  G4LogicalVolumeStore::GetInstance()->Clean();
+  G4SolidStore::GetInstance()->Clean();
+
   if(fGeometryName == "baseline")
   {
     return SetupBaseline();
@@ -48,83 +57,72 @@ auto WLGDDetectorConstruction::Construct() -> G4VPhysicalVolume*
 
 void WLGDDetectorConstruction::ConstructSDandField()
 {
-  G4SDManager::GetSDMpointer()->SetVerboseLevel(1);
+  G4SDManager::GetSDMpointer()->SetVerboseLevel(2);
 
-  auto* det = new G4MultiFunctionalDetector("Det");
-  G4SDManager::GetSDMpointer()->AddNewDetector(det);
+  // Only need to construct the (per-thread) SD once
+  if(!fSD.Get())
+  {
+    auto* det = new G4MultiFunctionalDetector("Det");
+    fSD.Put(det);
 
-  auto* vertexFilter = new G4SDParticleFilter("vtxfilt");
-  vertexFilter->add("neutron");  // neutrons in Ge of interest
-  // vertexFilter->add("mu-");      // muons in Ge of no interest
-  vertexFilter->addIon(32, 77);  // register 77Ge production
+    auto* vertexFilter = new G4SDParticleFilter("vtxfilt");
+    vertexFilter->add("neutron");  // neutrons in Ge of interest
+    vertexFilter->add("mu-");      // muons in Ge of no interest
+    vertexFilter->addIon(32, 77);  // register 77Ge production
 
-  auto* eprimitive = new WLGDPSEnergyDeposit("Edep");
-  eprimitive->SetFilter(vertexFilter);
-  det->RegisterPrimitive(eprimitive);
+    auto* eprimitive = new WLGDPSEnergyDeposit("Edep");
+    eprimitive->SetFilter(vertexFilter);
+    det->RegisterPrimitive(eprimitive);
 
-  auto* tprimitive = new WLGDPSTime("Time");
-  tprimitive->SetFilter(vertexFilter);
-  det->RegisterPrimitive(tprimitive);
+    auto* tprimitive = new WLGDPSTime("Time");
+    tprimitive->SetFilter(vertexFilter);
+    det->RegisterPrimitive(tprimitive);
 
-  auto* lprimitive = new WLGDPSLocation("Loc");
-  lprimitive->SetFilter(vertexFilter);
-  det->RegisterPrimitive(lprimitive);
+    auto* lprimitive = new WLGDPSLocation("Loc");
+    lprimitive->SetFilter(vertexFilter);
+    det->RegisterPrimitive(lprimitive);
 
-  auto* idprimitive = new WLGDPSTrackID("TrackID");
-  idprimitive->SetFilter(vertexFilter);
-  det->RegisterPrimitive(idprimitive);
+    auto* idprimitive = new WLGDPSTrackID("TrackID");
+    idprimitive->SetFilter(vertexFilter);
+    det->RegisterPrimitive(idprimitive);
 
-  auto* primitive = new WLGDPSParentID("ParentID");
-  primitive->SetFilter(vertexFilter);
-  det->RegisterPrimitive(primitive);
+    auto* primitive = new WLGDPSParentID("ParentID");
+    primitive->SetFilter(vertexFilter);
+    det->RegisterPrimitive(primitive);
+
+    // Also only add it once to the SD manager!
+    G4SDManager::GetSDMpointer()->AddNewDetector(fSD.Get());
+  }
+
+  SetSensitiveDetector("Ge_log", fSD.Get());
 
   // ----------------------------------------------
   // -- operator creation and attachment to volume:
   // ----------------------------------------------
+  G4LogicalVolumeStore* volumeStore = G4LogicalVolumeStore::GetInstance();
+
+  // -- Attach neutron XS biasing to required volumes
   auto* biasnXS = new WLGDBiasMultiParticleChangeCrossSection();
   biasnXS->AddParticle("neutron");
+  G4LogicalVolume* logicGe = volumeStore->GetVolume("Ge_log");
+  biasnXS->AttachTo(logicGe);
 
+  // -- Attach muon XS biasing to required volumes
   auto* biasmuXS = new WLGDBiasMultiParticleChangeCrossSection();
   biasmuXS->AddParticle("mu-");
 
+  G4LogicalVolume* logicLar = volumeStore->GetVolume("Lar_log");
+  biasmuXS->AttachTo(logicLar);
+
+  G4LogicalVolume* logicULar = volumeStore->GetVolume("ULar_log");
+  biasmuXS->AttachTo(logicULar);
+
+  // Baseline also has a water volume
   if(fGeometryName == "baseline")
   {
-    G4LogicalVolumeStore* volumeStore = G4LogicalVolumeStore::GetInstance();
-    // -- Attach muon XS biasing to required volumes
     G4LogicalVolume* logicWater = volumeStore->GetVolume("Water_log");
     biasmuXS->AttachTo(logicWater);
-
-    G4LogicalVolume* logicLar = volumeStore->GetVolume("Lar_log");
-    biasmuXS->AttachTo(logicLar);
-
-    G4LogicalVolume* logicULar = volumeStore->GetVolume("ULar_log");
-    biasmuXS->AttachTo(logicULar);
-
-    // -- Attach neutron XS biasing to required volumes
-    G4LogicalVolume* logicGe = volumeStore->GetVolume("Ge_log");
-    biasnXS->AttachTo(logicGe);
-
-    SetSensitiveDetector(logicGe, det);
   }
-
-  else
-  {
-    G4LogicalVolumeStore* volumeStore = G4LogicalVolumeStore::GetInstance();
-    // -- Attach muon XS biasing to required volumes
-    G4LogicalVolume* logicLar = volumeStore->GetVolume("Lar_log");
-    biasmuXS->AttachTo(logicLar);
-
-    G4LogicalVolume* logicULar = volumeStore->GetVolume("ULar_log");
-    biasmuXS->AttachTo(logicULar);
-
-    // -- Attach neutron XS biasing to required volumes
-    G4LogicalVolume* logicGe = volumeStore->GetVolume("Ge_log");
-    biasnXS->AttachTo(logicGe);
-
-    SetSensitiveDetector(logicGe, det);
-  }
-
-  G4SDManager::GetSDMpointer()->SetVerboseLevel(0);
 }
 
 auto WLGDDetectorConstruction::SetupAlternative() -> G4VPhysicalVolume*
@@ -627,6 +625,7 @@ void WLGDDetectorConstruction::SetGeometry(const G4String& name)
   }
 
   fGeometryName = name;
+  // Reinit wiping out stores
   G4RunManager::GetRunManager()->ReinitializeGeometry();
 }
 
@@ -642,5 +641,6 @@ void WLGDDetectorConstruction::DefineCommands()
     .SetGuidance("baseline = NEEDS DESCRIPTION")
     .SetGuidance("alternative = NEEDS DESCRIPTION")
     .SetCandidates("baseline alternative")
-    .SetStates(G4State_PreInit, G4State_Idle);
+    .SetStates(G4State_PreInit, G4State_Idle)
+    .SetToBeBroadcasted(false);
 }
