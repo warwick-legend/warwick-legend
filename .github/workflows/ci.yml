@@ -39,4 +39,4 @@ jobs:
           LCG_RELEASE: /cvmfs/sft.cern.ch/lcg/views/LCG_97python3/x86_64-centos7-gcc9-opt
         run: |
           docker exec builder bash -c "mkdir $BUILD_DIR"
-          docker exec builder bash -c ". $LCG_RELEASE/setup.sh && cd $BUILD_DIR && cmake .. && cmake --build . && ctest -VV"
+          docker exec builder bash -c ". $LCG_RELEASE/setup.sh && cd $BUILD_DIR && cmake .. && cmake --build . && env | sort && ctest -VV"
