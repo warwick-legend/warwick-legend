@@ -29,14 +29,14 @@ jobs:
       - name: Pull Docker Image
         run: docker pull benmorgan/lcg-builder
       - name: Create Docker Container
-        run: docker run -itd --name builder -v $GITHUB_WORKSPACE:/workspace -v /cvmfs:/cvmfs -w /workspace benmorgan/lcg-builder
+        run: docker run -itd --name builder -v $GITHUB_WORKSPACE:/workspace -v /cvmfs:/cvmfs:shared -w /workspace benmorgan/lcg-builder
       # Now the actual builds...
       - uses: actions/checkout@v2
       # Run each config in series just to check that things work
       - name: Build CentOS/gcc9 (LCG_97python3)
         env:
-          BUILD_DIR: build-gcc8
+          BUILD_DIR: build-gcc9
           LCG_RELEASE: /cvmfs/sft.cern.ch/lcg/views/LCG_97python3/x86_64-centos7-gcc9-opt
         run: |
           docker exec builder bash -c "mkdir $BUILD_DIR"
-          docker exec builder bash -c ". $LCG_RELEASE/setup.sh && cd $BUILD_DIR && cmake .. && cmake --build . && ls /cvmfs/geant4.cern.ch/share && ctest -VV"
+          docker exec builder bash -c ". $LCG_RELEASE/setup.sh && cd $BUILD_DIR && cmake .. && cmake --build . && ctest -VV"
