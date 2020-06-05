@@ -33,7 +33,7 @@
 
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
-#include "G4UserLimits.hh"
+
 
 WLGDDetectorConstruction::WLGDDetectorConstruction() 
 { 
@@ -154,27 +154,50 @@ void WLGDDetectorConstruction::ConstructSDandField()
   // ----------------------------------------------
   G4LogicalVolumeStore* volumeStore = G4LogicalVolumeStore::GetInstance();
 
-  // -- Attach neutron XS biasing to required volumes
+  // -- Attach neutron XS biasing to Germanium -> enhance nCapture
   auto* biasnXS = new WLGDBiasMultiParticleChangeCrossSection();
   biasnXS->AddParticle("neutron");
   G4LogicalVolume* logicGe = volumeStore->GetVolume("Ge_log");
   biasnXS->AttachTo(logicGe);
 
-  // -- Attach muon XS biasing to required volumes
+  // -- Attach muon XS biasing to all required volumes consistently
   auto* biasmuXS = new WLGDBiasMultiParticleChangeCrossSection();
   biasmuXS->AddParticle("mu-");
 
-  G4LogicalVolume* logicLar = volumeStore->GetVolume("Lar_log");
+  G4LogicalVolume* logicCavern   = volumeStore->GetVolume("Cavern_log");
+  biasmuXS->AttachTo(logicCavern);
+  G4LogicalVolume* logicHall     = volumeStore->GetVolume("Hall_log");  
+  biasmuXS->AttachTo(logicHall);
+  G4LogicalVolume* logicTank     = volumeStore->GetVolume("Tank_log");  
+  biasmuXS->AttachTo(logicTank);
+  G4LogicalVolume* logicLar      = volumeStore->GetVolume("Lar_log");
   biasmuXS->AttachTo(logicLar);
-
-  G4LogicalVolume* logicULar = volumeStore->GetVolume("ULar_log");
+  G4LogicalVolume* logicCu       = volumeStore->GetVolume("Copper_log");
+  biasmuXS->AttachTo(logicCu);     
+  G4LogicalVolume* logicULar     = volumeStore->GetVolume("ULar_log");
   biasmuXS->AttachTo(logicULar);
 
-  // Baseline also has a water volume
+  // Baseline also has a water volume and cryostat
   if(fGeometryName == "baseline")
   {
     G4LogicalVolume* logicWater = volumeStore->GetVolume("Water_log");
     biasmuXS->AttachTo(logicWater);
+    G4LogicalVolume* logicCout  = volumeStore->GetVolume("Cout_log");
+    biasmuXS->AttachTo(logicCout);
+    G4LogicalVolume* logicCinn  = volumeStore->GetVolume("Cinn_log");
+    biasmuXS->AttachTo(logicCinn);
+    G4LogicalVolume* logicCLid  = volumeStore->GetVolume("Lid_log");
+    biasmuXS->AttachTo(logicCLid);
+    G4LogicalVolume* logicCBot  = volumeStore->GetVolume("Bot_log");
+    biasmuXS->AttachTo(logicCBot);
+  }
+  // Alternative has the membrane and insulator
+  else if(fGeometryName == "alternative")
+  {
+    G4LogicalVolume* logicPu       = volumeStore->GetVolume("Pu_log"); 
+    biasmuXS->AttachTo(logicPu);
+    G4LogicalVolume* logicMembrane = volumeStore->GetVolume("Membrane_log");
+    biasmuXS->AttachTo(logicMembrane);
   }
 }
 
@@ -339,13 +362,6 @@ auto WLGDDetectorConstruction::SetupAlternative() -> G4VPhysicalVolume*
   new G4PVPlacement(nullptr, G4ThreeVector(0., -ringrad * cm, cushift * cm), fUlarLogical,
                     "ULar_phys4", fLarLogical, false, 3, true);
 
-  //
-  // User limits
-  //
-  //  G4double maxTime    = 1 * ms;  // affects long-lived neutrons
-  //  auto     outerlimit = new G4UserLimits(DBL_MAX, DBL_MAX, maxTime);
-  //  fCavernLogical->SetUserLimits(outerlimit);
-  //  fLarLogical->SetUserLimits(outerlimit);
 
   //
   // Visualization attributes
@@ -573,14 +589,6 @@ auto WLGDDetectorConstruction::SetupBaseline() -> G4VPhysicalVolume*
   new G4PVPlacement(nullptr, G4ThreeVector(0., -ringrad * cm, cushift * cm), fUlarLogical,
                     "ULar_phys4", fLarLogical, false, 3, true);
 
-  //
-  // User limits
-  //
-  //  G4double maxTime    = 1 * ms;  // affects long-lived neutrons
-  //  auto     outerlimit = new G4UserLimits(DBL_MAX, DBL_MAX, maxTime);
-  //  fCavernLogical->SetUserLimits(outerlimit);
-  //  fWaterLogical->SetUserLimits(outerlimit);
-  //  fLarLogical->SetUserLimits(outerlimit);
 
   //
   // Visualization attributes
