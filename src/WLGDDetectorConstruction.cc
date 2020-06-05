@@ -34,13 +34,11 @@
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 
-
-WLGDDetectorConstruction::WLGDDetectorConstruction() 
-{ 
-  DefineCommands(); 
+WLGDDetectorConstruction::WLGDDetectorConstruction()
+{
+  DefineCommands();
 
   DefineMaterials();
-
 }
 
 WLGDDetectorConstruction::~WLGDDetectorConstruction() { delete fDetectorMessenger; }
@@ -61,22 +59,21 @@ auto WLGDDetectorConstruction::Construct() -> G4VPhysicalVolume*
   return SetupAlternative();
 }
 
-
 void WLGDDetectorConstruction::DefineMaterials()
 {
-  G4NistManager* nistManager   = G4NistManager::Instance();
+  G4NistManager* nistManager = G4NistManager::Instance();
   nistManager->FindOrBuildMaterial("G4_Galactic");
   nistManager->FindOrBuildMaterial("G4_lAr");
   nistManager->FindOrBuildMaterial("G4_AIR");
   nistManager->FindOrBuildMaterial("G4_STAINLESS-STEEL");
   nistManager->FindOrBuildMaterial("G4_Cu");
   nistManager->FindOrBuildMaterial("G4_WATER");
-  
+
   auto* C  = new G4Element("Carbon", "C", 6., 12.011 * g / mole);
   auto* O  = new G4Element("Oxygen", "O", 8., 16.00 * g / mole);
-  auto* Ca = new G4Element("Calcium", "Ca", 20., 40.08 * g / mole);   
+  auto* Ca = new G4Element("Calcium", "Ca", 20., 40.08 * g / mole);
   auto* Mg = new G4Element("Magnesium", "Mg", 12., 24.31 * g / mole);
-    
+
   // Standard Rock definition, similar to Gran Sasso rock
   // with density from PDG report
   auto* stdRock = new G4Material("StdRock", 2.65 * g / cm3, 4);
@@ -92,21 +89,19 @@ void WLGDDetectorConstruction::DefineMaterials()
   puMat->AddElement(O, 2);
   puMat->AddElement(C, 8);
   puMat->AddElement(N, 2);
-    
+
   // enriched Germanium from isotopes
   auto* Ge_74 = new G4Isotope("Ge74", 32, 74, 74.0 * g / mole);
   auto* Ge_76 = new G4Isotope("Ge76", 32, 76, 76.0 * g / mole);
-  
+
   auto* eGe = new G4Element("enriched Germanium", "enrGe", 2);
-  eGe->AddIsotope(Ge_76, 88. * perCent); 
-  eGe->AddIsotope(Ge_74, 12. * perCent); 
-  
+  eGe->AddIsotope(Ge_76, 88. * perCent);
+  eGe->AddIsotope(Ge_74, 12. * perCent);
+
   G4double density = 3.323 * mg / cm3;
   auto*    roiMat  = new G4Material("enrGe", density, 1);
   roiMat->AddElement(eGe, 1);
-
 }
-
 
 void WLGDDetectorConstruction::ConstructSDandField()
 {
@@ -163,17 +158,17 @@ void WLGDDetectorConstruction::ConstructSDandField()
   auto* biasmuXS = new WLGDBiasMultiParticleChangeCrossSection();
   biasmuXS->AddParticle("mu-");
 
-  G4LogicalVolume* logicCavern   = volumeStore->GetVolume("Cavern_log");
+  G4LogicalVolume* logicCavern = volumeStore->GetVolume("Cavern_log");
   biasmuXS->AttachTo(logicCavern);
-  G4LogicalVolume* logicHall     = volumeStore->GetVolume("Hall_log");  
+  G4LogicalVolume* logicHall = volumeStore->GetVolume("Hall_log");
   biasmuXS->AttachTo(logicHall);
-  G4LogicalVolume* logicTank     = volumeStore->GetVolume("Tank_log");  
+  G4LogicalVolume* logicTank = volumeStore->GetVolume("Tank_log");
   biasmuXS->AttachTo(logicTank);
-  G4LogicalVolume* logicLar      = volumeStore->GetVolume("Lar_log");
+  G4LogicalVolume* logicLar = volumeStore->GetVolume("Lar_log");
   biasmuXS->AttachTo(logicLar);
-  G4LogicalVolume* logicCu       = volumeStore->GetVolume("Copper_log");
-  biasmuXS->AttachTo(logicCu);     
-  G4LogicalVolume* logicULar     = volumeStore->GetVolume("ULar_log");
+  G4LogicalVolume* logicCu = volumeStore->GetVolume("Copper_log");
+  biasmuXS->AttachTo(logicCu);
+  G4LogicalVolume* logicULar = volumeStore->GetVolume("ULar_log");
   biasmuXS->AttachTo(logicULar);
 
   // Baseline also has a water volume and cryostat
@@ -181,19 +176,19 @@ void WLGDDetectorConstruction::ConstructSDandField()
   {
     G4LogicalVolume* logicWater = volumeStore->GetVolume("Water_log");
     biasmuXS->AttachTo(logicWater);
-    G4LogicalVolume* logicCout  = volumeStore->GetVolume("Cout_log");
+    G4LogicalVolume* logicCout = volumeStore->GetVolume("Cout_log");
     biasmuXS->AttachTo(logicCout);
-    G4LogicalVolume* logicCinn  = volumeStore->GetVolume("Cinn_log");
+    G4LogicalVolume* logicCinn = volumeStore->GetVolume("Cinn_log");
     biasmuXS->AttachTo(logicCinn);
-    G4LogicalVolume* logicCLid  = volumeStore->GetVolume("Lid_log");
+    G4LogicalVolume* logicCLid = volumeStore->GetVolume("Lid_log");
     biasmuXS->AttachTo(logicCLid);
-    G4LogicalVolume* logicCBot  = volumeStore->GetVolume("Bot_log");
+    G4LogicalVolume* logicCBot = volumeStore->GetVolume("Bot_log");
     biasmuXS->AttachTo(logicCBot);
   }
   // Alternative has the membrane and insulator
   else if(fGeometryName == "alternative")
   {
-    G4LogicalVolume* logicPu       = volumeStore->GetVolume("Pu_log"); 
+    G4LogicalVolume* logicPu = volumeStore->GetVolume("Pu_log");
     biasmuXS->AttachTo(logicPu);
     G4LogicalVolume* logicMembrane = volumeStore->GetVolume("Membrane_log");
     biasmuXS->AttachTo(logicMembrane);
@@ -203,14 +198,14 @@ void WLGDDetectorConstruction::ConstructSDandField()
 auto WLGDDetectorConstruction::SetupAlternative() -> G4VPhysicalVolume*
 {
   // Get materials
-  auto*    worldMaterial = G4Material::GetMaterial("G4_Galactic");
-  auto*    larMat        = G4Material::GetMaterial("G4_lAr");
-  auto*    airMat        = G4Material::GetMaterial("G4_AIR");
-  auto*    steelMat      = G4Material::GetMaterial("G4_STAINLESS-STEEL");
-  auto*    copperMat     = G4Material::GetMaterial("G4_Cu");
-  auto*    stdRock       = G4Material::GetMaterial("StdRock");
-  auto*    puMat         = G4Material::GetMaterial("polyurethane");
-  auto*    roiMat        = G4Material::GetMaterial("enrGe");
+  auto* worldMaterial = G4Material::GetMaterial("G4_Galactic");
+  auto* larMat        = G4Material::GetMaterial("G4_lAr");
+  auto* airMat        = G4Material::GetMaterial("G4_AIR");
+  auto* steelMat      = G4Material::GetMaterial("G4_STAINLESS-STEEL");
+  auto* copperMat     = G4Material::GetMaterial("G4_Cu");
+  auto* stdRock       = G4Material::GetMaterial("StdRock");
+  auto* puMat         = G4Material::GetMaterial("polyurethane");
+  auto* roiMat        = G4Material::GetMaterial("enrGe");
 
   // size parameter, unit [cm]
   // cavern
@@ -361,7 +356,6 @@ auto WLGDDetectorConstruction::SetupAlternative() -> G4VPhysicalVolume*
   new G4PVPlacement(nullptr, G4ThreeVector(0., -ringrad * cm, cushift * cm), fUlarLogical,
                     "ULar_phys4", fLarLogical, false, 3, true);
 
-
   //
   // Visualization attributes
   //
@@ -392,15 +386,14 @@ auto WLGDDetectorConstruction::SetupAlternative() -> G4VPhysicalVolume*
 auto WLGDDetectorConstruction::SetupBaseline() -> G4VPhysicalVolume*
 {
   // Get materials
-  auto*    worldMaterial = G4Material::GetMaterial("G4_Galactic");
-  auto*    larMat        = G4Material::GetMaterial("G4_lAr");
-  auto*    airMat        = G4Material::GetMaterial("G4_AIR");
-  auto*    waterMat      = G4Material::GetMaterial("G4_WATER");
-  auto*    steelMat      = G4Material::GetMaterial("G4_STAINLESS-STEEL");
-  auto*    copperMat     = G4Material::GetMaterial("G4_Cu");
-  auto*    stdRock       = G4Material::GetMaterial("StdRock");
-  auto*    roiMat        = G4Material::GetMaterial("enrGe");
-
+  auto* worldMaterial = G4Material::GetMaterial("G4_Galactic");
+  auto* larMat        = G4Material::GetMaterial("G4_lAr");
+  auto* airMat        = G4Material::GetMaterial("G4_AIR");
+  auto* waterMat      = G4Material::GetMaterial("G4_WATER");
+  auto* steelMat      = G4Material::GetMaterial("G4_STAINLESS-STEEL");
+  auto* copperMat     = G4Material::GetMaterial("G4_Cu");
+  auto* stdRock       = G4Material::GetMaterial("StdRock");
+  auto* roiMat        = G4Material::GetMaterial("enrGe");
 
   // constants
   // size parameter, unit [cm]
@@ -587,7 +580,6 @@ auto WLGDDetectorConstruction::SetupBaseline() -> G4VPhysicalVolume*
 
   new G4PVPlacement(nullptr, G4ThreeVector(0., -ringrad * cm, cushift * cm), fUlarLogical,
                     "ULar_phys4", fLarLogical, false, 3, true);
-
 
   //
   // Visualization attributes
