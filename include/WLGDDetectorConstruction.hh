@@ -25,6 +25,7 @@ public:
 
 private:
   void DefineCommands();
+  void DefineMaterials();
 
   G4VPhysicalVolume* SetupBaseline();
   G4VPhysicalVolume* SetupAlternative();

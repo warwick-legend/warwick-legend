@@ -35,7 +35,13 @@
 #include "G4SystemOfUnits.hh"
 #include "G4UserLimits.hh"
 
-WLGDDetectorConstruction::WLGDDetectorConstruction() { DefineCommands(); }
+WLGDDetectorConstruction::WLGDDetectorConstruction() 
+{ 
+  DefineCommands(); 
+
+  DefineMaterials();
+
+}
 
 WLGDDetectorConstruction::~WLGDDetectorConstruction() { delete fDetectorMessenger; }
 
@@ -54,6 +60,53 @@ auto WLGDDetectorConstruction::Construct() -> G4VPhysicalVolume*
 
   return SetupAlternative();
 }
+
+
+void WLGDDetectorConstruction::DefineMaterials()
+{
+  G4NistManager* nistManager   = G4NistManager::Instance();
+  nistManager->FindOrBuildMaterial("G4_Galactic");
+  nistManager->FindOrBuildMaterial("G4_lAr");
+  nistManager->FindOrBuildMaterial("G4_AIR");
+  nistManager->FindOrBuildMaterial("G4_STAINLESS-STEEL");
+  nistManager->FindOrBuildMaterial("G4_Cu");
+  nistManager->FindOrBuildMaterial("G4_WATER");
+  
+  auto* C  = new G4Element("Carbon", "C", 6., 12.011 * g / mole);
+  auto* O  = new G4Element("Oxygen", "O", 8., 16.00 * g / mole);
+  auto* Ca = new G4Element("Calcium", "Ca", 20., 40.08 * g / mole);   
+  auto* Mg = new G4Element("Magnesium", "Mg", 12., 24.31 * g / mole);
+    
+  // Standard Rock definition, similar to Gran Sasso rock
+  // with density from PDG report
+  auto* stdRock = new G4Material("StdRock", 2.65 * g / cm3, 4);
+  stdRock->AddElement(O, 52.0 * perCent);
+  stdRock->AddElement(Ca, 27.0 * perCent);
+  stdRock->AddElement(C, 12.0 * perCent);
+  stdRock->AddElement(Mg, 9.0 * perCent);
+
+  auto* H     = new G4Element("Hydrogen", "H", 1., 1.00794 * g / mole);
+  auto* N     = new G4Element("Nitrogen", "N", 7., 14.00 * g / mole);
+  auto* puMat = new G4Material("polyurethane", 0.3 * g / cm3, 4);  // high density foam
+  puMat->AddElement(H, 16);
+  puMat->AddElement(O, 2);
+  puMat->AddElement(C, 8);
+  puMat->AddElement(N, 2);
+    
+  // enriched Germanium from isotopes
+  auto* Ge_74 = new G4Isotope("Ge74", 32, 74, 74.0 * g / mole);
+  auto* Ge_76 = new G4Isotope("Ge76", 32, 76, 76.0 * g / mole);
+  
+  auto* eGe = new G4Element("enriched Germanium", "enrGe", 2);
+  eGe->AddIsotope(Ge_76, 88. * perCent); 
+  eGe->AddIsotope(Ge_74, 12. * perCent); 
+  
+  G4double density = 3.323 * mg / cm3;
+  auto*    roiMat  = new G4Material("enrGe", density, 1);
+  roiMat->AddElement(eGe, 1);
+
+}
+
 
 void WLGDDetectorConstruction::ConstructSDandField()
 {
@@ -127,45 +180,15 @@ void WLGDDetectorConstruction::ConstructSDandField()
 
 auto WLGDDetectorConstruction::SetupAlternative() -> G4VPhysicalVolume*
 {
-  G4NistManager* nistManager   = G4NistManager::Instance();
-  G4Material*    worldMaterial = nistManager->FindOrBuildMaterial("G4_Galactic");
-  G4Material*    larMat        = nistManager->FindOrBuildMaterial("G4_lAr");
-  G4Material*    airMat        = nistManager->FindOrBuildMaterial("G4_AIR");
-  G4Material*    steelMat      = nistManager->FindOrBuildMaterial("G4_STAINLESS-STEEL");
-  G4Material*    copperMat     = nistManager->FindOrBuildMaterial("G4_Cu");
-
-  auto* C  = new G4Element("Carbon", "C", 6., 12.011 * g / mole);
-  auto* O  = new G4Element("Oxygen", "O", 8., 16.00 * g / mole);
-  auto* Ca = new G4Element("Calcium", "Ca", 20., 40.08 * g / mole);
-  auto* Mg = new G4Element("Magnesium", "Mg", 12., 24.31 * g / mole);
-
-  // Standard Rock definition, similar to Gran Sasso rock
-  // with density from PDG report
-  auto* stdRock = new G4Material("StdRock", 2.65 * g / cm3, 4);
-  stdRock->AddElement(O, 52.0 * perCent);
-  stdRock->AddElement(Ca, 27.0 * perCent);
-  stdRock->AddElement(C, 12.0 * perCent);
-  stdRock->AddElement(Mg, 9.0 * perCent);
-
-  auto* H     = new G4Element("Hydrogen", "H", 1., 1.00794 * g / mole);
-  auto* N     = new G4Element("Nitrogen", "N", 7., 14.00 * g / mole);
-  auto* puMat = new G4Material("polyurethane", 0.3 * g / cm3, 4);  // high density foam
-  puMat->AddElement(H, 16);
-  puMat->AddElement(O, 2);
-  puMat->AddElement(C, 8);
-  puMat->AddElement(N, 2);
-
-  // enriched Germanium from isotopes
-  auto* Ge_74 = new G4Isotope("Ge74", 32, 74, 74.0 * g / mole);
-  auto* Ge_76 = new G4Isotope("Ge76", 32, 76, 76.0 * g / mole);
-
-  auto* eGe = new G4Element("enriched Germanium", "enrGe", 2);
-  eGe->AddIsotope(Ge_76, 88. * perCent);
-  eGe->AddIsotope(Ge_74, 12. * perCent);
-
-  G4double density = 3.323 * mg / cm3;
-  auto*    roiMat  = new G4Material("enrGe", density, 1);
-  roiMat->AddElement(eGe, 1);
+  // Get materials
+  auto*    worldMaterial = G4Material::GetMaterial("G4_Galactic");
+  auto*    larMat        = G4Material::GetMaterial("G4_lAr");
+  auto*    airMat        = G4Material::GetMaterial("G4_AIR");
+  auto*    steelMat      = G4Material::GetMaterial("G4_STAINLESS-STEEL");
+  auto*    copperMat     = G4Material::GetMaterial("G4_Cu");
+  auto*    stdRock       = G4Material::GetMaterial("StdRock");
+  auto*    puMat         = G4Material::GetMaterial("polyurethane");
+  auto*    roiMat        = G4Material::GetMaterial("enrGe");
 
   // size parameter, unit [cm]
   // cavern
@@ -353,40 +376,16 @@ auto WLGDDetectorConstruction::SetupAlternative() -> G4VPhysicalVolume*
 
 auto WLGDDetectorConstruction::SetupBaseline() -> G4VPhysicalVolume*
 {
-  // Materials for this geometry
-  G4Material* worldMaterial =
-    G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
-  G4Material* larMat   = G4NistManager::Instance()->FindOrBuildMaterial("G4_lAr");
-  G4Material* airMat   = G4NistManager::Instance()->FindOrBuildMaterial("G4_AIR");
-  G4Material* waterMat = G4NistManager::Instance()->FindOrBuildMaterial("G4_WATER");
-  G4Material* steelMat =
-    G4NistManager::Instance()->FindOrBuildMaterial("G4_STAINLESS-STEEL");
-  G4Material* copperMat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Cu");
+  // Get materials
+  auto*    worldMaterial = G4Material::GetMaterial("G4_Galactic");
+  auto*    larMat        = G4Material::GetMaterial("G4_lAr");
+  auto*    airMat        = G4Material::GetMaterial("G4_AIR");
+  auto*    waterMat      = G4Material::GetMaterial("G4_WATER");
+  auto*    steelMat      = G4Material::GetMaterial("G4_STAINLESS-STEEL");
+  auto*    copperMat     = G4Material::GetMaterial("G4_Cu");
+  auto*    stdRock       = G4Material::GetMaterial("StdRock");
+  auto*    roiMat        = G4Material::GetMaterial("enrGe");
 
-  auto* C  = new G4Element("Carbon", "C", 6., 12.011 * g / mole);
-  auto* O  = new G4Element("Oxygen", "O", 8., 16.00 * g / mole);
-  auto* Ca = new G4Element("Calcium", "Ca", 20., 40.08 * g / mole);
-  auto* Mg = new G4Element("Magnesium", "Mg", 12., 24.31 * g / mole);
-
-  // Standard Rock definition, similar to Gran Sasso rock
-  // with density from PDG report
-  auto* stdRock = new G4Material("StdRock", 2.65 * g / cm3, 4);
-  stdRock->AddElement(O, 52.0 * perCent);
-  stdRock->AddElement(Ca, 27.0 * perCent);
-  stdRock->AddElement(C, 12.0 * perCent);
-  stdRock->AddElement(Mg, 9.0 * perCent);
-
-  // enriched Germanium from isotopes
-  auto* Ge_74 = new G4Isotope("Ge74", 32, 74, 74.0 * g / mole);
-  auto* Ge_76 = new G4Isotope("Ge76", 32, 76, 76.0 * g / mole);
-
-  auto* eGe = new G4Element("enriched Germanium", "enrGe", 2);
-  eGe->AddIsotope(Ge_76, 88. * perCent);
-  eGe->AddIsotope(Ge_74, 12. * perCent);
-
-  G4double density = 3.323 * mg / cm3;
-  auto*    roiMat  = new G4Material("enrGe", density, 1);
-  roiMat->AddElement(eGe, 1);
 
   // constants
   // size parameter, unit [cm]
