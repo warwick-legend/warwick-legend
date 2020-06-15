@@ -144,32 +144,32 @@ void WLGDDetectorConstruction::ConstructSDandField()
 
     // ----------------------------------------------
     // -- operator creation and attachment to volume:
-    // ----------------------------------------------    
+    // ----------------------------------------------
     G4LogicalVolumeStore* volumeStore = G4LogicalVolumeStore::GetInstance();
-    
+
     // -- Attach neutron XS biasing to Germanium -> enhance nCapture
     auto* biasnXS = new WLGDBiasMultiParticleChangeCrossSection();
     biasnXS->AddParticle("neutron");
     G4LogicalVolume* logicGe = volumeStore->GetVolume("Ge_log");
     biasnXS->AttachTo(logicGe);
-   
+
     // -- Attach muon XS biasing to all required volumes consistently
     auto* biasmuXS = new WLGDBiasMultiParticleChangeCrossSection();
     biasmuXS->AddParticle("mu-");
-   
+
     G4LogicalVolume* logicCavern = volumeStore->GetVolume("Cavern_log");
     biasmuXS->AttachTo(logicCavern);
     G4LogicalVolume* logicHall = volumeStore->GetVolume("Hall_log");
     biasmuXS->AttachTo(logicHall);
     G4LogicalVolume* logicTank = volumeStore->GetVolume("Tank_log");
     biasmuXS->AttachTo(logicTank);
-    G4LogicalVolume* logicLar = volumeStore->GetVolume("Lar_log");  
+    G4LogicalVolume* logicLar = volumeStore->GetVolume("Lar_log");
     biasmuXS->AttachTo(logicLar);
     G4LogicalVolume* logicCu = volumeStore->GetVolume("Copper_log");
     biasmuXS->AttachTo(logicCu);
     G4LogicalVolume* logicULar = volumeStore->GetVolume("ULar_log");
     biasmuXS->AttachTo(logicULar);
-  
+
     // Baseline also has a water volume and cryostat
     if(fGeometryName == "baseline")
     {
@@ -192,13 +192,11 @@ void WLGDDetectorConstruction::ConstructSDandField()
       G4LogicalVolume* logicMembrane = volumeStore->GetVolume("Membrane_log");
       biasmuXS->AttachTo(logicMembrane);
     }
-
   }
   else
   {
     G4cout << " >>> fSD has entry. Repeated call." << G4endl;
   }
-
 }
 
 auto WLGDDetectorConstruction::SetupAlternative() -> G4VPhysicalVolume*
