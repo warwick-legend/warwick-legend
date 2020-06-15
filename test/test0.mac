@@ -6,6 +6,9 @@
 # set default cut
 /run/setCut 3.0 cm
 
+# run init
+/run/initialize
+
 # lab depth [km.w.e.]
 /WLGD/generator/depth 5.89
 

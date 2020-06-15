@@ -74,6 +74,17 @@ void WLGDEventAction::BeginOfEventAction(const G4Event*
   xloc.clear();
   yloc.clear();
   zloc.clear();
+  // clear trajectory data
+  trjtid.clear();
+  trjpid.clear();
+  trjpdg.clear();
+  trjnpts.clear();
+  trjxvtx.clear();
+  trjyvtx.clear();
+  trjzvtx.clear();
+  trjxpos.clear();
+  trjypos.clear();
+  trjzpos.clear();
 }
 
 void WLGDEventAction::EndOfEventAction(const G4Event* event)
@@ -133,7 +144,7 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
     G4String        pname = trj->GetParticleName();  // filter on particle name
     G4int           Z     = trj->GetParticleDefinition()->GetAtomicNumber();
     G4int           A     = trj->GetParticleDefinition()->GetAtomicMass();
-    if(pname == "neutron" || (Z == 32 && A == 77))
+    if(pname == "neutron" || pname == "mu-" || (Z == 32 && A == 77))
     {
       trjtid.push_back(trj->GetTrackID());
       trjpid.push_back(trj->GetParentID());
