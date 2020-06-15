@@ -104,12 +104,12 @@ int main(int argc, char** argv)
 
   // Initialize G4 kernel
   //
-  runManager->Initialize();
+  // runManager->Initialize();
 
   // Visualization manager
   //
-  auto visManager = std::make_unique<G4VisExecutive>();
-  visManager->Initialize();
+  // auto visManager = std::make_unique<G4VisExecutive>();
+  // visManager->Initialize();
 
   // Get the pointer to the User Interface manager
   //
@@ -117,6 +117,9 @@ int main(int argc, char** argv)
 
   if(ui != nullptr)  // Define UI session for interactive mode
   {
+    auto visManager = std::make_unique<G4VisExecutive>();
+    visManager->Initialize();
+
     UImanager->ApplyCommand("/control/execute vis.mac");
     ui->SessionStart();
     // UI must be deleted *before* the vis manager
