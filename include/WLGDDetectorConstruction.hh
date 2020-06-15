@@ -22,6 +22,8 @@ public:
   G4double GetWorldSizeZ() { return fvertexZ; }  // inline
   G4double GetWorldExtent() { return fmaxrad; }  // --"--
   void     SetGeometry(const G4String& name);
+  void     SetNeutronBiasFactor(const G4double& nf);
+  void     SetMuonBiasFactor(const G4double& mf);
 
 private:
   void DefineCommands();
@@ -31,9 +33,12 @@ private:
   G4VPhysicalVolume* SetupAlternative();
 
   G4GenericMessenger*                 fDetectorMessenger = nullptr;
+  G4GenericMessenger*                 fBiasMessenger     = nullptr;
   G4double                            fvertexZ           = -1.0;
   G4double                            fmaxrad            = -1.0;
   G4String                            fGeometryName      = "baseline";
+  G4double                            fNeutronBias       = 1.0;
+  G4double                            fMuonBias          = 1.0;
   G4Cache<G4MultiFunctionalDetector*> fSD                = nullptr;
 };
 

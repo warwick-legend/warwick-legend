@@ -97,12 +97,12 @@ G4VBiasingOperation* WLGDBiasChangeCrossSection::ProposeOccurenceBiasingOperatio
   G4double XStransformation;
   if(fpname.contains("mu-"))
   {
-    XStransformation = 1000.0;  // hard-code cross section boost factor
+    XStransformation = fMuonBias;  // configurable cross section boost factor
   }
   else if(fpname.contains("neutron"))
   {
     XStransformation =
-      10.0 * 1.68;  // specific for this, boost n,gamma by 68% for 77Ge from 76Ge
+      fNeutronBias * 1.68;  // specific for this, boost n,gamma by 68% for 77Ge from 76Ge
   }
   else
   {

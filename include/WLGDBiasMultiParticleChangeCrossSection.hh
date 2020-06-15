@@ -20,6 +20,9 @@ public:
   // -- that the proper calls to biasingPhysics->Bias(particleName) have been done
   // -- in the main program.
   void AddParticle(const G4String& particleName);
+  void SetNeutronFactor(const G4double& nf) { fNeutronBias = nf; }
+  void SetMuonFactor(const G4double& mf) { fMuonBias = mf; }
+
 
 private:
   // -----------------------------
@@ -68,6 +71,8 @@ private:
   std::map<const G4ParticleDefinition*, WLGDBiasChangeCrossSection*> fBOptrForParticle;
   std::vector<const G4ParticleDefinition*>                           fParticlesToBias;
   WLGDBiasChangeCrossSection*                                        fCurrentOperator;
+  G4double fNeutronBias = 1.0;
+  G4double fMuonBias    = 1.0;
 };
 
 #endif

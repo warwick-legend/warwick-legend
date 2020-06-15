@@ -26,6 +26,8 @@ void WLGDBiasMultiParticleChangeCrossSection::AddParticle(const G4String& partic
   }
 
   WLGDBiasChangeCrossSection* optr = new WLGDBiasChangeCrossSection(particleName);
+  optr->SetNeutronFactor(fNeutronBias);
+  optr->SetMuonFactor(fMuonBias);
   fParticlesToBias.push_back(particle);
   fBOptrForParticle[particle] = optr;
 }
