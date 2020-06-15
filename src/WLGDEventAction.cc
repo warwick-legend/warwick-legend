@@ -79,9 +79,9 @@ void WLGDEventAction::BeginOfEventAction(const G4Event*
   trjpid.clear();
   trjpdg.clear();
   trjnpts.clear();
-  trjxvtz.clear();
-  trjyvtz.clear();
-  trjzvtz.clear();
+  trjxvtx.clear();
+  trjyvtx.clear();
+  trjzvtx.clear();
   trjxpos.clear();
   trjypos.clear();
   trjzpos.clear();
