@@ -23,7 +23,6 @@ public:
   void SetNeutronFactor(const G4double& nf) { fNeutronBias = nf; }
   void SetMuonFactor(const G4double& mf) { fMuonBias = mf; }
 
-
 private:
   // -----------------------------
   // -- Mandatory from base class:
@@ -71,8 +70,8 @@ private:
   std::map<const G4ParticleDefinition*, WLGDBiasChangeCrossSection*> fBOptrForParticle;
   std::vector<const G4ParticleDefinition*>                           fParticlesToBias;
   WLGDBiasChangeCrossSection*                                        fCurrentOperator;
-  G4double fNeutronBias = 1.0;
-  G4double fMuonBias    = 1.0;
+  G4double                                                           fNeutronBias = 1.0;
+  G4double                                                           fMuonBias    = 1.0;
 };
 
 #endif

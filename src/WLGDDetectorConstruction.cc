@@ -41,9 +41,9 @@ WLGDDetectorConstruction::WLGDDetectorConstruction()
   DefineMaterials();
 }
 
-WLGDDetectorConstruction::~WLGDDetectorConstruction() 
-{ 
-  delete fDetectorMessenger; 
+WLGDDetectorConstruction::~WLGDDetectorConstruction()
+{
+  delete fDetectorMessenger;
   delete fBiasMessenger;
 }
 
@@ -646,10 +646,7 @@ void WLGDDetectorConstruction::SetNeutronBiasFactor(const G4double& nf)
   fNeutronBias = nf;
 }
 
-void WLGDDetectorConstruction::SetMuonBiasFactor(const G4double& mf)
-{
-  fMuonBias = mf;
-}
+void WLGDDetectorConstruction::SetMuonBiasFactor(const G4double& mf) { fMuonBias = mf; }
 
 void WLGDDetectorConstruction::DefineCommands()
 {
@@ -667,16 +664,18 @@ void WLGDDetectorConstruction::DefineCommands()
     .SetToBeBroadcasted(false);
 
   // Define bias operator command directory using generic messenger class
-  fBiasMessenger = new G4GenericMessenger(this, "/WLGD/bias/",
-                                          "Commands for controlling bias factors");
+  fBiasMessenger =
+    new G4GenericMessenger(this, "/WLGD/bias/", "Commands for controlling bias factors");
 
   // switch commands
-  fBiasMessenger->DeclareMethod("setNeutronBias", &WLGDDetectorConstruction::SetNeutronBiasFactor)
+  fBiasMessenger
+    ->DeclareMethod("setNeutronBias", &WLGDDetectorConstruction::SetNeutronBiasFactor)
     .SetGuidance("Set Bias factor for neutron capture process.")
     .SetDefaultValue("1.0")
     .SetStates(G4State_PreInit)
     .SetToBeBroadcasted(false);
-  fBiasMessenger->DeclareMethod("setMuonBias", &WLGDDetectorConstruction::SetMuonBiasFactor)
+  fBiasMessenger
+    ->DeclareMethod("setMuonBias", &WLGDDetectorConstruction::SetMuonBiasFactor)
     .SetGuidance("Set Bias factor for muon nuclear process.")
     .SetDefaultValue("1.0")
     .SetStates(G4State_PreInit)
