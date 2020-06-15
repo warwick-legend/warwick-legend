@@ -643,6 +643,6 @@ void WLGDDetectorConstruction::DefineCommands()
     .SetGuidance("baseline = NEEDS DESCRIPTION")
     .SetGuidance("alternative = NEEDS DESCRIPTION")
     .SetCandidates("baseline alternative")
-    .SetStates(G4State_PreInit, G4State_Idle)
+    .SetStates(G4State_PreInit)
     .SetToBeBroadcasted(false);
 }
