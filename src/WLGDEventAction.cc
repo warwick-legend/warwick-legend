@@ -144,7 +144,7 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
     G4String        pname = trj->GetParticleName();  // filter on particle name
     G4int           Z     = trj->GetParticleDefinition()->GetAtomicNumber();
     G4int           A     = trj->GetParticleDefinition()->GetAtomicMass();
-    if(pname == "neutron" || (Z == 32 && A == 77))
+    if(pname == "neutron" || pname == "mu-" || (Z == 32 && A == 77))
     {
       trjtid.push_back(trj->GetTrackID());
       trjpid.push_back(trj->GetParentID());
