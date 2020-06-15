@@ -154,13 +154,17 @@ void WLGDDetectorConstruction::ConstructSDandField()
     // -- Attach neutron XS biasing to Germanium -> enhance nCapture
     auto* biasnXS = new WLGDBiasMultiParticleChangeCrossSection();
     biasnXS->SetNeutronFactor(fNeutronBias);
+    biasnXS->SetMuonFactor(fMuonBias);
+    G4cout << " >>> Detector: set neutron bias to " << fNeutronBias << G4endl;
     biasnXS->AddParticle("neutron");
     G4LogicalVolume* logicGe = volumeStore->GetVolume("Ge_log");
     biasnXS->AttachTo(logicGe);
 
     // -- Attach muon XS biasing to all required volumes consistently
     auto* biasmuXS = new WLGDBiasMultiParticleChangeCrossSection();
+    biasmuXS->SetNeutronFactor(fNeutronBias);
     biasmuXS->SetMuonFactor(fMuonBias);
+    G4cout << " >>> Detector: set muon bias to " << fMuonBias << G4endl;
     biasmuXS->AddParticle("mu-");
 
     G4LogicalVolume* logicCavern = volumeStore->GetVolume("Cavern_log");
@@ -667,17 +671,13 @@ void WLGDDetectorConstruction::DefineCommands()
                                           "Commands for controlling bias factors");
 
   // switch commands
-  fDetectorMessenger->DeclareMethod("setNeutronBias", &WLGDDetectorConstruction::SetNeutronBiasFactor)
+  fBiasMessenger->DeclareMethod("setNeutronBias", &WLGDDetectorConstruction::SetNeutronBiasFactor)
     .SetGuidance("Set Bias factor for neutron capture process.")
-    .SetParameterName("nf", true)
-    .SetRange("nf>=1.0")
     .SetDefaultValue("1.0")
     .SetStates(G4State_PreInit)
     .SetToBeBroadcasted(false);
-  fDetectorMessenger->DeclareMethod("setMuonBias", &WLGDDetectorConstruction::SetMuonBiasFactor)
+  fBiasMessenger->DeclareMethod("setMuonBias", &WLGDDetectorConstruction::SetMuonBiasFactor)
     .SetGuidance("Set Bias factor for muon nuclear process.")
-    .SetParameterName("mf", true)    
-    .SetRange("mf>=1.0")
     .SetDefaultValue("1.0")
     .SetStates(G4State_PreInit)
     .SetToBeBroadcasted(false);
