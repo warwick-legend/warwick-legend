@@ -74,6 +74,17 @@ void WLGDEventAction::BeginOfEventAction(const G4Event*
   xloc.clear();
   yloc.clear();
   zloc.clear();
+  // clear trajectory data
+  trjtid.clear();
+  trjpid.clear();
+  trjpdg.clear();
+  trjnpts.clear();
+  trjxvtz.clear();
+  trjyvtz.clear();
+  trjzvtz.clear();
+  trjxpos.clear();
+  trjypos.clear();
+  trjzpos.clear();
 }
 
 void WLGDEventAction::EndOfEventAction(const G4Event* event)
