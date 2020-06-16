@@ -641,7 +641,7 @@ void WLGDDetectorConstruction::SetGeometry(const G4String& name)
   G4RunManager::GetRunManager()->ReinitializeGeometry();
 }
 
-void WLGDDetectorConstruction::SetNeutronBiasFactor(const G4double& nf)
+void WLGDDetectorConstruction::SetNeutronBiasFactor(G4double nf)
 {
   fNeutronBias = nf;
 }
