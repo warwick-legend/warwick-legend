@@ -17,8 +17,8 @@ public:
 
   // -- method called at beginning of run:
   virtual void StartRun();
-  void         SetNeutronFactor(const G4double& nf) { fNeutronBias = nf; }
-  void         SetMuonFactor(const G4double& mf) { fMuonBias = mf; }
+  void         SetNeutronFactor(G4double nf) { fNeutronBias = nf; }
+  void         SetMuonFactor(G4double mf) { fMuonBias = mf; }
 
 private:
   // -----------------------------
