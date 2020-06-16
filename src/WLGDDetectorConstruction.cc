@@ -641,12 +641,12 @@ void WLGDDetectorConstruction::SetGeometry(const G4String& name)
   G4RunManager::GetRunManager()->ReinitializeGeometry();
 }
 
-void WLGDDetectorConstruction::SetNeutronBiasFactor(const G4double& nf)
+void WLGDDetectorConstruction::SetNeutronBiasFactor(G4double nf)
 {
   fNeutronBias = nf;
 }
 
-void WLGDDetectorConstruction::SetMuonBiasFactor(const G4double& mf) { fMuonBias = mf; }
+void WLGDDetectorConstruction::SetMuonBiasFactor(G4double mf) { fMuonBias = mf; }
 
 void WLGDDetectorConstruction::DefineCommands()
 {
