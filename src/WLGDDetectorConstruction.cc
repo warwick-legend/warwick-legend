@@ -646,7 +646,7 @@ void WLGDDetectorConstruction::SetNeutronBiasFactor(G4double nf)
   fNeutronBias = nf;
 }
 
-void WLGDDetectorConstruction::SetMuonBiasFactor(const G4double& mf) { fMuonBias = mf; }
+void WLGDDetectorConstruction::SetMuonBiasFactor(G4double mf) { fMuonBias = mf; }
 
 void WLGDDetectorConstruction::DefineCommands()
 {
