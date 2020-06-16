@@ -5,5 +5,5 @@ add_test(NAME minimal-run COMMAND warwick-legend -m "${CMAKE_CURRENT_LIST_DIR}/t
 add_test(NAME swap-geometry COMMAND warwick-legend -m "${CMAKE_CURRENT_LIST_DIR}/test-swap-geometry.mac")
 
 # 3. Check bias can be switched
-add_test(NAME change-bias COMMAND warwick-legend -m "${CMAKE_CURRENT_LIST_DIR}/test-chenge-bias.mac")
+add_test(NAME change-bias COMMAND warwick-legend -m "${CMAKE_CURRENT_LIST_DIR}/test-change-bias.mac")
 
