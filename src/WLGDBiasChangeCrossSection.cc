@@ -95,14 +95,16 @@ G4VBiasingOperation* WLGDBiasChangeCrossSection::ProposeOccurenceBiasingOperatio
   // -- direction dependent, like in the exponential transform MCNP case, or it
   // -- can be chosen differently, depending on the process, etc.
   G4double XStransformation;
+  // G4cout << " >>> ChangeCrossSection: got muon bias " << fMuonBias
+  //        << ", n factor " << fNeutronBias << G4endl;
   if(fpname.contains("mu-"))
   {
-    XStransformation = 1000.0;  // hard-code cross section boost factor
+    XStransformation = fMuonBias;  // configurable cross section boost factor
   }
   else if(fpname.contains("neutron"))
   {
     XStransformation =
-      10.0 * 1.68;  // specific for this, boost n,gamma by 68% for 77Ge from 76Ge
+      fNeutronBias * 1.68;  // specific for this, boost n,gamma by 68% for 77Ge from 76Ge
   }
   else
   {

@@ -41,7 +41,11 @@ WLGDDetectorConstruction::WLGDDetectorConstruction()
   DefineMaterials();
 }
 
-WLGDDetectorConstruction::~WLGDDetectorConstruction() { delete fDetectorMessenger; }
+WLGDDetectorConstruction::~WLGDDetectorConstruction()
+{
+  delete fDetectorMessenger;
+  delete fBiasMessenger;
+}
 
 auto WLGDDetectorConstruction::Construct() -> G4VPhysicalVolume*
 {
@@ -149,12 +153,18 @@ void WLGDDetectorConstruction::ConstructSDandField()
 
     // -- Attach neutron XS biasing to Germanium -> enhance nCapture
     auto* biasnXS = new WLGDBiasMultiParticleChangeCrossSection();
+    biasnXS->SetNeutronFactor(fNeutronBias);
+    biasnXS->SetMuonFactor(fMuonBias);
+    G4cout << " >>> Detector: set neutron bias to " << fNeutronBias << G4endl;
     biasnXS->AddParticle("neutron");
     G4LogicalVolume* logicGe = volumeStore->GetVolume("Ge_log");
     biasnXS->AttachTo(logicGe);
 
     // -- Attach muon XS biasing to all required volumes consistently
     auto* biasmuXS = new WLGDBiasMultiParticleChangeCrossSection();
+    biasmuXS->SetNeutronFactor(fNeutronBias);
+    biasmuXS->SetMuonFactor(fMuonBias);
+    G4cout << " >>> Detector: set muon bias to " << fMuonBias << G4endl;
     biasmuXS->AddParticle("mu-");
 
     G4LogicalVolume* logicCavern = volumeStore->GetVolume("Cavern_log");
@@ -631,6 +641,13 @@ void WLGDDetectorConstruction::SetGeometry(const G4String& name)
   G4RunManager::GetRunManager()->ReinitializeGeometry();
 }
 
+void WLGDDetectorConstruction::SetNeutronBiasFactor(G4double nf)
+{
+  fNeutronBias = nf;
+}
+
+void WLGDDetectorConstruction::SetMuonBiasFactor(G4double mf) { fMuonBias = mf; }
+
 void WLGDDetectorConstruction::DefineCommands()
 {
   // Define geometry command directory using generic messenger class
@@ -643,6 +660,24 @@ void WLGDDetectorConstruction::DefineCommands()
     .SetGuidance("baseline = NEEDS DESCRIPTION")
     .SetGuidance("alternative = NEEDS DESCRIPTION")
     .SetCandidates("baseline alternative")
+    .SetStates(G4State_PreInit)
+    .SetToBeBroadcasted(false);
+
+  // Define bias operator command directory using generic messenger class
+  fBiasMessenger =
+    new G4GenericMessenger(this, "/WLGD/bias/", "Commands for controlling bias factors");
+
+  // switch commands
+  fBiasMessenger
+    ->DeclareMethod("setNeutronBias", &WLGDDetectorConstruction::SetNeutronBiasFactor)
+    .SetGuidance("Set Bias factor for neutron capture process.")
+    .SetDefaultValue("1.0")
+    .SetStates(G4State_PreInit)
+    .SetToBeBroadcasted(false);
+  fBiasMessenger
+    ->DeclareMethod("setMuonBias", &WLGDDetectorConstruction::SetMuonBiasFactor)
+    .SetGuidance("Set Bias factor for muon nuclear process.")
+    .SetDefaultValue("1.0")
     .SetStates(G4State_PreInit)
     .SetToBeBroadcasted(false);
 }
