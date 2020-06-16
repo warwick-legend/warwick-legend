@@ -20,8 +20,8 @@ public:
   // -- that the proper calls to biasingPhysics->Bias(particleName) have been done
   // -- in the main program.
   void AddParticle(const G4String& particleName);
-  void SetNeutronFactor(const G4double& nf) { fNeutronBias = nf; }
-  void SetMuonFactor(const G4double& mf) { fMuonBias = mf; }
+  void SetNeutronFactor(G4double nf) { fNeutronBias = nf; }
+  void SetMuonFactor(G4double mf) { fMuonBias = mf; }
 
 private:
   // -----------------------------
