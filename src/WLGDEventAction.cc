@@ -106,6 +106,9 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   G4THitsMap<G4double>*      HitsMap  = GetHitsCollection(fEdepID, event);
   G4THitsMap<G4ThreeVector>* LocMap   = GetVecHitsCollection(fLocID, event);
   G4THitsMap<G4double>*      TimeMap  = GetHitsCollection(fTimeID, event);
+ 
+  if (THitsMap->entries()<=0)
+    return;   // no action on no event in Germanium
 
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
