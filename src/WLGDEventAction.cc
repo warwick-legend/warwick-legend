@@ -106,6 +106,11 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   G4THitsMap<G4double>*      HitsMap  = GetHitsCollection(fEdepID, event);
   G4THitsMap<G4ThreeVector>* LocMap   = GetVecHitsCollection(fLocID, event);
   G4THitsMap<G4double>*      TimeMap  = GetHitsCollection(fTimeID, event);
+ 
+  if (THitsMap->entries()<=0)
+  {
+    return;   // no action on no event in Germanium
+  }
 
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
@@ -141,26 +146,20 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   for(G4int i = 0; i < n_trajectories; i++)
   {
     WLGDTrajectory* trj   = (WLGDTrajectory*) ((*(event->GetTrajectoryContainer()))[i]);
-    G4String        pname = trj->GetParticleName();  // filter on particle name
-    G4int           Z     = trj->GetParticleDefinition()->GetAtomicNumber();
-    G4int           A     = trj->GetParticleDefinition()->GetAtomicMass();
-    if(pname == "neutron" || pname == "mu-" || (Z == 32 && A == 77))
+    trjtid.push_back(trj->GetTrackID());
+    trjpid.push_back(trj->GetParentID());
+    trjpdg.push_back(trj->GetPDGEncoding());
+    trjxvtx.push_back((trj->GetVertex()).x());
+    trjyvtx.push_back((trj->GetVertex()).y());
+    trjzvtx.push_back((trj->GetVertex()).z());
+    trjnpts.push_back(trj->GetPointEntries());
+    for(int nn = 0; nn < trj->GetPointEntries(); ++nn)
     {
-      trjtid.push_back(trj->GetTrackID());
-      trjpid.push_back(trj->GetParentID());
-      trjpdg.push_back(trj->GetPDGEncoding());
-      trjxvtx.push_back((trj->GetVertex()).x());
-      trjyvtx.push_back((trj->GetVertex()).y());
-      trjzvtx.push_back((trj->GetVertex()).z());
-      trjnpts.push_back(trj->GetPointEntries());
-      for(int nn = 0; nn < trj->GetPointEntries(); ++nn)
-      {
-        trjxpos.push_back((trj->GetPoint(nn)->GetPosition()).x());
-        trjypos.push_back((trj->GetPoint(nn)->GetPosition()).y());
-        trjzpos.push_back((trj->GetPoint(nn)->GetPosition()).z());
-      }
-      //  trj->ShowTrajectory(); // long output to stdout
+      trjxpos.push_back((trj->GetPoint(nn)->GetPosition()).x());
+      trjypos.push_back((trj->GetPoint(nn)->GetPosition()).y());
+      trjzpos.push_back((trj->GetPoint(nn)->GetPosition()).z());
     }
+    //  trj->ShowTrajectory(); // long output to stdout
   }
 
   // fill the ntuple
