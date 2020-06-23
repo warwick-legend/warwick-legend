@@ -173,4 +173,7 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   // extract the trajectories and print them out
   G4cout << G4endl;
   G4cout << "Trajectories in tracker: " << n_trajectories << G4endl;
+
+  // clear trajectory container
+  trajectoryContainer->clearAndDestroy();
 }
