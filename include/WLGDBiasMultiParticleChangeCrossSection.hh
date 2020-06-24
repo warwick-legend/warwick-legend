@@ -11,7 +11,8 @@ class WLGDBiasMultiParticleChangeCrossSection : public G4VBiasingOperator
 {
 public:
   WLGDBiasMultiParticleChangeCrossSection();
-  virtual ~WLGDBiasMultiParticleChangeCrossSection() = default;
+  // virtual ~WLGDBiasMultiParticleChangeCrossSection() = default;
+  virtual ~WLGDBiasMultiParticleChangeCrossSection();
 
   // ---------------------------------
   // -- Method specific to this class:
