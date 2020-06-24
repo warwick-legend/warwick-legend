@@ -15,7 +15,6 @@ WLGDPrimaryGeneratorAction::WLGDPrimaryGeneratorAction(WLGDDetectorConstruction*
 , fDetector(det)
 , fParticleGun(nullptr)
 , fMessenger(nullptr)
-, fMuon(nullptr)
 , fDepth(0.0)
 {
   generator.seed(rd());  // set a random seed
@@ -24,10 +23,9 @@ WLGDPrimaryGeneratorAction::WLGDPrimaryGeneratorAction(WLGDDetectorConstruction*
   fParticleGun       = new G4ParticleGun(nofParticles);
 
   auto particleTable = G4ParticleTable::GetParticleTable();
-  fMuon              = particleTable->FindParticle("mu-");
 
   // default particle kinematics
-  fParticleGun->SetParticleDefinition(fMuon);
+  fParticleGun->SetParticleDefinition(particleTable->FindParticle("mu-"));
 
   // define commands for this class
   DefineCommands();

@@ -67,28 +67,6 @@ G4THitsMap<G4ThreeVector>* WLGDEventAction::GetVecHitsCollection(
 }
 
 
-//std::vector<int> WLGDEventAction::FilterTrajectories(int item, std::vector<G4int>& tid, std::vector<G4int>& pid);
-//{}
-//  int idx = 0;
-//  int pidx = 0;
-//  std::vector<int> result;
-//  std::vector<int>::iterator it;
-
-//  it = std::find(tid.begin(), tid.end(), item);
-
-//  while (it != tid.end()) // find all links in the chain
-//  {
-//    idx = (it - tid.begin()); // location of id
-//    result.push_back(idx);
-
-//    pidx = pid.at(idx); // next to look for
-//    it = std::find(tid.begin(), tid.end(), pidx);
-//  }
-
-//  return result;
-//}
-
-
 void WLGDEventAction::BeginOfEventAction(const G4Event*
                                          /*event*/)
 {
@@ -223,7 +201,6 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   G4int eventID = event->GetEventID();
   G4cout << ">>> Event: " << eventID << G4endl;
   G4cout << "    " << htrid.size() << " hits stored in this event." << G4endl;
+  G4cout << "    " << trjpdg.size() << " trajectories stored in this event." << G4endl;
 
-  // clear trajectory container
-  trajectoryContainer->clearAndDestroy();
 }
