@@ -12,6 +12,8 @@
 #include "Randomize.hh"
 #include <iomanip>
 #include <vector>
+#include <algorithm>
+#include <numeric>
 
 G4THitsMap<G4int>* WLGDEventAction::GetIntHitsCollection(G4int          hcID,
                                                          const G4Event* event) const
@@ -64,6 +66,29 @@ G4THitsMap<G4ThreeVector>* WLGDEventAction::GetVecHitsCollection(
   return hitsCollection;
 }
 
+
+//std::vector<int> WLGDEventAction::FilterTrajectories(int item, std::vector<G4int>& tid, std::vector<G4int>& pid);
+//{}
+//  int idx = 0;
+//  int pidx = 0;
+//  std::vector<int> result;
+//  std::vector<int>::iterator it;
+
+//  it = std::find(tid.begin(), tid.end(), item);
+
+//  while (it != tid.end()) // find all links in the chain
+//  {
+//    idx = (it - tid.begin()); // location of id
+//    result.push_back(idx);
+
+//    pidx = pid.at(idx); // next to look for
+//    it = std::find(tid.begin(), tid.end(), pidx);
+//  }
+
+//  return result;
+//}
+
+
 void WLGDEventAction::BeginOfEventAction(const G4Event*
                                          /*event*/)
 {
@@ -75,8 +100,6 @@ void WLGDEventAction::BeginOfEventAction(const G4Event*
   yloc.clear();
   zloc.clear();
   // clear trajectory data
-  trjtid.clear();
-  trjpid.clear();
   trjpdg.clear();
   trjnpts.clear();
   trjxvtx.clear();
@@ -140,28 +163,59 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   }
 
   // fill trajectory data
+  // temporary full storage
+  std::vector<G4int> temptid, temppid, temppdg, tempnpts;
+  std::vector<G4double> tempxvtx, tempyvtx, tempzvtx;
+  std::vector<G4double> tempxpos, tempypos, tempzpos;
+
   G4TrajectoryContainer* trajectoryContainer = event->GetTrajectoryContainer();
   G4int                  n_trajectories      = trajectoryContainer->entries();
 
   for(G4int i = 0; i < n_trajectories; i++)
   {
     WLGDTrajectory* trj   = (WLGDTrajectory*) ((*(event->GetTrajectoryContainer()))[i]);
-    trjtid.push_back(trj->GetTrackID());
-    trjpid.push_back(trj->GetParentID());
-    trjpdg.push_back(trj->GetPDGEncoding());
-    trjxvtx.push_back((trj->GetVertex()).x());
-    trjyvtx.push_back((trj->GetVertex()).y());
-    trjzvtx.push_back((trj->GetVertex()).z());
-    trjnpts.push_back(trj->GetPointEntries());
+    temptid.push_back(trj->GetTrackID());
+    temppid.push_back(trj->GetParentID());
+    temppdg.push_back(trj->GetPDGEncoding());
+    tempxvtx.push_back((trj->GetVertex()).x());
+    tempyvtx.push_back((trj->GetVertex()).y());
+    tempzvtx.push_back((trj->GetVertex()).z());
+    tempnpts.push_back(trj->GetPointEntries());
     for(int nn = 0; nn < trj->GetPointEntries(); ++nn)
     {
-      trjxpos.push_back((trj->GetPoint(nn)->GetPosition()).x());
-      trjypos.push_back((trj->GetPoint(nn)->GetPosition()).y());
-      trjzpos.push_back((trj->GetPoint(nn)->GetPosition()).z());
+      tempxpos.push_back((trj->GetPoint(nn)->GetPosition()).x());
+      tempypos.push_back((trj->GetPoint(nn)->GetPosition()).y());
+      tempzpos.push_back((trj->GetPoint(nn)->GetPosition()).z());
     }
-    //  trj->ShowTrajectory(); // long output to stdout
   }
-
+  for (const int &item : htrid) {  
+    std::vector<int> res = FilterTrajectories(item, temptid, temppid);
+    for (int &idx : res) {
+      trjpdg.push_back(temppdg.at(idx));
+      trjxvtx.push_back(tempxvtx.at(idx));
+      trjyvtx.push_back(tempyvtx.at(idx));
+      trjzvtx.push_back(tempzvtx.at(idx));
+      trjnpts.push_back(tempnpts.at(idx));
+      int start =
+          std::accumulate(tempnpts.begin(), tempnpts.begin() + idx, 0);
+      for (int i = start; i < (start + tempnpts.at(idx)); ++i) {
+        trjxpos.push_back(tempxpos.at(i));
+        trjypos.push_back(tempypos.at(i));
+        trjzpos.push_back(tempzpos.at(i));
+      }
+    }
+  }
+  temptid.clear();
+  temppid.clear();
+  temppdg.clear();
+  tempnpts.clear();
+  tempxvtx.clear();
+  tempyvtx.clear();
+  tempzvtx.clear();
+  tempxpos.clear();
+  tempypos.clear();
+  tempzpos.clear();
+ 
   // fill the ntuple
   analysisManager->AddNtupleRow();
 
@@ -169,10 +223,6 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   G4int eventID = event->GetEventID();
   G4cout << ">>> Event: " << eventID << G4endl;
   G4cout << "    " << htrid.size() << " hits stored in this event." << G4endl;
-
-  // extract the trajectories and print them out
-  G4cout << G4endl;
-  G4cout << "Trajectories in tracker: " << n_trajectories << G4endl;
 
   // clear trajectory container
   trajectoryContainer->clearAndDestroy();
