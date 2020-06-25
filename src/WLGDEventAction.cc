@@ -106,7 +106,7 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   G4THitsMap<G4double>*      HitsMap  = GetHitsCollection(fEdepID, event);
   G4THitsMap<G4ThreeVector>* LocMap   = GetVecHitsCollection(fLocID, event);
   G4THitsMap<G4double>*      TimeMap  = GetHitsCollection(fTimeID, event);
- 
+
   if (THitsMap->entries()<=0)
   {
     return;   // no action on no event in Germanium
@@ -139,9 +139,9 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
     hpaid.push_back((*it.second));
   }
 
-  // fill trajectory data
+  // fill trajectory data if available
   G4TrajectoryContainer* trajectoryContainer = event->GetTrajectoryContainer();
-  G4int                  n_trajectories      = trajectoryContainer->entries();
+  G4int n_trajectories = (trajectoryContainer == nullptr) ? 0 : trajectoryContainer->entries();
 
   for(G4int i = 0; i < n_trajectories; i++)
   {
@@ -172,5 +172,5 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
 
   // extract the trajectories and print them out
   G4cout << G4endl;
-  G4cout << "Trajectories in tracker: " << n_trajectories << G4endl;
+  G4cout << "Trajectories stored: " << n_trajectories << G4endl;
 }
