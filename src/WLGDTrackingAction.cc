@@ -9,10 +9,11 @@ WLGDTrackingAction::WLGDTrackingAction() = default;
 
 void WLGDTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
-  // Create trajectory for track
-
-  fpTrackingManager->SetStoreTrajectory(true);
-  fpTrackingManager->SetTrajectory(new WLGDTrajectory(aTrack));
+  // Create trajectory for track if requested
+  if(fpTrackingManager->GetStoreTrajectory() > 0)
+  {
+    fpTrackingManager->SetTrajectory(new WLGDTrajectory(aTrack));
+  }
 }
 
 void WLGDTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
