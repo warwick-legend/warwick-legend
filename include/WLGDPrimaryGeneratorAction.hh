@@ -98,7 +98,6 @@ private:
 
   G4ParticleGun*        fParticleGun;
   G4GenericMessenger*   fMessenger;
-  G4ParticleDefinition* fMuon;
 
   std::random_device rd;
   std::ranlux24      generator;
