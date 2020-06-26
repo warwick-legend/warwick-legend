@@ -45,7 +45,21 @@ private:
   G4THitsMap<G4double>*      GetHitsCollection(G4int hcID, const G4Event* event) const;
   G4THitsMap<G4ThreeVector>* GetVecHitsCollection(G4int hcID, const G4Event* event) const;
 
-  std::vector<int> FilterTrajectories(int item, std::vector<G4int>& tid, std::vector<G4int>& pid)
+//! Brief description
+/*!
+ * This filter method retrieves the track history of a Germanium hit.
+ * Starting with the hit id, the identical track id is found in
+ * the trajectory container with vectors extracted separately, 
+ * here the track id and the corresponding track parent id. The parent 
+ * id then serves as the new id to look for, all the way back to the 
+ * primary particle. That way, only the relevant track history from 
+ * start to finish is stored.
+ *
+ * \param[in] item hit id to look for as starting point of history
+ * \param[in] tid vector of all track id's stored in event
+ * \param[in] pid corresponding vector of all parent id's for all tracks in event.
+ */  
+std::vector<int> FilterTrajectories(int item, const std::vector<G4int>& tid, const std::vector<G4int>& pid)
   {
     int idx = 0;
     int pidx = 0;
