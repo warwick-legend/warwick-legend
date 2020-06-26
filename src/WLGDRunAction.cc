@@ -30,6 +30,7 @@ WLGDRunAction::WLGDRunAction(WLGDEventAction* eventAction, G4String name)
 
   analysisManager->CreateNtupleIColumn("Trjpdg", fEventAction->GetTrjPDG());
   analysisManager->CreateNtupleIColumn("Trjentries", fEventAction->GetTrjEntries());
+  analysisManager->CreateNtupleIColumn("VtxName", fEventAction->GetNameID());
   analysisManager->CreateNtupleDColumn("TrjXVtx", fEventAction->GetTrjXVtx());
   analysisManager->CreateNtupleDColumn("TrjYVtx", fEventAction->GetTrjYVtx());
   analysisManager->CreateNtupleDColumn("TrjZVtx", fEventAction->GetTrjZVtx());

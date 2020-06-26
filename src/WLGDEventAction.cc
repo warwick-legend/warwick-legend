@@ -66,6 +66,41 @@ G4THitsMap<G4ThreeVector>* WLGDEventAction::GetVecHitsCollection(
   return hitsCollection;
 }
 
+void WLGDEventAction::makeMap()
+{
+  // make a lookup table to translate Logical Volume name 
+  // to a unique int for storage in the ntuple.
+  lookup["Cavern_log"]   = 0;
+  lookup["Hall_log"]     = 1;
+  lookup["Tank_log"]     = 2;
+  lookup["Water_log"]    = 3;
+  lookup["Cout_log"]     = 4;
+  lookup["Cvac_log"]     = 5;
+  lookup["Cinn_log"]     = 6;
+  lookup["Lar_log"]      = 7;
+  lookup["Lid_log"]      = 8;
+  lookup["Bot_log"]      = 9;
+  lookup["Copper_log"]   = 10;
+  lookup["ULar_log"]     = 11;
+  lookup["Ge_log"]       = 12;
+  lookup["Pu_log"]       = 13;
+  lookup["Membrane_log"] = 14;
+}
+
+G4int WLGDEventAction::GeomID(G4String name)
+{
+  auto it = lookup.find(name);
+
+  if (it == lookup.end())
+  {
+    G4ExceptionDescription msg;
+    msg << "Name  " << name << " not in look up table";
+    G4Exception("WLGDEventAction::GeomID()", "MyCode0005", FatalException,
+                msg);  
+  }
+  return it->second;
+}
+
 
 void WLGDEventAction::BeginOfEventAction(const G4Event*
                                          /*event*/)
@@ -80,14 +115,17 @@ void WLGDEventAction::BeginOfEventAction(const G4Event*
   // clear trajectory data
   trjpdg.clear();
   trjnpts.clear();
-  vtxname.clear();
+  nameid.clear();
   trjxvtx.clear();
   trjyvtx.clear();
   trjzvtx.clear();
   trjxpos.clear();
   trjypos.clear();
   trjzpos.clear();
+  
+  makeMap();
 }
+
 
 void WLGDEventAction::EndOfEventAction(const G4Event* event)
 {
@@ -174,7 +212,7 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
     std::vector<int> res = FilterTrajectories(item, temptid, temppid);
     for (int &idx : res) {
       trjpdg.push_back(temppdg.at(idx));
-      vtxname.push_back(tempname.at(idx));
+      nameid.push_back(GeomID(tempname.at(idx)));
       trjxvtx.push_back(tempxvtx.at(idx));
       trjyvtx.push_back(tempyvtx.at(idx));
       trjzvtx.push_back(tempzvtx.at(idx));
@@ -208,6 +246,5 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   G4cout << ">>> Event: " << eventID << G4endl;
   G4cout << "    " << htrid.size() << " hits stored in this event." << G4endl;
   G4cout << "    " << trjpdg.size() << " trajectories stored in this event." << G4endl;
-  G4cout << "    " << vtxname.front() << " last vertex volume name in this event." << G4endl;
 
 }

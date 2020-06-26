@@ -32,7 +32,7 @@ public:
   // tajectory methods
   std::vector<G4int>&    GetTrjPDG() { return trjpdg; }
   std::vector<G4int>&    GetTrjEntries() { return trjnpts; }
-  std::vector<G4String>& GetVtxName() { return vtxname; }
+  std::vector<G4int>&    GetNameID()  { return nameid; }
   std::vector<G4double>& GetTrjXVtx() { return trjxvtx; }
   std::vector<G4double>& GetTrjYVtx() { return trjyvtx; }
   std::vector<G4double>& GetTrjZVtx() { return trjzvtx; }
@@ -45,6 +45,8 @@ private:
   G4THitsMap<G4int>*         GetIntHitsCollection(G4int hcID, const G4Event* event) const;
   G4THitsMap<G4double>*      GetHitsCollection(G4int hcID, const G4Event* event) const;
   G4THitsMap<G4ThreeVector>* GetVecHitsCollection(G4int hcID, const G4Event* event) const;
+  G4int GeomID(G4String name);
+  void makeMap();
 
 //! Brief description
 /*!
@@ -97,13 +99,14 @@ std::vector<int> FilterTrajectories(int item, const std::vector<G4int>& tid, con
   // trajectory data
   std::vector<G4int>    trjpdg;
   std::vector<G4int>    trjnpts;
-  std::vector<G4String> vtxname;
+  std::vector<G4int>    nameid;
   std::vector<G4double> trjxvtx;
   std::vector<G4double> trjyvtx;
   std::vector<G4double> trjzvtx;
   std::vector<G4double> trjxpos;
   std::vector<G4double> trjypos;
   std::vector<G4double> trjzpos;
+  std::map<G4String, G4int> lookup;
 };
 
 #endif
