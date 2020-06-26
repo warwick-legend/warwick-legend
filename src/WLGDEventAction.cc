@@ -80,6 +80,7 @@ void WLGDEventAction::BeginOfEventAction(const G4Event*
   // clear trajectory data
   trjpdg.clear();
   trjnpts.clear();
+  vtxname.clear();
   trjxvtx.clear();
   trjyvtx.clear();
   trjzvtx.clear();
@@ -143,6 +144,7 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   // fill trajectory data
   // temporary full storage
   std::vector<G4int> temptid, temppid, temppdg, tempnpts;
+  std::vector<G4String> tempname;
   std::vector<G4double> tempxvtx, tempyvtx, tempzvtx;
   std::vector<G4double> tempxpos, tempypos, tempzpos;
 
@@ -156,6 +158,7 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
     temptid.push_back(trj->GetTrackID());
     temppid.push_back(trj->GetParentID());
     temppdg.push_back(trj->GetPDGEncoding());
+    tempname.push_back(trj->GetVertexName());
     tempxvtx.push_back((trj->GetVertex()).x());
     tempyvtx.push_back((trj->GetVertex()).y());
     tempzvtx.push_back((trj->GetVertex()).z());
@@ -171,6 +174,7 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
     std::vector<int> res = FilterTrajectories(item, temptid, temppid);
     for (int &idx : res) {
       trjpdg.push_back(temppdg.at(idx));
+      vtxname.push_back(tempname.at(idx));
       trjxvtx.push_back(tempxvtx.at(idx));
       trjyvtx.push_back(tempyvtx.at(idx));
       trjzvtx.push_back(tempzvtx.at(idx));
@@ -188,6 +192,7 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   temppid.clear();
   temppdg.clear();
   tempnpts.clear();
+  tempname.clear();
   tempxvtx.clear();
   tempyvtx.clear();
   tempzvtx.clear();
@@ -203,5 +208,6 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   G4cout << ">>> Event: " << eventID << G4endl;
   G4cout << "    " << htrid.size() << " hits stored in this event." << G4endl;
   G4cout << "    " << trjpdg.size() << " trajectories stored in this event." << G4endl;
+  G4cout << "    " << vtxname.front() << " last vertex volume name in this event." << G4endl;
 
 }

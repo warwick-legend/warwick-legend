@@ -32,6 +32,7 @@ public:
   // tajectory methods
   std::vector<G4int>&    GetTrjPDG() { return trjpdg; }
   std::vector<G4int>&    GetTrjEntries() { return trjnpts; }
+  std::vector<G4String>& GetVtxName() { return vtxname; }
   std::vector<G4double>& GetTrjXVtx() { return trjxvtx; }
   std::vector<G4double>& GetTrjYVtx() { return trjyvtx; }
   std::vector<G4double>& GetTrjZVtx() { return trjzvtx; }
@@ -96,6 +97,7 @@ std::vector<int> FilterTrajectories(int item, const std::vector<G4int>& tid, con
   // trajectory data
   std::vector<G4int>    trjpdg;
   std::vector<G4int>    trjnpts;
+  std::vector<G4String> vtxname;
   std::vector<G4double> trjxvtx;
   std::vector<G4double> trjyvtx;
   std::vector<G4double> trjzvtx;

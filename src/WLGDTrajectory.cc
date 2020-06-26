@@ -19,11 +19,9 @@ WLGDTrajectory::WLGDTrajectory(const G4Track* aTrack)
 , fParentID{ aTrack->GetParentID() }
 , fParticleDefinition{ aTrack->GetDefinition() }
 , fParticleName{ fParticleDefinition->GetParticleName() }
-, fPDGCharge{ fParticleDefinition->GetPDGCharge() }
 , fPDGEncoding{ fParticleDefinition->GetPDGEncoding() }
-, fMomentum{ aTrack->GetMomentum() }
+, fVertexName{ aTrack->GetLogicalVolumeAtVertex()->GetName() }
 , fVertexPosition{ aTrack->GetVertexPosition() }
-, fGlobalTime{ aTrack->GetGlobalTime() }
 {
   fPositionRecord->push_back(new G4TrajectoryPoint(aTrack->GetPosition()));
 }
@@ -46,10 +44,8 @@ void WLGDTrajectory::ShowTrajectory(std::ostream& os) const
 
   os << "Particle name : " << fParticleName << "  PDG code : " << fPDGEncoding << G4endl;
 
-  os << "Original momentum : " << G4BestUnit(fMomentum, "Energy") << G4endl;
-
   os << "Vertex : " << G4BestUnit(fVertexPosition, "Length")
-     << "  Global time : " << G4BestUnit(fGlobalTime, "Time") << G4endl;
+     << "  in volume " << fVertexName << G4endl;
 
   os << "  Current trajectory has " << fPositionRecord->size() << " points." << G4endl;
 
