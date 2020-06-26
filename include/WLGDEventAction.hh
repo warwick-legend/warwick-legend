@@ -2,6 +2,8 @@
 #define WLGDEventAction_h 1
 
 #include <vector>
+#include <algorithm>
+#include <numeric>
 
 #include "G4THitsMap.hh"
 #include "G4ThreeVector.hh"
@@ -21,8 +23,6 @@ public:
   virtual void EndOfEventAction(const G4Event* event);
 
   // to create columns for Ntuple
-  std::vector<G4int>&    GetHitTrackID() { return htrid; }
-  std::vector<G4int>&    GetHitParentID() { return hpaid; }
   std::vector<G4double>& GetHitEdep() { return edep; }
   std::vector<G4double>& GetHitTime() { return thit; }
   std::vector<G4double>& GetHitxLoc() { return xloc; }
@@ -30,8 +30,6 @@ public:
   std::vector<G4double>& GetHitzLoc() { return zloc; }
 
   // tajectory methods
-  std::vector<G4int>&    GetTrjTrackID() { return trjtid; }
-  std::vector<G4int>&    GetTrjParentID() { return trjpid; }
   std::vector<G4int>&    GetTrjPDG() { return trjpdg; }
   std::vector<G4int>&    GetTrjEntries() { return trjnpts; }
   std::vector<G4double>& GetTrjXVtx() { return trjxvtx; }
@@ -46,6 +44,39 @@ private:
   G4THitsMap<G4int>*         GetIntHitsCollection(G4int hcID, const G4Event* event) const;
   G4THitsMap<G4double>*      GetHitsCollection(G4int hcID, const G4Event* event) const;
   G4THitsMap<G4ThreeVector>* GetVecHitsCollection(G4int hcID, const G4Event* event) const;
+
+//! Brief description
+/*!
+ * This filter method retrieves the track history of a Germanium hit.
+ * Starting with the hit id, the identical track id is found in
+ * the trajectory container with vectors extracted separately, 
+ * here the track id and the corresponding track parent id. The parent 
+ * id then serves as the new id to look for, all the way back to the 
+ * primary particle. That way, only the relevant track history from 
+ * start to finish is stored.
+ *
+ * \param[in] item hit id to look for as starting point of history
+ * \param[in] tid vector of all track id's stored in event
+ * \param[in] pid corresponding vector of all parent id's for all tracks in event.
+ */  
+std::vector<int> FilterTrajectories(int item, const std::vector<G4int>& tid, const std::vector<G4int>& pid)
+  {
+    int idx = 0;
+    int pidx = 0;
+    std::vector<int> result;
+    auto it = std::find(tid.begin(), tid.end(), item);
+
+    while (it != tid.end()) // find all links in the chain
+    {
+      idx = (it - tid.begin()); // location of id
+      result.push_back(idx);
+
+      pidx = pid.at(idx); // next to look for
+      it = std::find(tid.begin(), tid.end(), pidx);
+    }
+
+    return result;
+  }
 
   // data members
   // hit data
@@ -63,8 +94,6 @@ private:
   std::vector<G4double> zloc;
 
   // trajectory data
-  std::vector<G4int>    trjtid;
-  std::vector<G4int>    trjpid;
   std::vector<G4int>    trjpdg;
   std::vector<G4int>    trjnpts;
   std::vector<G4double> trjxvtx;

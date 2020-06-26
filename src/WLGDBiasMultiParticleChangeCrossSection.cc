@@ -11,6 +11,14 @@ WLGDBiasMultiParticleChangeCrossSection::WLGDBiasMultiParticleChangeCrossSection
 : G4VBiasingOperator("TestManyExponentialTransform")
 {}
 
+WLGDBiasMultiParticleChangeCrossSection::~WLGDBiasMultiParticleChangeCrossSection()
+{
+  for (auto& it : fBOptrForParticle)
+  {
+    delete it.second;
+  }
+}
+
 void WLGDBiasMultiParticleChangeCrossSection::AddParticle(const G4String& particleName)
 {
   const G4ParticleDefinition* particle =
