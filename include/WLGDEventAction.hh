@@ -50,9 +50,7 @@ private:
     int idx = 0;
     int pidx = 0;
     std::vector<int> result;
-    std::vector<int>::iterator it;
-
-    it = std::find(tid.begin(), tid.end(), item);
+    auto it = std::find(tid.begin(), tid.end(), item);
 
     while (it != tid.end()) // find all links in the chain
     {
