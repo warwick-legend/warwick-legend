@@ -25,7 +25,6 @@
 #include "G4VPrimitiveScorer.hh"
 #include "WLGDPSEnergyDeposit.hh"
 #include "WLGDPSLocation.hh"
-#include "WLGDPSParentID.hh"
 #include "WLGDPSTime.hh"
 #include "WLGDPSTrackID.hh"
 
@@ -136,10 +135,6 @@ void WLGDDetectorConstruction::ConstructSDandField()
     auto* idprimitive = new WLGDPSTrackID("TrackID");
     idprimitive->SetFilter(vertexFilter);
     det->RegisterPrimitive(idprimitive);
-
-    auto* primitive = new WLGDPSParentID("ParentID");
-    primitive->SetFilter(vertexFilter);
-    det->RegisterPrimitive(primitive);
 
     // Also only add it once to the SD manager!
     G4SDManager::GetSDMpointer()->AddNewDetector(fSD.Get());

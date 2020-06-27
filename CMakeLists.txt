@@ -22,7 +22,6 @@ add_executable(warwick-legend
   src/WLGDEventAction.cc
   src/WLGDPSEnergyDeposit.cc
   src/WLGDPSLocation.cc
-  src/WLGDPSParentID.cc
   src/WLGDPSTime.cc
   src/WLGDPSTrackID.cc
   src/WLGDPrimaryGeneratorAction.cc

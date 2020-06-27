@@ -89,7 +89,6 @@ std::vector<int> FilterTrajectories(int item, const std::vector<G4int>& tid, con
   G4int                 fTimeID = -1;
   G4int                 fEdepID = -1;
   std::vector<G4int>    htrid;
-  std::vector<G4int>    hpaid;
   std::vector<G4double> edep;
   std::vector<G4double> thit;
   std::vector<G4double> xloc;

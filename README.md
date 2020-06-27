@@ -19,13 +19,12 @@ neutron capture reaction (Ge-77 production from n,gamma reaction)
 
 Operate with command line input and Geant4 macro.
 
-Macro commands for change of geometry, one material in the geometry,
-primary vertex generator, cross section bias factor (one each, neutron and muon),
-bias split factor (integer >= 2)
+Macro commands for change of geometry, 
+primary vertex generator and cross section bias factor (one each, neutron and muon)
 
 CLI for number of threads, macro file, output file name (for production runs)
 
-User Limits for run time optimization, use recommended benchmarking tool
+User Limits for run time optimization
 
 ## How to Build/Develop
 The project has the following requirements:
@@ -86,3 +85,40 @@ up to the developer. The set of fixes applied are:
 
 For a full listing of the wildcards, see [the `clang-tidy` documentation](https://clang.llvm.org/extra/clang-tidy/checks/list.html).
 
+## Code Details
+### Ntuple output columns
+- Hit data, one row per event
+  - Edep
+  - Time
+  - Hit x location
+  - Hit y location
+  - Hit z location
+- Trajectory data, one row per event
+  - PDG code
+  - N entries in position containers
+  - Vertex logical volume name code, see name map
+  - Vertex x location
+  - Vertex y location
+  - Vertex z location
+- Trajectory data track step points, N rows, see N entries column above
+  - x position
+  - y position
+  - z position
+
+### Vertex Name Map
+Volume definitions in detector construction.
+- lookup["Cavern_log"]   = 0;
+- lookup["Hall_log"]     = 1;
+- lookup["Tank_log"]     = 2;
+- lookup["Water_log"]    = 3;
+- lookup["Cout_log"]     = 4;
+- lookup["Cvac_log"]     = 5;
+- lookup["Cinn_log"]     = 6;
+- lookup["Lar_log"]      = 7;
+- lookup["Lid_log"]      = 8;
+- lookup["Bot_log"]      = 9;
+- lookup["Copper_log"]   = 10;
+- lookup["ULar_log"]     = 11;
+- lookup["Ge_log"]       = 12;
+- lookup["Pu_log"]       = 13;
+- lookup["Membrane_log"] = 14;

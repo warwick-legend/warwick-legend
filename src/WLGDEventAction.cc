@@ -107,7 +107,6 @@ void WLGDEventAction::BeginOfEventAction(const G4Event*
 {
   edep.clear();
   htrid.clear();
-  hpaid.clear();
   thit.clear();
   xloc.clear();
   yloc.clear();
@@ -142,7 +141,6 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   // Get entries from hits collections
   //
   G4THitsMap<G4int>*         THitsMap = GetIntHitsCollection(fTidID, event);
-  G4THitsMap<G4int>*         PHitsMap = GetIntHitsCollection(fPidID, event);
   G4THitsMap<G4double>*      HitsMap  = GetHitsCollection(fEdepID, event);
   G4THitsMap<G4ThreeVector>* LocMap   = GetVecHitsCollection(fLocID, event);
   G4THitsMap<G4double>*      TimeMap  = GetHitsCollection(fTimeID, event);
@@ -173,10 +171,6 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   for(auto it : *THitsMap->GetMap())
   {
     htrid.push_back((*it.second));
-  }
-  for(auto it : *PHitsMap->GetMap())
-  {
-    hpaid.push_back((*it.second));
   }
 
   // fill trajectory data
