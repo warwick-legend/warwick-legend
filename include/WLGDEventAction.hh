@@ -84,7 +84,6 @@ std::vector<int> FilterTrajectories(int item, const std::vector<G4int>& tid, con
   // data members
   // hit data
   G4int                 fTidID  = -1;
-  G4int                 fPidID  = -1;
   G4int                 fLocID  = -1;
   G4int                 fTimeID = -1;
   G4int                 fEdepID = -1;

@@ -132,7 +132,6 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   if(fTidID < 0)
   {
     fTidID  = G4SDManager::GetSDMpointer()->GetCollectionID("Det/TrackID");
-    fPidID  = G4SDManager::GetSDMpointer()->GetCollectionID("Det/ParentID");
     fLocID  = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Loc");
     fEdepID = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Edep");
     fTimeID = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Time");
