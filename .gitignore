@@ -33,6 +33,8 @@
 
 # directory
 build
+batch
+workdir
 
 # editor
 *.*~
