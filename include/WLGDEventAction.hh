@@ -23,11 +23,12 @@ public:
   virtual void EndOfEventAction(const G4Event* event);
 
   // to create columns for Ntuple
-  std::vector<G4double>& GetHitEdep() { return edep; }
-  std::vector<G4double>& GetHitTime() { return thit; }
-  std::vector<G4double>& GetHitxLoc() { return xloc; }
-  std::vector<G4double>& GetHityLoc() { return yloc; }
-  std::vector<G4double>& GetHitzLoc() { return zloc; }
+  std::vector<G4double>& GetHitEdep()   { return edep; }
+  std::vector<G4double>& GetHitTime()   { return thit; }
+  std::vector<G4double>& GetHitWeight() { return whit; }
+  std::vector<G4double>& GetHitxLoc()   { return xloc; }
+  std::vector<G4double>& GetHityLoc()   { return yloc; }
+  std::vector<G4double>& GetHitzLoc()   { return zloc; }
 
   // tajectory methods
   std::vector<G4int>&    GetTrjPDG() { return trjpdg; }
@@ -83,13 +84,15 @@ std::vector<int> FilterTrajectories(int item, const std::vector<G4int>& tid, con
 
   // data members
   // hit data
-  G4int                 fTidID  = -1;
-  G4int                 fLocID  = -1;
-  G4int                 fTimeID = -1;
-  G4int                 fEdepID = -1;
+  G4int                 fTidID    = -1;
+  G4int                 fLocID    = -1;
+  G4int                 fTimeID   = -1;
+  G4int                 fWeightID = -1;
+  G4int                 fEdepID   = -1;
   std::vector<G4int>    htrid;
   std::vector<G4double> edep;
   std::vector<G4double> thit;
+  std::vector<G4double> whit;
   std::vector<G4double> xloc;
   std::vector<G4double> yloc;
   std::vector<G4double> zloc;

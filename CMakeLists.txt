@@ -24,6 +24,7 @@ add_executable(warwick-legend
   src/WLGDPSLocation.cc
   src/WLGDPSTime.cc
   src/WLGDPSTrackID.cc
+  src/WLGDPSTrackWeight.cc
   src/WLGDPrimaryGeneratorAction.cc
   src/WLGDRunAction.cc
   src/WLGDStackingAction.cc

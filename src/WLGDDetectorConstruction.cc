@@ -27,6 +27,7 @@
 #include "WLGDPSLocation.hh"
 #include "WLGDPSTime.hh"
 #include "WLGDPSTrackID.hh"
+#include "WLGDPSTrackWeight.hh"
 
 #include "WLGDBiasMultiParticleChangeCrossSection.hh"
 
@@ -131,6 +132,10 @@ void WLGDDetectorConstruction::ConstructSDandField()
     auto* lprimitive = new WLGDPSLocation("Loc");
     lprimitive->SetFilter(vertexFilter);
     det->RegisterPrimitive(lprimitive);
+
+    auto* wprimitive = new WLGDPSTrackWeight("Weight");
+    wprimitive->SetFilter(vertexFilter);
+    det->RegisterPrimitive(wprimitive);
 
     auto* idprimitive = new WLGDPSTrackID("TrackID");
     idprimitive->SetFilter(vertexFilter);

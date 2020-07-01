@@ -131,18 +131,20 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   // Get hist collections IDs
   if(fTidID < 0)
   {
-    fTidID  = G4SDManager::GetSDMpointer()->GetCollectionID("Det/TrackID");
-    fLocID  = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Loc");
-    fEdepID = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Edep");
-    fTimeID = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Time");
+    fTidID    = G4SDManager::GetSDMpointer()->GetCollectionID("Det/TrackID");
+    fLocID    = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Loc");
+    fEdepID   = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Edep");
+    fTimeID   = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Time");
+    fWeightID = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Weight");
   }
 
   // Get entries from hits collections
   //
-  G4THitsMap<G4int>*         THitsMap = GetIntHitsCollection(fTidID, event);
-  G4THitsMap<G4double>*      HitsMap  = GetHitsCollection(fEdepID, event);
-  G4THitsMap<G4ThreeVector>* LocMap   = GetVecHitsCollection(fLocID, event);
-  G4THitsMap<G4double>*      TimeMap  = GetHitsCollection(fTimeID, event);
+  G4THitsMap<G4int>*         THitsMap   = GetIntHitsCollection(fTidID, event);
+  G4THitsMap<G4double>*      HitsMap    = GetHitsCollection(fEdepID, event);
+  G4THitsMap<G4ThreeVector>* LocMap     = GetVecHitsCollection(fLocID, event);
+  G4THitsMap<G4double>*      TimeMap    = GetHitsCollection(fTimeID, event);
+  G4THitsMap<G4double>*      WeightMap  = GetHitsCollection(fWeightID, event);
 
   if (THitsMap->entries()<=0)
   {
@@ -160,6 +162,10 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   for(auto it : *TimeMap->GetMap())
   {
     thit.push_back((*it.second));
+  }
+  for(auto it : *WeightMap->GetMap())
+  {
+    whit.push_back((*it.second));
   }
   for(auto it : *LocMap->GetMap())
   {

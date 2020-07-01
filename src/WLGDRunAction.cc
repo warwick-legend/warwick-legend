@@ -24,6 +24,7 @@ WLGDRunAction::WLGDRunAction(WLGDEventAction* eventAction, G4String name)
   analysisManager->CreateNtuple("Score", "Hits");
   analysisManager->CreateNtupleDColumn("Edep", fEventAction->GetHitEdep());
   analysisManager->CreateNtupleDColumn("Time", fEventAction->GetHitTime());
+  analysisManager->CreateNtupleDColumn("Weight", fEventAction->GetHitWeight());
   analysisManager->CreateNtupleDColumn("Hitxloc", fEventAction->GetHitxLoc());
   analysisManager->CreateNtupleDColumn("Hityloc", fEventAction->GetHityLoc());
   analysisManager->CreateNtupleDColumn("Hitzloc", fEventAction->GetHitzLoc());
