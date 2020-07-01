@@ -59,9 +59,9 @@ void WLGDPSTrackWeight::PrintAll()
   G4cout << " PrimitiveScorer " << GetName() << G4endl;
   G4cout << " Number of entries " << EvtMap->entries() << G4endl;
   auto itr = EvtMap->GetMap()->begin();
-  for(; itr != EvtMap->GetMap()->end(); itr++)
+  for(const auto& itr : *(EvtMap->GetMap()))
   {
-    G4cout << "  key: " << itr->first << "  total weight: " << *(itr->second) << G4endl;
+    G4cout << "  key: " << itr.first << "  total weight: " << *(itr.second) << G4endl;
   }
 }
 
