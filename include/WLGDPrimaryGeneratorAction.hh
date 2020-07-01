@@ -96,8 +96,8 @@ private:
 
   WLGDDetectorConstruction* fDetector;
 
-  G4ParticleGun*        fParticleGun;
-  G4GenericMessenger*   fMessenger;
+  G4ParticleGun*      fParticleGun;
+  G4GenericMessenger* fMessenger;
 
   std::random_device rd;
   std::ranlux24      generator;

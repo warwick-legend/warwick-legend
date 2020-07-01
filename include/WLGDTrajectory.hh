@@ -33,8 +33,8 @@ public:
   inline int   operator==(const WLGDTrajectory& right) const { return (this == &right); }
 
   // required from base class
-  virtual G4double            GetCharge() const {return 0.0; };
-  virtual G4ThreeVector       GetInitialMomentum() const { return G4ThreeVector(); }
+  virtual G4double      GetCharge() const { return 0.0; };
+  virtual G4ThreeVector GetInitialMomentum() const { return G4ThreeVector(); }
 
   // required for ntuple storage
   virtual G4int               GetTrackID() const { return fTrackID; }

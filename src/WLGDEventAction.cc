@@ -10,10 +10,10 @@
 #include "G4ios.hh"
 
 #include "Randomize.hh"
-#include <iomanip>
-#include <vector>
 #include <algorithm>
+#include <iomanip>
 #include <numeric>
+#include <vector>
 
 G4THitsMap<G4int>* WLGDEventAction::GetIntHitsCollection(G4int          hcID,
                                                          const G4Event* event) const
@@ -68,7 +68,7 @@ G4THitsMap<G4ThreeVector>* WLGDEventAction::GetVecHitsCollection(
 
 void WLGDEventAction::makeMap()
 {
-  // make a lookup table to translate Logical Volume name 
+  // make a lookup table to translate Logical Volume name
   // to a unique int for storage in the ntuple.
   lookup["Cavern_log"]   = 0;
   lookup["Hall_log"]     = 1;
@@ -91,16 +91,14 @@ G4int WLGDEventAction::GeomID(G4String name)
 {
   auto it = lookup.find(name);
 
-  if (it == lookup.end())
+  if(it == lookup.end())
   {
     G4ExceptionDescription msg;
     msg << "Name  " << name << " not in look up table";
-    G4Exception("WLGDEventAction::GeomID()", "MyCode0005", FatalException,
-                msg);  
+    G4Exception("WLGDEventAction::GeomID()", "MyCode0005", FatalException, msg);
   }
   return it->second;
 }
-
 
 void WLGDEventAction::BeginOfEventAction(const G4Event*
                                          /*event*/)
@@ -121,10 +119,9 @@ void WLGDEventAction::BeginOfEventAction(const G4Event*
   trjxpos.clear();
   trjypos.clear();
   trjzpos.clear();
-  
+
   makeMap();
 }
-
 
 void WLGDEventAction::EndOfEventAction(const G4Event* event)
 {
@@ -140,15 +137,15 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
 
   // Get entries from hits collections
   //
-  G4THitsMap<G4int>*         THitsMap   = GetIntHitsCollection(fTidID, event);
-  G4THitsMap<G4double>*      HitsMap    = GetHitsCollection(fEdepID, event);
-  G4THitsMap<G4ThreeVector>* LocMap     = GetVecHitsCollection(fLocID, event);
-  G4THitsMap<G4double>*      TimeMap    = GetHitsCollection(fTimeID, event);
-  G4THitsMap<G4double>*      WeightMap  = GetHitsCollection(fWeightID, event);
+  G4THitsMap<G4int>*         THitsMap  = GetIntHitsCollection(fTidID, event);
+  G4THitsMap<G4double>*      HitsMap   = GetHitsCollection(fEdepID, event);
+  G4THitsMap<G4ThreeVector>* LocMap    = GetVecHitsCollection(fLocID, event);
+  G4THitsMap<G4double>*      TimeMap   = GetHitsCollection(fTimeID, event);
+  G4THitsMap<G4double>*      WeightMap = GetHitsCollection(fWeightID, event);
 
-  if (THitsMap->entries()<=0)
+  if(THitsMap->entries() <= 0)
   {
-    return;   // no action on no event in Germanium
+    return;  // no action on no event in Germanium
   }
 
   // get analysis manager
@@ -180,18 +177,19 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
 
   // fill trajectory data
   // temporary full storage
-  std::vector<G4int> temptid, temppid, temppdg, tempnpts;
+  std::vector<G4int>    temptid, temppid, temppdg, tempnpts;
   std::vector<G4String> tempname;
   std::vector<G4double> tempxvtx, tempyvtx, tempzvtx;
   std::vector<G4double> tempxpos, tempypos, tempzpos;
 
   // fill trajectory data if available
   G4TrajectoryContainer* trajectoryContainer = event->GetTrajectoryContainer();
-  G4int n_trajectories = (trajectoryContainer == nullptr) ? 0 : trajectoryContainer->entries();
+  G4int                  n_trajectories =
+    (trajectoryContainer == nullptr) ? 0 : trajectoryContainer->entries();
 
   for(G4int i = 0; i < n_trajectories; i++)
   {
-    WLGDTrajectory* trj   = (WLGDTrajectory*) ((*(event->GetTrajectoryContainer()))[i]);
+    WLGDTrajectory* trj = (WLGDTrajectory*) ((*(event->GetTrajectoryContainer()))[i]);
     temptid.push_back(trj->GetTrackID());
     temppid.push_back(trj->GetParentID());
     temppdg.push_back(trj->GetPDGEncoding());
@@ -207,18 +205,20 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
       tempzpos.push_back((trj->GetPoint(nn)->GetPosition()).z());
     }
   }
-  for (const int &item : htrid) {  
+  for(const int& item : htrid)
+  {
     std::vector<int> res = FilterTrajectories(item, temptid, temppid);
-    for (int &idx : res) {
+    for(int& idx : res)
+    {
       trjpdg.push_back(temppdg.at(idx));
       nameid.push_back(GeomID(tempname.at(idx)));
       trjxvtx.push_back(tempxvtx.at(idx));
       trjyvtx.push_back(tempyvtx.at(idx));
       trjzvtx.push_back(tempzvtx.at(idx));
       trjnpts.push_back(tempnpts.at(idx));
-      int start =
-          std::accumulate(tempnpts.begin(), tempnpts.begin() + idx, 0);
-      for (int i = start; i < (start + tempnpts.at(idx)); ++i) {
+      int start = std::accumulate(tempnpts.begin(), tempnpts.begin() + idx, 0);
+      for(int i = start; i < (start + tempnpts.at(idx)); ++i)
+      {
         trjxpos.push_back(tempxpos.at(i));
         trjypos.push_back(tempypos.at(i));
         trjzpos.push_back(tempzpos.at(i));
@@ -236,7 +236,7 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   tempxpos.clear();
   tempypos.clear();
   tempzpos.clear();
- 
+
   // fill the ntuple
   analysisManager->AddNtupleRow();
 
@@ -245,5 +245,4 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   G4cout << ">>> Event: " << eventID << G4endl;
   G4cout << "    " << htrid.size() << " hits stored in this event." << G4endl;
   G4cout << "    " << trjpdg.size() << " trajectories stored in this event." << G4endl;
-
 }

@@ -12,7 +12,7 @@
 
 class WLGDPSTrackWeight : public G4VPrimitiveScorer
 {
-public:                                                 // with description
+public:                                               // with description
   WLGDPSTrackWeight(G4String name, G4int depth = 0);  // default unit
   virtual ~WLGDPSTrackWeight();
 

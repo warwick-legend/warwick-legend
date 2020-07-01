@@ -17,7 +17,6 @@ WLGDPSTrackWeight::WLGDPSTrackWeight(G4String name, G4int depth)
   SetUnit("NoUnit");
 }
 
-
 WLGDPSTrackWeight::~WLGDPSTrackWeight() = default;
 
 G4bool WLGDPSTrackWeight::ProcessHits(G4Step* aStep, G4TouchableHistory* /*unused*/)
@@ -62,9 +61,7 @@ void WLGDPSTrackWeight::PrintAll()
   auto itr = EvtMap->GetMap()->begin();
   for(; itr != EvtMap->GetMap()->end(); itr++)
   {
-    G4cout << "  key: " << itr->first
-           << "  total weight: " << *(itr->second) 
-           << G4endl;
+    G4cout << "  key: " << itr->first << "  total weight: " << *(itr->second) << G4endl;
   }
 }
 

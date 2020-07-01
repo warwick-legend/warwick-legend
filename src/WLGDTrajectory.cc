@@ -44,8 +44,8 @@ void WLGDTrajectory::ShowTrajectory(std::ostream& os) const
 
   os << "Particle name : " << fParticleName << "  PDG code : " << fPDGEncoding << G4endl;
 
-  os << "Vertex : " << G4BestUnit(fVertexPosition, "Length")
-     << "  in volume " << fVertexName << G4endl;
+  os << "Vertex : " << G4BestUnit(fVertexPosition, "Length") << "  in volume "
+     << fVertexName << G4endl;
 
   os << "  Current trajectory has " << fPositionRecord->size() << " points." << G4endl;
 
