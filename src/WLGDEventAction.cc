@@ -106,6 +106,7 @@ void WLGDEventAction::BeginOfEventAction(const G4Event*
   edep.clear();
   htrid.clear();
   thit.clear();
+  whit.clear();
   xloc.clear();
   yloc.clear();
   zloc.clear();
