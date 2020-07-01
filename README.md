@@ -93,6 +93,7 @@ M.H. Mendenhall and R.A. Weller, NIM A667 (2012) 38-43
 - Hit data, one row per event
   - Edep
   - Time
+  - Weight
   - Hit x location
   - Hit y location
   - Hit z location
