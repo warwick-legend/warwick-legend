@@ -24,12 +24,14 @@ WLGDRunAction::WLGDRunAction(WLGDEventAction* eventAction, G4String name)
   analysisManager->CreateNtuple("Score", "Hits");
   analysisManager->CreateNtupleDColumn("Edep", fEventAction->GetHitEdep());
   analysisManager->CreateNtupleDColumn("Time", fEventAction->GetHitTime());
+  analysisManager->CreateNtupleDColumn("Weight", fEventAction->GetHitWeight());
   analysisManager->CreateNtupleDColumn("Hitxloc", fEventAction->GetHitxLoc());
   analysisManager->CreateNtupleDColumn("Hityloc", fEventAction->GetHityLoc());
   analysisManager->CreateNtupleDColumn("Hitzloc", fEventAction->GetHitzLoc());
 
   analysisManager->CreateNtupleIColumn("Trjpdg", fEventAction->GetTrjPDG());
   analysisManager->CreateNtupleIColumn("Trjentries", fEventAction->GetTrjEntries());
+  analysisManager->CreateNtupleIColumn("VtxName", fEventAction->GetNameID());
   analysisManager->CreateNtupleDColumn("TrjXVtx", fEventAction->GetTrjXVtx());
   analysisManager->CreateNtupleDColumn("TrjYVtx", fEventAction->GetTrjYVtx());
   analysisManager->CreateNtupleDColumn("TrjZVtx", fEventAction->GetTrjZVtx());

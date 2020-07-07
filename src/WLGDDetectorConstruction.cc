@@ -25,9 +25,9 @@
 #include "G4VPrimitiveScorer.hh"
 #include "WLGDPSEnergyDeposit.hh"
 #include "WLGDPSLocation.hh"
-#include "WLGDPSParentID.hh"
 #include "WLGDPSTime.hh"
 #include "WLGDPSTrackID.hh"
+#include "WLGDPSTrackWeight.hh"
 
 #include "WLGDBiasMultiParticleChangeCrossSection.hh"
 
@@ -133,13 +133,13 @@ void WLGDDetectorConstruction::ConstructSDandField()
     lprimitive->SetFilter(vertexFilter);
     det->RegisterPrimitive(lprimitive);
 
+    auto* wprimitive = new WLGDPSTrackWeight("Weight");
+    wprimitive->SetFilter(vertexFilter);
+    det->RegisterPrimitive(wprimitive);
+
     auto* idprimitive = new WLGDPSTrackID("TrackID");
     idprimitive->SetFilter(vertexFilter);
     det->RegisterPrimitive(idprimitive);
-
-    auto* primitive = new WLGDPSParentID("ParentID");
-    primitive->SetFilter(vertexFilter);
-    det->RegisterPrimitive(primitive);
 
     // Also only add it once to the SD manager!
     G4SDManager::GetSDMpointer()->AddNewDetector(fSD.Get());
@@ -641,10 +641,7 @@ void WLGDDetectorConstruction::SetGeometry(const G4String& name)
   G4RunManager::GetRunManager()->ReinitializeGeometry();
 }
 
-void WLGDDetectorConstruction::SetNeutronBiasFactor(G4double nf)
-{
-  fNeutronBias = nf;
-}
+void WLGDDetectorConstruction::SetNeutronBiasFactor(G4double nf) { fNeutronBias = nf; }
 
 void WLGDDetectorConstruction::SetMuonBiasFactor(G4double mf) { fMuonBias = mf; }
 

@@ -13,7 +13,7 @@ WLGDBiasMultiParticleChangeCrossSection::WLGDBiasMultiParticleChangeCrossSection
 
 WLGDBiasMultiParticleChangeCrossSection::~WLGDBiasMultiParticleChangeCrossSection()
 {
-  for (auto& it : fBOptrForParticle)
+  for(auto& it : fBOptrForParticle)
   {
     delete it.second;
   }

@@ -32,13 +32,17 @@ public:
   inline void  operator delete(void*);
   inline int   operator==(const WLGDTrajectory& right) const { return (this == &right); }
 
+  // required from base class
+  virtual G4double      GetCharge() const { return 0.0; };
+  virtual G4ThreeVector GetInitialMomentum() const { return G4ThreeVector(); }
+
+  // required for ntuple storage
   virtual G4int               GetTrackID() const { return fTrackID; }
   virtual G4int               GetParentID() const { return fParentID; }
   virtual G4String            GetParticleName() const { return fParticleName; }
+  virtual G4String            GetVertexName() const { return fVertexName; }
   virtual G4int               GetPDGEncoding() const { return fPDGEncoding; }
-  virtual G4double            GetCharge() const { return fPDGCharge; }
   virtual G4ThreeVector       GetVertex() const { return fVertexPosition; }
-  virtual G4ThreeVector       GetInitialMomentum() const { return fMomentum; }
   virtual int                 GetPointEntries() const { return fPositionRecord->size(); }
   virtual G4VTrajectoryPoint* GetPoint(G4int i) const { return (*fPositionRecord)[i]; }
 
@@ -50,11 +54,9 @@ private:
   G4int                         fParentID;
   G4ParticleDefinition*         fParticleDefinition;
   G4String                      fParticleName;
-  G4double                      fPDGCharge;
+  G4String                      fVertexName;
   G4int                         fPDGEncoding;
-  G4ThreeVector                 fMomentum;
   G4ThreeVector                 fVertexPosition;
-  G4double                      fGlobalTime;
 };
 
 extern G4ThreadLocal G4Allocator<WLGDTrajectory>* myTrajectoryAllocator;
