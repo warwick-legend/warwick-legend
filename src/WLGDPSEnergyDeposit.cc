@@ -1,6 +1,7 @@
 // WLGDPSEnergyDeposit
 #include "WLGDPSEnergyDeposit.hh"
 #include "G4UnitsTable.hh"
+#include "G4ios.hh"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Description:
@@ -34,6 +35,15 @@ G4bool WLGDPSEnergyDeposit::ProcessHits(G4Step* aStep, G4TouchableHistory* /*unu
   if(edep == 0.)
     return false;  // not for zero edep
 
+  // dummy print info on hit
+  G4cout << "energy scorer: particle name = " 
+         << aStep->GetTrack()->GetParticleDefinition()->GetParticleName() << G4endl;
+  G4cout << "lifetime: " 
+         << aStep->GetTrack()->GetParticleDefinition()->GetPDGLifeTime() << G4endl;
+  G4cout << "PDG: "
+         << aStep->GetTrack()->GetParticleDefinition()->GetPDGEncoding() << G4endl;
+
+  // end print info
   edep *= aStep->GetPreStepPoint()->GetWeight();  // (Particle Weight)
   EvtMap->add(fCounter, edep);
   fCounter++;
