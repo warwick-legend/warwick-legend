@@ -6,6 +6,7 @@
 
 #include "G4Box.hh"
 #include "G4Cons.hh"
+#include "G4GDMLParser.hh"
 #include "G4GeometryManager.hh"
 #include "G4LogicalVolume.hh"
 #include "G4LogicalVolumeStore.hh"
@@ -37,7 +38,6 @@
 WLGDDetectorConstruction::WLGDDetectorConstruction()
 {
   DefineCommands();
-
   DefineMaterials();
 }
 
@@ -641,6 +641,12 @@ void WLGDDetectorConstruction::SetGeometry(const G4String& name)
   G4RunManager::GetRunManager()->ReinitializeGeometry();
 }
 
+void WLGDDetectorConstruction::ExportGeometry(const G4String& file)
+{
+  G4GDMLParser parser;
+  parser.Write(file);
+}
+
 void WLGDDetectorConstruction::SetNeutronBiasFactor(G4double nf) { fNeutronBias = nf; }
 
 void WLGDDetectorConstruction::SetMuonBiasFactor(G4double mf) { fMuonBias = mf; }
@@ -658,6 +664,15 @@ void WLGDDetectorConstruction::DefineCommands()
     .SetGuidance("alternative = NEEDS DESCRIPTION")
     .SetCandidates("baseline alternative")
     .SetStates(G4State_PreInit)
+    .SetToBeBroadcasted(false);
+
+  // GDML Export
+  fDetectorMessenger
+    ->DeclareMethod("exportGeometry", &WLGDDetectorConstruction::ExportGeometry)
+    .SetGuidance("Export current geometry to a GDML file")
+    .SetParameterName("filename", false)
+    .SetDefaultValue("wlgd.gdml")
+    .SetStates(G4State_Idle)
     .SetToBeBroadcasted(false);
 
   // Define bias operator command directory using generic messenger class

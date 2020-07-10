@@ -22,6 +22,7 @@ public:
   G4double GetWorldSizeZ() { return fvertexZ; }  // inline
   G4double GetWorldExtent() { return fmaxrad; }  // --"--
   void     SetGeometry(const G4String& name);
+  void     ExportGeometry(const G4String& file);
   void     SetNeutronBiasFactor(G4double nf);
   void     SetMuonBiasFactor(G4double mf);
 

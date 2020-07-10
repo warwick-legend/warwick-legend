@@ -10,3 +10,11 @@ add_test(NAME change-bias COMMAND warwick-legend -m "${CMAKE_CURRENT_LIST_DIR}/t
 # 4. Check trajectory storage runs
 add_test(NAME trajectory-storage COMMAND warwick-legend -m "${CMAKE_CURRENT_LIST_DIR}/test-trajectory-storage.mac")
 
+# 5. Check gdml export runs
+# a. File output
+add_test(NAME gdml-export-run COMMAND warwick-legend -m "${CMAKE_CURRENT_LIST_DIR}/test-gdml-export-run.mac")
+# b. File existence (*not* validation)
+add_test(NAME gdml-export-exists
+  COMMAND ${CMAKE_COMMAND} -DGDML_FILE=${CMAKE_CURRENT_BINARY_DIR}/test-gdml-export.gdml
+                           -P "${CMAKE_CURRENT_LIST_DIR}/test-gdml-export-exists.cmake")
+set_property(TEST gdml-export-exists PROPERTY DEPENDS gdml-export-run)
