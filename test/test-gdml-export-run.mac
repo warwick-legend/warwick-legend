@@ -1,0 +1,4 @@
+# Test that geometry can be exported to gdml
+/run/initialize
+/WLGD/detector/exportGeometry test-gdml-export.gdml
+

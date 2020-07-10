@@ -10,7 +10,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include(CTest)
 
 # Dependencies
-find_package(Geant4 10.6 REQUIRED ui_all vis_all)
+find_package(Geant4 10.6 REQUIRED gdml ui_all vis_all)
 
 # Build
 add_executable(warwick-legend
