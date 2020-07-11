@@ -79,7 +79,7 @@ int main(int argc, char** argv)
   // -- set user physics list
   auto* physicsList = new Shielding;
   auto* neutronCut  = new G4NeutronTrackingCut(1);
-  neutronCut->SetTimeLimit(1.0 * CLHEP::us);  // 1 micro sec limit
+  neutronCut->SetTimeLimit(1.0 * CLHEP::ms);  // 1 milli sec limit
   physicsList->RegisterPhysics(neutronCut);   // allow G4UserLimits
 
   // - Setup biasing, first for neutrons, again for muons
