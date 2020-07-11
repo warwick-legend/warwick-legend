@@ -21,6 +21,7 @@
 #include "G4NeutronTrackingCut.hh"
 #include "G4Threading.hh"
 #include "G4UImanager.hh"
+#include "G4RadioactiveDecayPhysics.hh"
 #include "Shielding.hh"
 
 // us
@@ -78,6 +79,12 @@ int main(int argc, char** argv)
 
   // -- set user physics list
   auto* physicsList = new Shielding;
+
+  // remove radioactive decay from list
+  auto* removeFromList = new G4RadioactiveDecayPhysics();
+  physicsList->RemovePhysics(removeFromList);
+
+  // allow for thermal neutrons to find Ge
   auto* neutronCut  = new G4NeutronTrackingCut(1);
   neutronCut->SetTimeLimit(1.0 * CLHEP::ms);  // 1 milli sec limit
   physicsList->RegisterPhysics(neutronCut);   // allow G4UserLimits
@@ -96,6 +103,8 @@ int main(int argc, char** argv)
   biasingPhysics->Bias("mu-", pvec);  // bias particle and process
 
   physicsList->RegisterPhysics(biasingPhysics);
+
+  // finish physics list
   runManager->SetUserInitialization(physicsList);
 
   // -- Set user action initialization class, forward random seed
