@@ -86,8 +86,8 @@ int main(int argc, char** argv)
 
   // allow for thermal neutrons to find Ge
   auto* neutronCut  = new G4NeutronTrackingCut(1);
-  neutronCut->SetTimeLimit(1.0 * CLHEP::ms);  // 1 milli sec limit
-  physicsList->RegisterPhysics(neutronCut);   // allow G4UserLimits
+  neutronCut->SetTimeLimit(2.0 * CLHEP::ms);  // 2 milli sec limit
+  physicsList->RegisterPhysics(neutronCut);   // like in Gerda paper
 
   // - Setup biasing, first for neutrons, again for muons
   auto* biasingPhysics = new G4GenericBiasingPhysics();
