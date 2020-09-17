@@ -81,8 +81,8 @@ int main(int argc, char** argv)
   auto* physicsList = new Shielding;
 
   // remove radioactive decay from list
-  auto* removeFromList = new G4RadioactiveDecayPhysics();
-  physicsList->RemovePhysics(removeFromList);
+  // auto* removeFromList = new G4RadioactiveDecayPhysics();
+  // physicsList->RemovePhysics(removeFromList);
 
   // allow for thermal neutrons to find Ge
   auto* neutronCut  = new G4NeutronTrackingCut(1);
