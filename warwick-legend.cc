@@ -79,11 +79,6 @@ int main(int argc, char** argv)
 
   // -- set user physics list
   auto* physicsList = new Shielding;
-
-  // remove radioactive decay from list
-  // auto* removeFromList = new G4RadioactiveDecayPhysics();
-  // physicsList->RemovePhysics(removeFromList);
-
   // allow for thermal neutrons to find Ge
   auto* neutronCut  = new G4NeutronTrackingCut(1);
   neutronCut->SetTimeLimit(2.0 * CLHEP::ms);  // 2 milli sec limit

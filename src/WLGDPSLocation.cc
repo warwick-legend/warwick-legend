@@ -30,8 +30,6 @@ WLGDPSLocation::~WLGDPSLocation() = default;
 
 G4bool WLGDPSLocation::ProcessHits(G4Step* aStep, G4TouchableHistory* /*unused*/)
 {
-//  if(aStep->GetTotalEnergyDeposit() == 0.)
-//    return false;  // not for zero edep
 
   G4StepPoint*  preStepPoint = aStep->GetPreStepPoint();
   G4ThreeVector loc          = preStepPoint->GetPosition();  // location at track creation
