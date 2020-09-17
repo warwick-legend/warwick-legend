@@ -30,8 +30,6 @@ WLGDPSTime::~WLGDPSTime() = default;
 
 G4bool WLGDPSTime::ProcessHits(G4Step* aStep, G4TouchableHistory* /*unused*/)
 {
-  if(aStep->GetTotalEnergyDeposit() == 0.)
-    return false;  // not for zero edep
 
   // global time since start of event
   G4double tt = aStep->GetTrack()->GetGlobalTime();

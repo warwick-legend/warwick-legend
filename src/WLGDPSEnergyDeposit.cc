@@ -31,8 +31,6 @@ WLGDPSEnergyDeposit::~WLGDPSEnergyDeposit() = default;
 G4bool WLGDPSEnergyDeposit::ProcessHits(G4Step* aStep, G4TouchableHistory* /*unused*/)
 {
   G4double edep = aStep->GetTotalEnergyDeposit();
-  if(edep == 0.)
-    return false;  // not for zero edep
 
   edep *= aStep->GetPreStepPoint()->GetWeight();  // (Particle Weight)
   EvtMap->add(fCounter, edep);

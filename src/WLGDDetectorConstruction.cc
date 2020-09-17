@@ -118,7 +118,6 @@ void WLGDDetectorConstruction::ConstructSDandField()
     fSD.Put(det);
 
     auto* vertexFilter = new G4SDParticleFilter("vtxfilt");
-    vertexFilter->add("neutron");  // neutrons in Ge of interest
     vertexFilter->addIon(32, 77);  // register 77Ge production
 
     auto* eprimitive = new WLGDPSEnergyDeposit("Edep");
