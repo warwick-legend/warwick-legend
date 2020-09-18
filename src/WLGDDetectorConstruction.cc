@@ -59,6 +59,10 @@ auto WLGDDetectorConstruction::Construct() -> G4VPhysicalVolume*
   {
     return SetupBaseline();
   }
+  else if(fGeometryName == "hallA")
+  {
+    return SetupHallA();
+  }
 
   return SetupAlternative();
 }
@@ -180,7 +184,7 @@ void WLGDDetectorConstruction::ConstructSDandField()
     biasmuXS->AttachTo(logicULar);
 
     // Baseline also has a water volume and cryostat
-    if(fGeometryName == "baseline")
+    if(fGeometryName == "baseline" || fGeometryName == "hallA")
     {
       G4LogicalVolume* logicWater = volumeStore->GetVolume("Water_log");
       biasmuXS->AttachTo(logicWater);
@@ -625,9 +629,233 @@ auto WLGDDetectorConstruction::SetupBaseline() -> G4VPhysicalVolume*
   return fWorldPhysical;
 }
 
+auto WLGDDetectorConstruction::SetupHallA() -> G4VPhysicalVolume*
+{
+  // Full copy of baseline set up but smaller as a Gerda mock-up.
+  // Get materials
+  auto* worldMaterial = G4Material::GetMaterial("G4_Galactic");
+  auto* larMat        = G4Material::GetMaterial("G4_lAr");
+  auto* airMat        = G4Material::GetMaterial("G4_AIR");
+  auto* waterMat      = G4Material::GetMaterial("G4_WATER");
+  auto* steelMat      = G4Material::GetMaterial("G4_STAINLESS-STEEL");
+  auto* copperMat     = G4Material::GetMaterial("G4_Cu");
+  auto* stdRock       = G4Material::GetMaterial("StdRock");
+  auto* roiMat        = G4Material::GetMaterial("enrGe");
+
+  // constants
+  // size parameter, unit [cm]
+  G4double offset = 250.0;  // shift cavern floor to keep detector centre at origin
+  // cavern
+  G4double stone       = 100.0;  // Hall wall thickness 1 m
+  G4double hallrad     = 800.0;  // Hall cylinder diam 16 m
+  G4double hallhheight = 650.0;  // Hall cylinder height 13 m
+  // water tank
+  G4double tankwalltop = 0.6;  // water tank thickness at top 6 mm
+  G4double tankwallbot = 0.8;  // water tank thickness at bottom 8 mm
+  G4double tankrad     = 500;  // water tank diam 10 m
+  G4double tankhheight = 400;  // water tank height 8 m
+  // cryostat
+  G4double cryowall   = 1.5;    // cryostat wall thickness from GERDA
+  G4double vacgap     = 1.0;    // vacuum gap between walls
+  G4double cryrad     = 200.0;  // cryostat diam 4 m
+  G4double cryhheight = 225.0;  // cryostat height 4.5 m
+  // Ge cylinder for 35.6 kg at 5.32 g/cm3
+  G4double roiradius     = 15.0;   // detector region diam 30 cm
+  G4double roihalfheight = 4.734;  // detector region height about 9.5 cm
+
+  fvertexZ = (hallhheight + stone + offset) * cm;
+  fmaxrad  = hallrad * cm;
+
+  // Volumes for this geometry
+
+  //
+  // World
+  //
+  auto* worldSolid =
+    new G4Tubs("World", 0.0 * cm, (hallrad + stone + 0.1) * cm,
+               (hallhheight + stone + offset + 0.1) * cm, 0.0, CLHEP::twopi);
+  auto* fWorldLogical  = new G4LogicalVolume(worldSolid, worldMaterial, "World_log");
+  auto* fWorldPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fWorldLogical,
+                                           "World_phys", nullptr, false, 0);
+
+  //
+  // Cavern
+  //
+  auto* cavernSolid    = new G4Tubs("Cavern", 0.0 * cm, (hallrad + stone) * cm,
+                                 (hallhheight + stone) * cm, 0.0, CLHEP::twopi);
+  auto* fCavernLogical = new G4LogicalVolume(cavernSolid, stdRock, "Cavern_log");
+  auto* fCavernPhysical =
+    new G4PVPlacement(nullptr, G4ThreeVector(0., 0., offset * cm), fCavernLogical,
+                      "Cavern_phys", fWorldLogical, false, 0);
+
+  //
+  // Hall
+  //
+  auto* hallSolid =
+    new G4Tubs("Hall", 0.0 * cm, hallrad * cm, hallhheight * cm, 0.0, CLHEP::twopi);
+  auto* fHallLogical = new G4LogicalVolume(hallSolid, airMat, "Hall_log");
+  auto* fHallPhysical =
+    new G4PVPlacement(nullptr, G4ThreeVector(0., 0., -stone * cm), fHallLogical,
+                      "Hall_phys", fCavernLogical, false, 0, true);
+
+  //
+  // Tank
+  //
+  auto* tankSolid =
+    new G4Cons("Tank", 0.0 * cm, (tankrad + tankwallbot) * cm, 0.0 * cm,
+               (tankrad + tankwalltop) * cm, tankhheight * cm, 0.0, CLHEP::twopi);
+  auto* fTankLogical = new G4LogicalVolume(tankSolid, steelMat, "Tank_log");
+  auto* fTankPhysical =
+    new G4PVPlacement(nullptr, G4ThreeVector(0., 0., -stone * cm), fTankLogical,
+                      "Tank_phys", fHallLogical, false, 0, true);
+
+  //
+  // Water
+  //
+  auto* waterSolid     = new G4Tubs("Water", 0.0 * cm, tankrad * cm,
+                                (tankhheight - tankwallbot) * cm, 0.0, CLHEP::twopi);
+  auto* fWaterLogical  = new G4LogicalVolume(waterSolid, waterMat, "Water_log");
+  auto* fWaterPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fWaterLogical,
+                                           "Water_phys", fTankLogical, false, 0, true);
+
+  //
+  // outer cryostat
+  //
+  auto* coutSolid =
+    new G4Tubs("Cout", 0.0 * cm, cryrad * cm, cryhheight * cm, 0.0, CLHEP::twopi);
+  auto* fCoutLogical  = new G4LogicalVolume(coutSolid, steelMat, "Cout_log");
+  auto* fCoutPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fCoutLogical,
+                                          "Cout_phys", fWaterLogical, false, 0, true);
+
+  //
+  // vacuum gap
+  //
+  auto* cvacSolid     = new G4Tubs("Cvac", 0.0 * cm, (cryrad - cryowall) * cm,
+                               cryhheight * cm, 0.0, CLHEP::twopi);
+  auto* fCvacLogical  = new G4LogicalVolume(cvacSolid, worldMaterial, "Cvac_log");
+  auto* fCvacPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fCvacLogical,
+                                          "Cvac_phys", fCoutLogical, false, 0, true);
+
+  //
+  // inner cryostat
+  //
+  auto* cinnSolid     = new G4Tubs("Cinn", 0.0 * cm, (cryrad - cryowall - vacgap) * cm,
+                               cryhheight * cm, 0.0, CLHEP::twopi);
+  auto* fCinnLogical  = new G4LogicalVolume(cinnSolid, steelMat, "Cinn_log");
+  auto* fCinnPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fCinnLogical,
+                                          "Cinn_phys", fCvacLogical, false, 0, true);
+
+  //
+  // LAr bath
+  //
+  auto* larSolid     = new G4Tubs("LAr", 0.0 * cm, (cryrad - 2 * cryowall - vacgap) * cm,
+                              cryhheight * cm, 0.0, CLHEP::twopi);
+  auto* fLarLogical  = new G4LogicalVolume(larSolid, larMat, "Lar_log");
+  auto* fLarPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fLarLogical,
+                                         "Lar_phys", fCinnLogical, false, 0, true);
+
+  //
+  // cryostat Lid
+  //
+  auto* lidSolid =
+    new G4Tubs("Lid", 0.0 * cm, cryrad * cm, cryowall / 2.0 * cm, 0.0, CLHEP::twopi);
+  auto* fLidLogical = new G4LogicalVolume(lidSolid, steelMat, "Lid_log");
+  auto* fLidPhysical =
+    new G4PVPlacement(nullptr, G4ThreeVector(0., 0., (cryhheight + cryowall / 2.0) * cm),
+                      fLidLogical, "Lid_phys", fWaterLogical, false, 0, true);
+  auto* fBotLogical = new G4LogicalVolume(lidSolid, steelMat, "Bot_log");
+  auto* fBotPhysical =
+    new G4PVPlacement(nullptr, G4ThreeVector(0., 0., -(cryhheight + cryowall / 2.0) * cm),
+                      fBotLogical, "Bot_phys", fWaterLogical, false, 0, true);
+
+  //
+  // copper tubes, hollow cylinder shell
+  //
+  auto* copperSolid = new G4Tubs("Copper", (curad - copper) * cm, curad * cm,
+                                 cuhheight * cm, 0.0, CLHEP::twopi);
+
+  //
+  // ULAr bath, solid cylinder
+  //
+  auto* ularSolid = new G4Tubs("ULar", 0.0 * cm, (curad - copper) * cm, cuhheight * cm,
+                               0.0, CLHEP::twopi);
+
+  //
+  // Germanium, solid cylinder
+  //
+  auto* geSolid =
+    new G4Tubs("ROI", 0.0 * cm, roiradius * cm, roihalfheight * cm, 0.0, CLHEP::twopi);
+
+  // tower; logical volumes
+  auto* fCopperLogical = new G4LogicalVolume(copperSolid, copperMat, "Copper_log");
+  auto* fUlarLogical   = new G4LogicalVolume(ularSolid, larMat, "ULar_log");
+  auto* fGeLogical     = new G4LogicalVolume(geSolid, roiMat, "Ge_log");
+
+  // placements
+  new G4PVPlacement(nullptr, G4ThreeVector(ringrad * cm, 0., cushift * cm),
+                    fCopperLogical, "Copper_phys", fLarLogical, false, 0, true);
+
+  new G4PVPlacement(nullptr, G4ThreeVector(ringrad * cm, 0., cushift * cm), fUlarLogical,
+                    "ULar_phys", fLarLogical, false, 0, true);
+
+  new G4PVPlacement(nullptr, G4ThreeVector(0. * cm, 0. * cm, -cushift * cm), fGeLogical,
+                    "Ge_phys", fUlarLogical, false, 0, true);
+
+  // tower 2
+  new G4PVPlacement(nullptr, G4ThreeVector(0., ringrad * cm, cushift * cm),
+                    fCopperLogical, "Copper_phys2", fLarLogical, false, 1, true);
+
+  new G4PVPlacement(nullptr, G4ThreeVector(0., ringrad * cm, cushift * cm), fUlarLogical,
+                    "ULar_phys2", fLarLogical, false, 1, true);
+
+  // tower 3
+  new G4PVPlacement(nullptr, G4ThreeVector(-ringrad * cm, 0., cushift * cm),
+                    fCopperLogical, "Copper_phys3", fLarLogical, false, 2, true);
+
+  new G4PVPlacement(nullptr, G4ThreeVector(-ringrad * cm, 0., cushift * cm), fUlarLogical,
+                    "ULar_phys3", fLarLogical, false, 2, true);
+
+  // tower 4
+  new G4PVPlacement(nullptr, G4ThreeVector(0., -ringrad * cm, cushift * cm),
+                    fCopperLogical, "Copper_phys4", fLarLogical, false, 3, true);
+
+  new G4PVPlacement(nullptr, G4ThreeVector(0., -ringrad * cm, cushift * cm), fUlarLogical,
+                    "ULar_phys4", fLarLogical, false, 3, true);
+
+  //
+  // Visualization attributes
+  //
+  fWorldLogical->SetVisAttributes(G4VisAttributes::GetInvisible());
+
+  auto* redVisAtt = new G4VisAttributes(G4Colour::Red());
+  redVisAtt->SetVisibility(true);
+  auto* greyVisAtt = new G4VisAttributes(G4Colour::Grey());
+  greyVisAtt->SetVisibility(true);
+  auto* greenVisAtt = new G4VisAttributes(G4Colour::Green());
+  greenVisAtt->SetVisibility(true);
+  auto* blueVisAtt = new G4VisAttributes(G4Colour::Blue());
+  blueVisAtt->SetVisibility(true);
+
+  fCavernLogical->SetVisAttributes(redVisAtt);
+  fHallLogical->SetVisAttributes(greyVisAtt);
+  fTankLogical->SetVisAttributes(greenVisAtt);
+  fWaterLogical->SetVisAttributes(greyVisAtt);
+  fLarLogical->SetVisAttributes(greyVisAtt);
+  fCoutLogical->SetVisAttributes(blueVisAtt);
+  fCvacLogical->SetVisAttributes(greyVisAtt);
+  fCinnLogical->SetVisAttributes(blueVisAtt);
+  fLidLogical->SetVisAttributes(blueVisAtt);
+  fBotLogical->SetVisAttributes(blueVisAtt);
+  fCopperLogical->SetVisAttributes(greenVisAtt);
+  fUlarLogical->SetVisAttributes(greyVisAtt);
+  fGeLogical->SetVisAttributes(redVisAtt);
+
+  return fWorldPhysical;
+}
+
 void WLGDDetectorConstruction::SetGeometry(const G4String& name)
 {
-  std::set<G4String> knownGeometries = { "baseline", "alternative" };
+  std::set<G4String> knownGeometries = { "baseline", "alternative", "hallA" };
   if(knownGeometries.count(name) == 0)
   {
     G4Exception("WLGDDetectorConstruction::SetGeometry", "WLGD0001", JustWarning,
@@ -661,7 +889,8 @@ void WLGDDetectorConstruction::DefineCommands()
     .SetGuidance("Set geometry model of cavern and detector")
     .SetGuidance("baseline = NEEDS DESCRIPTION")
     .SetGuidance("alternative = NEEDS DESCRIPTION")
-    .SetCandidates("baseline alternative")
+    .SetGuidance("hallA = Gerda mock-up for validation.")
+    .SetCandidates("baseline alternative hallA")
     .SetStates(G4State_PreInit)
     .SetToBeBroadcasted(false);
 
