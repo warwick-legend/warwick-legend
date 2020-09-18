@@ -178,10 +178,15 @@ void WLGDDetectorConstruction::ConstructSDandField()
     biasmuXS->AttachTo(logicTank);
     G4LogicalVolume* logicLar = volumeStore->GetVolume("Lar_log");
     biasmuXS->AttachTo(logicLar);
-    G4LogicalVolume* logicCu = volumeStore->GetVolume("Copper_log");
-    biasmuXS->AttachTo(logicCu);
-    G4LogicalVolume* logicULar = volumeStore->GetVolume("ULar_log");
-    biasmuXS->AttachTo(logicULar);
+
+    // non hallA have these volumes
+    if(fGeometryName != "hallA")
+    {
+      G4LogicalVolume* logicCu = volumeStore->GetVolume("Copper_log");
+      biasmuXS->AttachTo(logicCu);
+      G4LogicalVolume* logicULar = volumeStore->GetVolume("ULar_log");
+      biasmuXS->AttachTo(logicULar);
+    }
 
     // Baseline also has a water volume and cryostat
     if(fGeometryName == "baseline" || fGeometryName == "hallA")
