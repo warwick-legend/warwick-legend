@@ -676,7 +676,7 @@ auto WLGDDetectorConstruction::SetupHallA() -> G4VPhysicalVolume*
   G4int    nofLayers      = 8;
 
   fvertexZ = (hallhheight + offset) * cm;
-  fmaxrad  = hallrad * cm;
+  fmaxrad  = cryrad * cm; // just 2 m radius
 
   // Volumes for this geometry
 
@@ -794,8 +794,6 @@ auto WLGDDetectorConstruction::SetupHallA() -> G4VPhysicalVolume*
     
   auto* fLayerLogical  = new G4LogicalVolume(layerSolid, larMat, "Layer_log");
 
-  new G4PVReplica("Layer", fLayerLogical, fTowerLogical, kZAxis, nofLayers, layerthickness * cm);
-
   // fill one layer
   auto* geSolid =
     new G4Tubs("ROI", 0.0 * cm, gerad * cm, gehheight * cm, 0.0, CLHEP::twopi);
@@ -811,6 +809,15 @@ auto WLGDDetectorConstruction::SetupHallA() -> G4VPhysicalVolume*
   new G4PVPlacement(nullptr, G4ThreeVector(0.0, 0.0, gehheight * cm), fGapLogical,
                     "Gap_phys", fLayerLogical, false, 0, true);
 
+  G4double step  = (gehheight + begegap/2) * cm;
+  for (G4int i=0; i<nofLayers; i++) {
+    new G4PVPlacement(nullptr, G4ThreeVector(0.0, 0.0, -step + 
+					     (nofLayers/2*layerthickness - i*layerthickness)*cm), 
+		      fLayerLogical, "Layer_phys", fTowerLogical, false, i, true);
+  }
+
+  // new G4PVReplica("Layer", fLayerLogical, fTowerLogical, kZAxis, nofLayers, layerthickness * cm);
+
   // tower placements
   G4double angle = CLHEP::twopi / 6.0;
   for (G4int j=0; j<6; j++) {
@@ -821,6 +828,8 @@ auto WLGDDetectorConstruction::SetupHallA() -> G4VPhysicalVolume*
                       "Tower_phys", fLarLogical, false, j, true);
   }
 
+  G4cout << "LVol size: " << G4LogicalVolumeStore::GetInstance()->size() << G4endl;
+  G4cout << "PVol size: " << G4PhysicalVolumeStore::GetInstance()->size() << G4endl;
   //
   // Visualization attributes
   //

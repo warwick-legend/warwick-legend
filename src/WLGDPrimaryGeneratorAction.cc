@@ -65,6 +65,7 @@ void WLGDPrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
   G4double      pz = -costheta;  // default downwards: pz = -1.0
   G4ThreeVector momentumDir(px, py, pz);
   fParticleGun->SetParticleMomentumDirection(momentumDir);
+  // G4cout << "Momentum direction Primary: " << momentumDir << G4endl;
 
   G4double ekin = ed(generator);  // get random number
   ekin *= GeV;
