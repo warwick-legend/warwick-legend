@@ -10,7 +10,6 @@
 
 WLGDPSEnergyDeposit::WLGDPSEnergyDeposit(G4String name, G4int depth)
 : G4VPrimitiveScorer(std::move(name), depth)
-, fCounter(0)
 , HCID(-1)
 , EvtMap(nullptr)
 {
@@ -19,7 +18,6 @@ WLGDPSEnergyDeposit::WLGDPSEnergyDeposit(G4String name, G4int depth)
 
 WLGDPSEnergyDeposit::WLGDPSEnergyDeposit(G4String name, const G4String& unit, G4int depth)
 : G4VPrimitiveScorer(std::move(name), depth)
-, fCounter(0)
 , HCID(-1)
 , EvtMap(nullptr)
 {
@@ -33,8 +31,9 @@ G4bool WLGDPSEnergyDeposit::ProcessHits(G4Step* aStep, G4TouchableHistory* /*unu
   G4double edep = aStep->GetTotalEnergyDeposit();
 
   edep *= aStep->GetPreStepPoint()->GetWeight();  // (Particle Weight)
-  EvtMap->add(fCounter, edep);
-  fCounter++;
+  G4int index = GetIndex(aStep);
+  EvtMap->add(index, edep); // add all energy depositions, weighted
+
   return true;
 }
 
@@ -46,14 +45,12 @@ void WLGDPSEnergyDeposit::Initialize(G4HCofThisEvent* HCE)
     HCID = GetCollectionID(0);
   }
   HCE->AddHitsCollection(HCID, (G4VHitsCollection*) EvtMap);
-  fCounter = 0;
 }
 
 void WLGDPSEnergyDeposit::EndOfEvent(G4HCofThisEvent* /*unused*/) { ; }
 
 void WLGDPSEnergyDeposit::clear()
 {
-  fCounter = 0;
   EvtMap->clear();
 }
 

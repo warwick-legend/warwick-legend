@@ -10,7 +10,6 @@
 
 WLGDPSTime::WLGDPSTime(G4String name, G4int depth)
 : G4VPrimitiveScorer(std::move(name), depth)
-, fCounter(0)
 , HCID(-1)
 , EvtMap(nullptr)
 {
@@ -19,7 +18,6 @@ WLGDPSTime::WLGDPSTime(G4String name, G4int depth)
 
 WLGDPSTime::WLGDPSTime(G4String name, const G4String& unit, G4int depth)
 : G4VPrimitiveScorer(std::move(name), depth)
-, fCounter(0)
 , HCID(-1)
 , EvtMap(nullptr)
 {
@@ -30,12 +28,14 @@ WLGDPSTime::~WLGDPSTime() = default;
 
 G4bool WLGDPSTime::ProcessHits(G4Step* aStep, G4TouchableHistory* /*unused*/)
 {
+  G4int index = GetIndex(aStep);
+  G4TrackLogger& tlog = fCellTrackLogger[index];
+  if (tlog.FirstEnterance(aStep->GetTrack()->GetTrackID())) {
+    // global time since start of event
+    G4double tt = aStep->GetTrack()->GetGlobalTime();
 
-  // global time since start of event
-  G4double tt = aStep->GetTrack()->GetGlobalTime();
-
-  EvtMap->add(fCounter, tt);
-  fCounter++;
+    EvtMap->add(index, tt);
+  }
   return true;
 }
 
@@ -47,14 +47,15 @@ void WLGDPSTime::Initialize(G4HCofThisEvent* HCE)
     HCID = GetCollectionID(0);
   }
   HCE->AddHitsCollection(HCID, (G4VHitsCollection*) EvtMap);
-  fCounter = 0;
 }
 
-void WLGDPSTime::EndOfEvent(G4HCofThisEvent* /*unused*/) { ; }
+void WLGDPSTime::EndOfEvent(G4HCofThisEvent* /*unused*/) { 
+  fCellTrackLogger.clear(); 
+}
 
 void WLGDPSTime::clear()
 {
-  fCounter = 0;
+  fCellTrackLogger.clear(); 
   EvtMap->clear();
 }
 

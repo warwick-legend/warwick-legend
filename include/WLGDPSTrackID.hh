@@ -1,8 +1,10 @@
 #ifndef WLGDPSTrackID_h
 #define WLGDPSTrackID_h 1
 
+#include <map>
 #include "G4THitsMap.hh"
 #include "G4VPrimitiveScorer.hh"
+#include "G4TrackLogger.hh"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Description:
@@ -29,8 +31,9 @@ public:
   virtual void SetUnit(const G4String& unit);
 
 private:
-  int                fCounter;
-  G4int              HCID;
-  G4THitsMap<G4int>* EvtMap;
+  G4int                          HCID;
+  G4THitsMap<G4int>*             EvtMap;
+  std::map<G4int, G4TrackLogger> fCellTrackLogger;
+
 };
 #endif

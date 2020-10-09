@@ -126,23 +126,23 @@ void WLGDDetectorConstruction::ConstructSDandField()
     auto* vertexFilter = new G4SDParticleFilter("vtxfilt");
     vertexFilter->addIon(32, 77);  // register 77Ge production
 
-    auto* eprimitive = new WLGDPSEnergyDeposit("Edep");
+    auto* eprimitive = new WLGDPSEnergyDeposit("Edep", 1);
     eprimitive->SetFilter(vertexFilter);
     det->RegisterPrimitive(eprimitive);
 
-    auto* tprimitive = new WLGDPSTime("Time");
+    auto* tprimitive = new WLGDPSTime("Time", 1);
     tprimitive->SetFilter(vertexFilter);
     det->RegisterPrimitive(tprimitive);
 
-    auto* lprimitive = new WLGDPSLocation("Loc");
+    auto* lprimitive = new WLGDPSLocation("Loc", 1);
     lprimitive->SetFilter(vertexFilter);
     det->RegisterPrimitive(lprimitive);
 
-    auto* wprimitive = new WLGDPSTrackWeight("Weight");
+    auto* wprimitive = new WLGDPSTrackWeight("Weight", 1);
     wprimitive->SetFilter(vertexFilter);
     det->RegisterPrimitive(wprimitive);
 
-    auto* idprimitive = new WLGDPSTrackID("TrackID");
+    auto* idprimitive = new WLGDPSTrackID("TrackID", 1);
     idprimitive->SetFilter(vertexFilter);
     det->RegisterPrimitive(idprimitive);
 
@@ -783,10 +783,10 @@ auto WLGDDetectorConstruction::SetupHallA() -> G4VPhysicalVolume*
   //
   // String tower
   //
-  auto* towerSolid =
-    new G4Tubs("String", 0.0 * cm, gerad * cm, roihalfheight * cm, 0.0, CLHEP::twopi);
+  // auto* towerSolid =
+  //   new G4Tubs("String", 0.0 * cm, gerad * cm, roihalfheight * cm, 0.0, CLHEP::twopi);
   
-  auto* fTowerLogical  = new G4LogicalVolume(towerSolid, larMat, "Tower_log");
+  // auto* fTowerLogical  = new G4LogicalVolume(towerSolid, larMat, "Tower_log");
   
   // layers in tower
   auto* layerSolid =
@@ -809,27 +809,34 @@ auto WLGDDetectorConstruction::SetupHallA() -> G4VPhysicalVolume*
   new G4PVPlacement(nullptr, G4ThreeVector(0.0, 0.0, gehheight * cm), fGapLogical,
                     "Gap_phys", fLayerLogical, false, 0, true);
 
+  // place layers as mother volume with unique copy number
   G4double step  = (gehheight + begegap/2) * cm;
-  for (G4int i=0; i<nofLayers; i++) {
-    new G4PVPlacement(nullptr, G4ThreeVector(0.0, 0.0, -step + 
-					     (nofLayers/2*layerthickness - i*layerthickness)*cm), 
-		      fLayerLogical, "Layer_phys", fTowerLogical, false, i, true);
+  G4double xpos;
+  G4double ypos;
+  G4double angle = CLHEP::twopi / 6.0;
+  for (G4int j=0; j<6; j++) {
+    xpos = roiradius * cm * std::cos(j * angle);
+    ypos = roiradius * cm * std::sin(j * angle);
+    for (G4int i=0; i<nofLayers; i++) {
+      new G4PVPlacement(nullptr, G4ThreeVector(xpos, ypos, -step + 
+					       (nofLayers/2*layerthickness - i*layerthickness)*cm), 
+			fLayerLogical, "Layer_phys", fLarLogical, false, i+j*nofLayers, true);
+    }
   }
 
   // new G4PVReplica("Layer", fLayerLogical, fTowerLogical, kZAxis, nofLayers, layerthickness * cm);
 
   // tower placements
-  G4double angle = CLHEP::twopi / 6.0;
-  for (G4int j=0; j<6; j++) {
-    new G4PVPlacement(nullptr, G4ThreeVector(roiradius * cm * std::cos(j * angle), 
-                      roiradius * cm * std::sin(j * angle), 
-                      0.0), 
-                      fTowerLogical,   
-                      "Tower_phys", fLarLogical, false, j, true);
-  }
+  // for (G4int j=0; j<6; j++) {
+  //   new G4PVPlacement(nullptr, G4ThreeVector(roiradius * cm * std::cos(j * angle), 
+  //                     roiradius * cm * std::sin(j * angle), 
+  //                     0.0), 
+  //                     fTowerLogical,   
+  //                     "Tower_phys", fLarLogical, false, j, true);
+  // }
 
-  G4cout << "LVol size: " << G4LogicalVolumeStore::GetInstance()->size() << G4endl;
-  G4cout << "PVol size: " << G4PhysicalVolumeStore::GetInstance()->size() << G4endl;
+  // G4cout << "LVol size: " << G4LogicalVolumeStore::GetInstance()->size() << G4endl;
+  // G4cout << "PVol size: " << G4PhysicalVolumeStore::GetInstance()->size() << G4endl;
   //
   // Visualization attributes
   //
@@ -854,6 +861,8 @@ auto WLGDDetectorConstruction::SetupHallA() -> G4VPhysicalVolume*
   fCinnLogical->SetVisAttributes(blueVisAtt);
   fLidLogical->SetVisAttributes(blueVisAtt);
   fBotLogical->SetVisAttributes(blueVisAtt);
+  fLayerLogical->SetVisAttributes(blueVisAtt);
+  fGapLogical->SetVisAttributes(greyVisAtt);
   fGeLogical->SetVisAttributes(redVisAtt);
 
   return fWorldPhysical;

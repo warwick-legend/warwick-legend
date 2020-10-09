@@ -10,7 +10,6 @@
 
 WLGDPSLocation::WLGDPSLocation(G4String name, G4int depth)
 : G4VPrimitiveScorer(std::move(name), depth)
-, fCounter(0)
 , HCID(-1)
 , EvtMap(nullptr)
 {
@@ -19,7 +18,6 @@ WLGDPSLocation::WLGDPSLocation(G4String name, G4int depth)
 
 WLGDPSLocation::WLGDPSLocation(G4String name, const G4String& unit, G4int depth)
 : G4VPrimitiveScorer(std::move(name), depth)
-, fCounter(0)
 , HCID(-1)
 , EvtMap(nullptr)
 {
@@ -30,12 +28,14 @@ WLGDPSLocation::~WLGDPSLocation() = default;
 
 G4bool WLGDPSLocation::ProcessHits(G4Step* aStep, G4TouchableHistory* /*unused*/)
 {
+  G4int index = GetIndex(aStep);
+  G4TrackLogger& tlog = fCellTrackLogger[index];
+  if (tlog.FirstEnterance(aStep->GetTrack()->GetTrackID())) {
+    G4StepPoint*  preStepPoint = aStep->GetPreStepPoint();
+    G4ThreeVector loc          = preStepPoint->GetPosition();  // location at track creation
 
-  G4StepPoint*  preStepPoint = aStep->GetPreStepPoint();
-  G4ThreeVector loc          = preStepPoint->GetPosition();  // location at track creation
-
-  EvtMap->add(fCounter, loc);
-  fCounter++;
+    EvtMap->add(index, loc);
+  }
   return true;
 }
 
@@ -48,14 +48,15 @@ void WLGDPSLocation::Initialize(G4HCofThisEvent* HCE)
     HCID = GetCollectionID(0);
   }
   HCE->AddHitsCollection(HCID, (G4VHitsCollection*) EvtMap);
-  fCounter = 0;
 }
 
-void WLGDPSLocation::EndOfEvent(G4HCofThisEvent* /*unused*/) { ; }
+void WLGDPSLocation::EndOfEvent(G4HCofThisEvent* /*unused*/) { 
+  fCellTrackLogger.clear(); 
+}
 
 void WLGDPSLocation::clear()
 {
-  fCounter = 0;
+  fCellTrackLogger.clear();
   EvtMap->clear();
 }
 

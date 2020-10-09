@@ -1,9 +1,11 @@
 #ifndef WLGDPSLocation_h
 #define WLGDPSLocation_h 1
 
+#include <map>
 #include "G4THitsMap.hh"
 #include "G4ThreeVector.hh"
 #include "G4VPrimitiveScorer.hh"
+#include "G4TrackLogger.hh"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Description:
@@ -31,8 +33,8 @@ public:
   virtual void SetUnit(const G4String& unit);
 
 private:
-  int                        fCounter;
-  G4int                      HCID;
-  G4THitsMap<G4ThreeVector>* EvtMap;
+  G4int                          HCID;
+  G4THitsMap<G4ThreeVector>*     EvtMap;
+  std::map<G4int, G4TrackLogger> fCellTrackLogger;
 };
 #endif
