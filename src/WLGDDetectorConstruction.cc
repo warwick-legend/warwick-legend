@@ -130,21 +130,21 @@ void WLGDDetectorConstruction::ConstructSDandField()
     eprimitive->SetFilter(vertexFilter);
     det->RegisterPrimitive(eprimitive);
 
-    auto* tprimitive = new WLGDPSTime("Time", 1);
-    tprimitive->SetFilter(vertexFilter);
-    det->RegisterPrimitive(tprimitive);
+//    auto* tprimitive = new WLGDPSTime("Time", 1);
+//    tprimitive->SetFilter(vertexFilter);
+//    det->RegisterPrimitive(tprimitive);
 
-    auto* lprimitive = new WLGDPSLocation("Loc", 1);
-    lprimitive->SetFilter(vertexFilter);
-    det->RegisterPrimitive(lprimitive);
+//    auto* lprimitive = new WLGDPSLocation("Loc", 1);
+//    lprimitive->SetFilter(vertexFilter);
+//    det->RegisterPrimitive(lprimitive);
 
-    auto* wprimitive = new WLGDPSTrackWeight("Weight", 1);
-    wprimitive->SetFilter(vertexFilter);
-    det->RegisterPrimitive(wprimitive);
+//    auto* wprimitive = new WLGDPSTrackWeight("Weight", 1);
+//    wprimitive->SetFilter(vertexFilter);
+//    det->RegisterPrimitive(wprimitive);
 
-    auto* idprimitive = new WLGDPSTrackID("TrackID", 1);
-    idprimitive->SetFilter(vertexFilter);
-    det->RegisterPrimitive(idprimitive);
+//    auto* idprimitive = new WLGDPSTrackID("TrackID", 1);
+//    idprimitive->SetFilter(vertexFilter);
+//    det->RegisterPrimitive(idprimitive);
 
     // Also only add it once to the SD manager!
     G4SDManager::GetSDMpointer()->AddNewDetector(fSD.Get());
