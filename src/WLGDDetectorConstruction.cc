@@ -1,7 +1,7 @@
 #include "WLGDDetectorConstruction.hh"
 
-#include <set>
 #include <cmath>
+#include <set>
 
 #include "G4RunManager.hh"
 
@@ -131,21 +131,21 @@ void WLGDDetectorConstruction::ConstructSDandField()
     eprimitive->SetFilter(vertexFilter);
     det->RegisterPrimitive(eprimitive);
 
-//    auto* tprimitive = new WLGDPSTime("Time", 1);
-//    tprimitive->SetFilter(vertexFilter);
-//    det->RegisterPrimitive(tprimitive);
+    auto* tprimitive = new WLGDPSTime("Time", 1);
+    tprimitive->SetFilter(vertexFilter);
+    det->RegisterPrimitive(tprimitive);
 
     auto* lprimitive = new WLGDPSLocation("Loc", 1);
     lprimitive->SetFilter(vertexFilter);
     det->RegisterPrimitive(lprimitive);
 
-//    auto* wprimitive = new WLGDPSTrackWeight("Weight", 1);
-//    wprimitive->SetFilter(vertexFilter);
-//    det->RegisterPrimitive(wprimitive);
+    auto* wprimitive = new WLGDPSTrackWeight("Weight", 1);
+    wprimitive->SetFilter(vertexFilter);
+    det->RegisterPrimitive(wprimitive);
 
-//    auto* idprimitive = new WLGDPSTrackID("TrackID", 1);
-//    idprimitive->SetFilter(vertexFilter);
-//    det->RegisterPrimitive(idprimitive);
+    auto* idprimitive = new WLGDPSTrackID("TrackID", 1);
+    idprimitive->SetFilter(vertexFilter);
+    det->RegisterPrimitive(idprimitive);
 
     // Also only add it once to the SD manager!
     G4SDManager::GetSDMpointer()->AddNewDetector(fSD.Get());
@@ -259,7 +259,7 @@ auto WLGDDetectorConstruction::SetupAlternative() -> G4VPhysicalVolume*
     tankhside - outerwall - insulation - innerwall;  // cube side of LAr volume
 
   fvertexZ = (worldside - stone - 0.1) * cm;  // max vertex height
-  fmaxrad  = fvertexZ * cm;   // max vertex circle radius
+  fmaxrad  = fvertexZ * cm;                   // max vertex circle radius
 
   // Volumes for this geometry
 
@@ -668,16 +668,16 @@ auto WLGDDetectorConstruction::SetupHallA() -> G4VPhysicalVolume*
   G4double cryrad     = 200.0;  // cryostat diam 4 m
   G4double cryhheight = 225.0;  // cryostat height 4.5 m
   // Ge cylinder for 35.6 kg at 5.32 g/cm3
-  G4double roiradius      = 15.0;   // detector region diam 30 cm
-  G4double roihalfheight  = 20.0;   // detector region height 40 cm
-  G4double gerad          = 3.7;    // BEGe radius
-  G4double gehheight      = 1.5;    // full height 3 cm
-  G4double begegap        = 2.0;    // gap between BEGe 2cm
-  G4double layerthickness = begegap + 2*gehheight; // 5 cm total
+  G4double roiradius      = 15.0;                     // detector region diam 30 cm
+  G4double roihalfheight  = 20.0;                     // detector region height 40 cm
+  G4double gerad          = 3.7;                      // BEGe radius
+  G4double gehheight      = 1.5;                      // full height 3 cm
+  G4double begegap        = 2.0;                      // gap between BEGe 2cm
+  G4double layerthickness = begegap + 2 * gehheight;  // 5 cm total
   G4int    nofLayers      = 8;
 
   fvertexZ = (hallhheight + offset) * cm;
-  fmaxrad  = cryrad * cm; // just 2 m radius
+  fmaxrad  = cryrad * cm;  // just 2 m radius
 
   // Volumes for this geometry
 
@@ -706,10 +706,9 @@ auto WLGDDetectorConstruction::SetupHallA() -> G4VPhysicalVolume*
   //
   auto* hallSolid =
     new G4Tubs("Hall", 0.0 * cm, hallrad * cm, hallhheight * cm, 0.0, CLHEP::twopi);
-  auto* fHallLogical = new G4LogicalVolume(hallSolid, airMat, "Hall_log");
-  auto* fHallPhysical =
-    new G4PVPlacement(nullptr, G4ThreeVector(), fHallLogical,
-                      "Hall_phys", fCavernLogical, false, 0, true);
+  auto* fHallLogical  = new G4LogicalVolume(hallSolid, airMat, "Hall_log");
+  auto* fHallPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fHallLogical,
+                                          "Hall_phys", fCavernLogical, false, 0, true);
 
   //
   // Tank
@@ -786,53 +785,58 @@ auto WLGDDetectorConstruction::SetupHallA() -> G4VPhysicalVolume*
   //
   // auto* towerSolid =
   //   new G4Tubs("String", 0.0 * cm, gerad * cm, roihalfheight * cm, 0.0, CLHEP::twopi);
-  
+
   // auto* fTowerLogical  = new G4LogicalVolume(towerSolid, larMat, "Tower_log");
-  
+
   // layers in tower
-  auto* layerSolid =
-    new G4Tubs("LayerSolid", 0.0 * cm, gerad * cm, (gehheight + begegap/2.0) * cm, 0.0, CLHEP::twopi);
-    
-  auto* fLayerLogical  = new G4LogicalVolume(layerSolid, larMat, "Layer_log");
+  auto* layerSolid = new G4Tubs("LayerSolid", 0.0 * cm, gerad * cm,
+                                (gehheight + begegap / 2.0) * cm, 0.0, CLHEP::twopi);
+
+  auto* fLayerLogical = new G4LogicalVolume(layerSolid, larMat, "Layer_log");
 
   // fill one layer
   auto* geSolid =
     new G4Tubs("ROI", 0.0 * cm, gerad * cm, gehheight * cm, 0.0, CLHEP::twopi);
-    
-  auto* fGeLogical     = new G4LogicalVolume(geSolid, roiMat, "Ge_log");
-  new G4PVPlacement(nullptr, G4ThreeVector(0.0, 0.0, -begegap/2.0 * cm), fGeLogical,
+
+  auto* fGeLogical = new G4LogicalVolume(geSolid, roiMat, "Ge_log");
+  new G4PVPlacement(nullptr, G4ThreeVector(0.0, 0.0, -begegap / 2.0 * cm), fGeLogical,
                     "Ge_phys", fLayerLogical, false, 0, true);
 
   auto* gapSolid =
-    new G4Tubs("Gap", 0.0 * cm, gerad * cm, begegap/2.0 * cm, 0.0, CLHEP::twopi);
-  
-  auto* fGapLogical     = new G4LogicalVolume(gapSolid, larMat, "Gap_log");
+    new G4Tubs("Gap", 0.0 * cm, gerad * cm, begegap / 2.0 * cm, 0.0, CLHEP::twopi);
+
+  auto* fGapLogical = new G4LogicalVolume(gapSolid, larMat, "Gap_log");
   new G4PVPlacement(nullptr, G4ThreeVector(0.0, 0.0, gehheight * cm), fGapLogical,
                     "Gap_phys", fLayerLogical, false, 0, true);
 
   // place layers as mother volume with unique copy number
-  G4double step  = (gehheight + begegap/2) * cm;
+  G4double step = (gehheight + begegap / 2) * cm;
   G4double xpos;
   G4double ypos;
   G4double angle = CLHEP::twopi / 6.0;
-  for (G4int j=0; j<6; j++) {
+  for(G4int j = 0; j < 6; j++)
+  {
     xpos = roiradius * cm * std::cos(j * angle);
     ypos = roiradius * cm * std::sin(j * angle);
-    for (G4int i=0; i<nofLayers; i++) {
-      new G4PVPlacement(nullptr, G4ThreeVector(xpos, ypos, -step + 
-					       (nofLayers/2*layerthickness - i*layerthickness)*cm), 
-			fLayerLogical, "Layer_phys", fLarLogical, false, i+j*nofLayers, true);
+    for(G4int i = 0; i < nofLayers; i++)
+    {
+      new G4PVPlacement(
+        nullptr,
+        G4ThreeVector(xpos, ypos,
+                      -step + (nofLayers / 2 * layerthickness - i * layerthickness) * cm),
+        fLayerLogical, "Layer_phys", fLarLogical, false, i + j * nofLayers, true);
     }
   }
 
-  // new G4PVReplica("Layer", fLayerLogical, fTowerLogical, kZAxis, nofLayers, layerthickness * cm);
+  // new G4PVReplica("Layer", fLayerLogical, fTowerLogical, kZAxis, nofLayers,
+  // layerthickness * cm);
 
   // tower placements
   // for (G4int j=0; j<6; j++) {
-  //   new G4PVPlacement(nullptr, G4ThreeVector(roiradius * cm * std::cos(j * angle), 
-  //                     roiradius * cm * std::sin(j * angle), 
-  //                     0.0), 
-  //                     fTowerLogical,   
+  //   new G4PVPlacement(nullptr, G4ThreeVector(roiradius * cm * std::cos(j * angle),
+  //                     roiradius * cm * std::sin(j * angle),
+  //                     0.0),
+  //                     fTowerLogical,
   //                     "Tower_phys", fLarLogical, false, j, true);
   // }
 

@@ -20,9 +20,13 @@ WLGDPSTrackID::~WLGDPSTrackID() = default;
 
 G4bool WLGDPSTrackID::ProcessHits(G4Step* aStep, G4TouchableHistory* /*unused*/)
 {
-  G4int index = GetIndex(aStep);
-  G4TrackLogger& tlog = fCellTrackLogger[index];
-  if (tlog.FirstEnterance(aStep->GetTrack()->GetTrackID())) {
+  if(aStep->GetTotalEnergyDeposit() <= 0.0)
+    return false;
+
+  G4int          index = GetIndex(aStep);
+  G4TrackLogger& tlog  = fCellTrackLogger[index];
+  if(tlog.FirstEnterance(aStep->GetTrack()->GetTrackID()))
+  {
     G4int tid = aStep->GetTrack()->GetTrackID();
     EvtMap->add(index, tid);
   }
@@ -39,13 +43,11 @@ void WLGDPSTrackID::Initialize(G4HCofThisEvent* HCE)
   HCE->AddHitsCollection(HCID, (G4VHitsCollection*) EvtMap);
 }
 
-void WLGDPSTrackID::EndOfEvent(G4HCofThisEvent* /*unused*/) { 
-  fCellTrackLogger.clear(); 
-}
+void WLGDPSTrackID::EndOfEvent(G4HCofThisEvent* /*unused*/) { fCellTrackLogger.clear(); }
 
 void WLGDPSTrackID::clear()
 {
-  fCellTrackLogger.clear(); 
+  fCellTrackLogger.clear();
   EvtMap->clear();
 }
 

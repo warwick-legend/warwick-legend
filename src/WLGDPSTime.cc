@@ -28,9 +28,13 @@ WLGDPSTime::~WLGDPSTime() = default;
 
 G4bool WLGDPSTime::ProcessHits(G4Step* aStep, G4TouchableHistory* /*unused*/)
 {
-  G4int index = GetIndex(aStep);
-  G4TrackLogger& tlog = fCellTrackLogger[index];
-  if (tlog.FirstEnterance(aStep->GetTrack()->GetTrackID())) {
+  if(aStep->GetTotalEnergyDeposit() <= 0.0)
+    return false;
+
+  G4int          index = GetIndex(aStep);
+  G4TrackLogger& tlog  = fCellTrackLogger[index];
+  if(tlog.FirstEnterance(aStep->GetTrack()->GetTrackID()))
+  {
     // global time since start of event
     G4double tt = aStep->GetTrack()->GetGlobalTime();
 
@@ -49,13 +53,11 @@ void WLGDPSTime::Initialize(G4HCofThisEvent* HCE)
   HCE->AddHitsCollection(HCID, (G4VHitsCollection*) EvtMap);
 }
 
-void WLGDPSTime::EndOfEvent(G4HCofThisEvent* /*unused*/) { 
-  fCellTrackLogger.clear(); 
-}
+void WLGDPSTime::EndOfEvent(G4HCofThisEvent* /*unused*/) { fCellTrackLogger.clear(); }
 
 void WLGDPSTime::clear()
 {
-  fCellTrackLogger.clear(); 
+  fCellTrackLogger.clear();
   EvtMap->clear();
 }
 

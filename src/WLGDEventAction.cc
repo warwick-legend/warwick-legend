@@ -129,20 +129,20 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   // Get hist collections IDs
   if(fTidID < 0)
   {
-//    fTidID    = G4SDManager::GetSDMpointer()->GetCollectionID("Det/TrackID");
+    fTidID    = G4SDManager::GetSDMpointer()->GetCollectionID("Det/TrackID");
     fLocID    = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Loc");
     fEdepID   = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Edep");
-//    fTimeID   = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Time");
-//    fWeightID = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Weight");
+    fTimeID   = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Time");
+    fWeightID = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Weight");
   }
 
   // Get entries from hits collections
   //
-//  G4THitsMap<G4int>*         THitsMap  = GetIntHitsCollection(fTidID, event);
+  G4THitsMap<G4int>*         THitsMap  = GetIntHitsCollection(fTidID, event);
   G4THitsMap<G4double>*      HitsMap   = GetHitsCollection(fEdepID, event);
   G4THitsMap<G4ThreeVector>* LocMap    = GetVecHitsCollection(fLocID, event);
-//  G4THitsMap<G4double>*      TimeMap   = GetHitsCollection(fTimeID, event);
-//  G4THitsMap<G4double>*      WeightMap = GetHitsCollection(fWeightID, event);
+  G4THitsMap<G4double>*      TimeMap   = GetHitsCollection(fTimeID, event);
+  G4THitsMap<G4double>*      WeightMap = GetHitsCollection(fWeightID, event);
 
   if(HitsMap->entries() <= 0)
   {
@@ -155,26 +155,26 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   // fill Hits output from SD
   for(auto it : *HitsMap->GetMap())
   {
-    edep.push_back((*it.second)/G4Analysis::GetUnitValue("MeV"));
+    edep.push_back((*it.second) / G4Analysis::GetUnitValue("MeV"));
   }
-//  for(auto it : *TimeMap->GetMap())
-//  {
-//    thit.push_back((*it.second));
-//  }
-//  for(auto it : *WeightMap->GetMap())
-//  {
-//    whit.push_back((*it.second));
-//  }
+  for(auto it : *TimeMap->GetMap())
+  {
+    thit.push_back((*it.second) / G4Analysis::GetUnitValue("ns"));
+  }
+  for(auto it : *WeightMap->GetMap())
+  {
+    whit.push_back((*it.second));
+  }
   for(auto it : *LocMap->GetMap())
   {
-    xloc.push_back((*it.second).x()/G4Analysis::GetUnitValue("m"));
-    yloc.push_back((*it.second).y()/G4Analysis::GetUnitValue("m"));
-    zloc.push_back((*it.second).z()/G4Analysis::GetUnitValue("m"));
+    xloc.push_back((*it.second).x() / G4Analysis::GetUnitValue("m"));
+    yloc.push_back((*it.second).y() / G4Analysis::GetUnitValue("m"));
+    zloc.push_back((*it.second).z() / G4Analysis::GetUnitValue("m"));
   }
-//  for(auto it : *THitsMap->GetMap())
-//  {
-//    htrid.push_back((*it.second));
-//  }
+  for(auto it : *THitsMap->GetMap())
+  {
+    htrid.push_back((*it.second));
+  }
 
   // fill trajectory data
   // temporary full storage
@@ -206,7 +206,8 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
       tempzpos.push_back((trj->GetPoint(nn)->GetPosition()).z());
     }
   }
-  if (n_trajectories > 0) {
+  if(n_trajectories > 0)
+  {
     for(const int& item : htrid)
     {
       std::vector<int> res = FilterTrajectories(item, temptid, temppid);

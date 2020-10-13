@@ -20,6 +20,8 @@ WLGDPSTrackWeight::~WLGDPSTrackWeight() = default;
 
 G4bool WLGDPSTrackWeight::ProcessHits(G4Step* aStep, G4TouchableHistory* /*unused*/)
 {
+  if(aStep->GetTotalEnergyDeposit() <= 0.0)
+    return false;
 
   // total weight since start of event
   G4double we = aStep->GetTrack()->GetWeight();
@@ -42,10 +44,7 @@ void WLGDPSTrackWeight::Initialize(G4HCofThisEvent* HCE)
 
 void WLGDPSTrackWeight::EndOfEvent(G4HCofThisEvent* /*unused*/) { ; }
 
-void WLGDPSTrackWeight::clear()
-{
-  EvtMap->clear();
-}
+void WLGDPSTrackWeight::clear() { EvtMap->clear(); }
 
 void WLGDPSTrackWeight::DrawAll() { ; }
 

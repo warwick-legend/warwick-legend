@@ -28,13 +28,15 @@ WLGDPSLocation::~WLGDPSLocation() = default;
 
 G4bool WLGDPSLocation::ProcessHits(G4Step* aStep, G4TouchableHistory* /*unused*/)
 {
-  if (aStep->GetTotalEnergyDeposit() <= 0.0) return false;
+  if(aStep->GetTotalEnergyDeposit() <= 0.0)
+    return false;
 
-  G4int index = GetIndex(aStep);
-  G4TrackLogger& tlog = fCellTrackLogger[index];
-  if (tlog.FirstEnterance(aStep->GetTrack()->GetTrackID())) {
-    G4StepPoint*  stepPoint    = aStep->GetPreStepPoint();
-    G4ThreeVector loc          = stepPoint->GetPosition();  // location at track creation
+  G4int          index = GetIndex(aStep);
+  G4TrackLogger& tlog  = fCellTrackLogger[index];
+  if(tlog.FirstEnterance(aStep->GetTrack()->GetTrackID()))
+  {
+    G4StepPoint*  stepPoint = aStep->GetPreStepPoint();
+    G4ThreeVector loc       = stepPoint->GetPosition();  // location at track creation
 
     EvtMap->add(index, loc);
   }
@@ -52,9 +54,7 @@ void WLGDPSLocation::Initialize(G4HCofThisEvent* HCE)
   HCE->AddHitsCollection(HCID, (G4VHitsCollection*) EvtMap);
 }
 
-void WLGDPSLocation::EndOfEvent(G4HCofThisEvent* /*unused*/) { 
-  fCellTrackLogger.clear(); 
-}
+void WLGDPSLocation::EndOfEvent(G4HCofThisEvent* /*unused*/) { fCellTrackLogger.clear(); }
 
 void WLGDPSLocation::clear()
 {
