@@ -30,9 +30,13 @@ G4bool WLGDPSEnergyDeposit::ProcessHits(G4Step* aStep, G4TouchableHistory* /*unu
 {
   G4double edep = aStep->GetTotalEnergyDeposit();
 
-  edep *= aStep->GetPreStepPoint()->GetWeight();  // (Particle Weight)
-  G4int index = GetIndex(aStep);
-  EvtMap->add(index, edep); // add all energy depositions, weighted
+  if (edep > 0) {
+    edep *= aStep->GetPreStepPoint()->GetWeight();  // (Particle Weight)
+    G4int index = GetIndex(aStep);
+    EvtMap->add(index, edep); // add all energy depositions, weighted
+  }
+  else 
+    return false;
 
   return true;
 }

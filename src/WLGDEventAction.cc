@@ -155,7 +155,7 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   // fill Hits output from SD
   for(auto it : *HitsMap->GetMap())
   {
-    edep.push_back((*it.second));
+    edep.push_back((*it.second)/G4Analysis::GetUnitValue("MeV"));
   }
 //  for(auto it : *TimeMap->GetMap())
 //  {
@@ -167,9 +167,9 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
 //  }
   for(auto it : *LocMap->GetMap())
   {
-    xloc.push_back((*it.second).x());
-    yloc.push_back((*it.second).y());
-    zloc.push_back((*it.second).z());
+    xloc.push_back((*it.second).x()/G4Analysis::GetUnitValue("m"));
+    yloc.push_back((*it.second).y()/G4Analysis::GetUnitValue("m"));
+    zloc.push_back((*it.second).z()/G4Analysis::GetUnitValue("m"));
   }
 //  for(auto it : *THitsMap->GetMap())
 //  {
