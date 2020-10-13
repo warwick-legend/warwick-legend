@@ -124,6 +124,7 @@ void WLGDDetectorConstruction::ConstructSDandField()
     fSD.Put(det);
 
     auto* vertexFilter = new G4SDParticleFilter("vtxfilt");
+    vertexFilter->add("neutron");
     vertexFilter->addIon(32, 77);  // register 77Ge production
 
     auto* eprimitive = new WLGDPSEnergyDeposit("Edep", 1);
@@ -134,9 +135,9 @@ void WLGDDetectorConstruction::ConstructSDandField()
 //    tprimitive->SetFilter(vertexFilter);
 //    det->RegisterPrimitive(tprimitive);
 
-//    auto* lprimitive = new WLGDPSLocation("Loc", 1);
-//    lprimitive->SetFilter(vertexFilter);
-//    det->RegisterPrimitive(lprimitive);
+    auto* lprimitive = new WLGDPSLocation("Loc", 1);
+    lprimitive->SetFilter(vertexFilter);
+    det->RegisterPrimitive(lprimitive);
 
 //    auto* wprimitive = new WLGDPSTrackWeight("Weight", 1);
 //    wprimitive->SetFilter(vertexFilter);

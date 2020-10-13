@@ -130,7 +130,7 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   if(fTidID < 0)
   {
 //    fTidID    = G4SDManager::GetSDMpointer()->GetCollectionID("Det/TrackID");
-//    fLocID    = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Loc");
+    fLocID    = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Loc");
     fEdepID   = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Edep");
 //    fTimeID   = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Time");
 //    fWeightID = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Weight");
@@ -140,7 +140,7 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   //
 //  G4THitsMap<G4int>*         THitsMap  = GetIntHitsCollection(fTidID, event);
   G4THitsMap<G4double>*      HitsMap   = GetHitsCollection(fEdepID, event);
-//  G4THitsMap<G4ThreeVector>* LocMap    = GetVecHitsCollection(fLocID, event);
+  G4THitsMap<G4ThreeVector>* LocMap    = GetVecHitsCollection(fLocID, event);
 //  G4THitsMap<G4double>*      TimeMap   = GetHitsCollection(fTimeID, event);
 //  G4THitsMap<G4double>*      WeightMap = GetHitsCollection(fWeightID, event);
 
@@ -165,12 +165,12 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
 //  {
 //    whit.push_back((*it.second));
 //  }
-//  for(auto it : *LocMap->GetMap())
-//  {
-//    xloc.push_back((*it.second).x());
-//    yloc.push_back((*it.second).y());
-//    zloc.push_back((*it.second).z());
-//  }
+  for(auto it : *LocMap->GetMap())
+  {
+    xloc.push_back((*it.second).x());
+    yloc.push_back((*it.second).y());
+    zloc.push_back((*it.second).z());
+  }
 //  for(auto it : *THitsMap->GetMap())
 //  {
 //    htrid.push_back((*it.second));
