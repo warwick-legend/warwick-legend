@@ -10,7 +10,6 @@
 
 WLGDPSTrackWeight::WLGDPSTrackWeight(G4String name, G4int depth)
 : G4VPrimitiveScorer(std::move(name), depth)
-, fCounter(0)
 , HCID(-1)
 , EvtMap(nullptr)
 {
@@ -21,12 +20,15 @@ WLGDPSTrackWeight::~WLGDPSTrackWeight() = default;
 
 G4bool WLGDPSTrackWeight::ProcessHits(G4Step* aStep, G4TouchableHistory* /*unused*/)
 {
+  if(aStep->GetTotalEnergyDeposit() <= 0.0)
+    return false;
 
   // total weight since start of event
   G4double we = aStep->GetTrack()->GetWeight();
 
-  EvtMap->add(fCounter, we);
-  fCounter++;
+  G4int index = GetIndex(aStep);
+  EvtMap->add(index, we);
+
   return true;
 }
 
@@ -38,16 +40,11 @@ void WLGDPSTrackWeight::Initialize(G4HCofThisEvent* HCE)
     HCID = GetCollectionID(0);
   }
   HCE->AddHitsCollection(HCID, (G4VHitsCollection*) EvtMap);
-  fCounter = 0;
 }
 
 void WLGDPSTrackWeight::EndOfEvent(G4HCofThisEvent* /*unused*/) { ; }
 
-void WLGDPSTrackWeight::clear()
-{
-  fCounter = 0;
-  EvtMap->clear();
-}
+void WLGDPSTrackWeight::clear() { EvtMap->clear(); }
 
 void WLGDPSTrackWeight::DrawAll() { ; }
 

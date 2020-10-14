@@ -32,6 +32,7 @@ private:
 
   G4VPhysicalVolume* SetupBaseline();
   G4VPhysicalVolume* SetupAlternative();
+  G4VPhysicalVolume* SetupHallA();
 
   G4GenericMessenger*                 fDetectorMessenger = nullptr;
   G4GenericMessenger*                 fBiasMessenger     = nullptr;

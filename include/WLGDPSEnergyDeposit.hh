@@ -30,7 +30,6 @@ public:
   virtual void SetUnit(const G4String& unit);
 
 private:
-  int                   fCounter;
   G4int                 HCID;
   G4THitsMap<G4double>* EvtMap;
 };
