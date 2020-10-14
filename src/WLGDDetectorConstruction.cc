@@ -108,7 +108,7 @@ void WLGDDetectorConstruction::DefineMaterials()
   eGe->AddIsotope(Ge_76, 88. * perCent);
   eGe->AddIsotope(Ge_74, 12. * perCent);
 
-  G4double density = 3.323 * mg / cm3;
+  G4double density = 5.323 * g / cm3;
   auto*    roiMat  = new G4Material("enrGe", density, 1);
   roiMat->AddElement(eGe, 1);
 }
@@ -241,7 +241,7 @@ auto WLGDDetectorConstruction::SetupAlternative() -> G4VPhysicalVolume*
   G4double insulation = 80.0;  // polyurethane foam
   G4double innerwall  = 0.12;  // inner SS membrane
   // copper tubes with Germanium ROI
-  G4double copper    = 0.35;    // tube thickness 0.5 mm
+  G4double copper    = 0.35;    // tube thickness 3.5 mm
   G4double curad     = 40.0;    // copper tube diam 80 cm
   G4double cuhheight = 334.34;  // copper tube height 7 m inside cryostat
   G4double cushift   = 234.34;  // shift cu tube inside cryostat to top
@@ -827,20 +827,6 @@ auto WLGDDetectorConstruction::SetupHallA() -> G4VPhysicalVolume*
     }
   }
 
-  // new G4PVReplica("Layer", fLayerLogical, fTowerLogical, kZAxis, nofLayers,
-  // layerthickness * cm);
-
-  // tower placements
-  // for (G4int j=0; j<6; j++) {
-  //   new G4PVPlacement(nullptr, G4ThreeVector(roiradius * cm * std::cos(j * angle),
-  //                     roiradius * cm * std::sin(j * angle),
-  //                     0.0),
-  //                     fTowerLogical,
-  //                     "Tower_phys", fLarLogical, false, j, true);
-  // }
-
-  // G4cout << "LVol size: " << G4LogicalVolumeStore::GetInstance()->size() << G4endl;
-  // G4cout << "PVol size: " << G4PhysicalVolumeStore::GetInstance()->size() << G4endl;
   //
   // Visualization attributes
   //
