@@ -676,7 +676,7 @@ auto WLGDDetectorConstruction::SetupHallA() -> G4VPhysicalVolume*
   G4int    nofLayers      = 8;
 
   fvertexZ = (hallhheight + offset) * cm;
-  fmaxrad  = cryrad * cm;  // just 2 m radius
+  fmaxrad  = hallrad * cm;  // 8 m radius
 
   // Volumes for this geometry
 
