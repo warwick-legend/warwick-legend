@@ -258,7 +258,7 @@ auto WLGDDetectorConstruction::SetupAlternative() -> G4VPhysicalVolume*
     tankhside - outerwall - insulation - innerwall;  // cube side of LAr volume
 
   fvertexZ = (worldside - stone - 0.1) * cm;  // max vertex height
-  fmaxrad  = fvertexZ * cm;                   // max vertex circle radius
+  fmaxrad  = hallhside * cm;                   // max vertex circle radius
 
   // Volumes for this geometry
 
