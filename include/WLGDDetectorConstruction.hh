@@ -7,7 +7,7 @@
 #include "globals.hh"
 
 class G4VPhysicalVolume;
-class G4MultiFunctionalDetector;
+class WLGDCrystalSD;
 
 class WLGDDetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -41,7 +41,7 @@ private:
   G4String                            fGeometryName      = "baseline";
   G4double                            fNeutronBias       = 1.0;
   G4double                            fMuonBias          = 1.0;
-  G4Cache<G4MultiFunctionalDetector*> fSD                = nullptr;
+  G4Cache<WLGDCrystalSD*>             fSD                = nullptr;
 };
 
 #endif

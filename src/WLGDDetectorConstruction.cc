@@ -22,15 +22,8 @@
 #include "G4Colour.hh"
 #include "G4VisAttributes.hh"
 
-#include "G4MultiFunctionalDetector.hh"
 #include "G4SDManager.hh"
-#include "G4SDParticleFilter.hh"
-#include "G4VPrimitiveScorer.hh"
-#include "WLGDPSEnergyDeposit.hh"
-#include "WLGDPSLocation.hh"
-#include "WLGDPSTime.hh"
-#include "WLGDPSTrackID.hh"
-#include "WLGDPSTrackWeight.hh"
+#include "WLGDCrystalSD.hh"
 
 #include "WLGDBiasMultiParticleChangeCrossSection.hh"
 
@@ -115,36 +108,15 @@ void WLGDDetectorConstruction::DefineMaterials()
 
 void WLGDDetectorConstruction::ConstructSDandField()
 {
-  G4SDManager::GetSDMpointer()->SetVerboseLevel(2);
+  G4SDManager::GetSDMpointer()->SetVerboseLevel(1);
 
   // Only need to construct the (per-thread) SD once
   if(!fSD.Get())
   {
-    auto* det = new G4MultiFunctionalDetector("Det");
-    fSD.Put(det);
-
-    auto* vertexFilter = new G4SDParticleFilter("vtxfilt");
-    vertexFilter->addIon(32, 77);  // register 77Ge production
-
-    auto* eprimitive = new WLGDPSEnergyDeposit("Edep", 1);
-    eprimitive->SetFilter(vertexFilter);
-    det->RegisterPrimitive(eprimitive);
-
-    auto* tprimitive = new WLGDPSTime("Time", 1);
-    tprimitive->SetFilter(vertexFilter);
-    det->RegisterPrimitive(tprimitive);
-
-    auto* lprimitive = new WLGDPSLocation("Loc", 1);
-    lprimitive->SetFilter(vertexFilter);
-    det->RegisterPrimitive(lprimitive);
-
-    auto* wprimitive = new WLGDPSTrackWeight("Weight", 1);
-    wprimitive->SetFilter(vertexFilter);
-    det->RegisterPrimitive(wprimitive);
-
-    auto* idprimitive = new WLGDPSTrackID("TrackID", 1);
-    idprimitive->SetFilter(vertexFilter);
-    det->RegisterPrimitive(idprimitive);
+    G4String crystalSDname  = "CrystalSD";
+    WLGDCrystalSD* aCrystalSD = new WLGDCrystalSD(crystalSDname,
+                                                  "CrystalHitsCollection");
+    fSD.Put(aCrystalSD);
 
     // Also only add it once to the SD manager!
     G4SDManager::GetSDMpointer()->AddNewDetector(fSD.Get());

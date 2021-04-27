@@ -6,7 +6,7 @@ G4ThreadLocal G4Allocator<WLGDCrystalHit>* WLGDCrystalHitAllocator=0;
 
 WLGDCrystalHit::WLGDCrystalHit()
  : G4VHit(),
-   fTID(0),
+   fTid(0),
    fTime(0.),
    fWeight(0.),
    fEdep(0.),
@@ -22,7 +22,7 @@ WLGDCrystalHit::~WLGDCrystalHit() {}
 WLGDCrystalHit::WLGDCrystalHit(const WLGDCrystalHit& right)
   : G4VHit()
 {
-  fTID       = right.fTID;
+  fTid       = right.fTid;
   fTime      = right.fTime;
   fWeight    = right.fWeight;
   fEdep      = right.fEdep;
@@ -33,7 +33,7 @@ WLGDCrystalHit::WLGDCrystalHit(const WLGDCrystalHit& right)
 
 const WLGDCrystalHit& WLGDCrystalHit::operator=(const WLGDCrystalHit& right)
 {
-  fTID       = right.fTID;
+  fTid       = right.fTid;
   fTime      = right.fTime;
   fWeight    = right.fWeight;
   fEdep      = right.fEdep;

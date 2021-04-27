@@ -9,62 +9,31 @@
 #include "G4UnitsTable.hh"
 #include "G4ios.hh"
 
+#include "WLGDCrystalSD.hh"
+
 #include "Randomize.hh"
 #include <algorithm>
 #include <iomanip>
 #include <numeric>
 #include <vector>
 
-G4THitsMap<G4int>* WLGDEventAction::GetIntHitsCollection(G4int          hcID,
-                                                         const G4Event* event) const
+WLGDCrystalHitsCollection* WLGDEventAction::GetHitsCollection(G4int hcID,
+                                              const G4Event* event) const
 {
-  auto hitsCollection =
-    static_cast<G4THitsMap<G4int>*>(event->GetHCofThisEvent()->GetHC(hcID));
-
-  if(hitsCollection == nullptr)
-  {
+  auto hitsCollection 
+    = static_cast<WLGDCrystalHitsCollection*>(
+        event->GetHCofThisEvent()->GetHC(hcID));
+  
+  if ( ! hitsCollection ) {
     G4ExceptionDescription msg;
-    msg << "Cannot access hitsCollection ID " << hcID;
-    G4Exception("WLGDEventAction::GetHitsCollection()", "MyCode0003", FatalException,
-                msg);
-  }
+    msg << "Cannot access hitsCollection ID " << hcID; 
+    G4Exception("WLGDEventAction::GetHitsCollection()",
+      "MyCode0001", FatalException, msg);
+  }         
 
   return hitsCollection;
-}
+}    
 
-G4THitsMap<G4double>* WLGDEventAction::GetHitsCollection(G4int          hcID,
-                                                         const G4Event* event) const
-{
-  auto hitsCollection =
-    static_cast<G4THitsMap<G4double>*>(event->GetHCofThisEvent()->GetHC(hcID));
-
-  if(hitsCollection == nullptr)
-  {
-    G4ExceptionDescription msg;
-    msg << "Cannot access hitsCollection ID " << hcID;
-    G4Exception("WLGDEventAction::GetHitsCollection()", "MyCode0003", FatalException,
-                msg);
-  }
-
-  return hitsCollection;
-}
-
-G4THitsMap<G4ThreeVector>* WLGDEventAction::GetVecHitsCollection(
-  G4int hcID, const G4Event* event) const
-{
-  auto hitsCollection =
-    static_cast<G4THitsMap<G4ThreeVector>*>(event->GetHCofThisEvent()->GetHC(hcID));
-
-  if(hitsCollection == nullptr)
-  {
-    G4ExceptionDescription msg;
-    msg << "Cannot access hitsCollection ID " << hcID;
-    G4Exception("WLGDEventAction::GetVecHitsCollection()", "MyCode0003", FatalException,
-                msg);
-  }
-
-  return hitsCollection;
-}
 
 void WLGDEventAction::makeMap()
 {
@@ -126,88 +95,74 @@ void WLGDEventAction::BeginOfEventAction(const G4Event*
 
 void WLGDEventAction::EndOfEventAction(const G4Event* event)
 {
-  // Get hist collections IDs
-  if(fTidID < 0)
-  {
-    fTidID    = G4SDManager::GetSDMpointer()->GetCollectionID("Det/TrackID");
-    fLocID    = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Loc");
-    fEdepID   = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Edep");
-    fTimeID   = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Time");
-    fWeightID = G4SDManager::GetSDMpointer()->GetCollectionID("Det/Weight");
-  }
+  // Get crystal hits collections IDs
+  if(fHID < 0)
+    fHID   = G4SDManager::GetSDMpointer()->GetCollectionID("CrystalHitsCollection");
+
 
   // Get entries from hits collections
   //
-  G4THitsMap<G4int>*         THitsMap  = GetIntHitsCollection(fTidID, event);
-  G4THitsMap<G4double>*      HitsMap   = GetHitsCollection(fEdepID, event);
-  G4THitsMap<G4ThreeVector>* LocMap    = GetVecHitsCollection(fLocID, event);
-  G4THitsMap<G4double>*      TimeMap   = GetHitsCollection(fTimeID, event);
-  G4THitsMap<G4double>*      WeightMap = GetHitsCollection(fWeightID, event);
+  auto CrysHC   = GetHitsCollection(fHID, event);
 
-  if(HitsMap->entries() <= 0)
+  if(CrysHC->entries() <= 0)
   {
-    return;  // no action on no event in Germanium
+    return;  // no action on no hit
   }
 
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
 
   // fill Hits output from SD
-  for(auto it : *HitsMap->GetMap())
+  G4int nofHits = CrysHC->entries();
+
+  for ( G4int i=0; i<nofHits; i++ ) 
   {
-    edep.push_back((*it.second) / G4Analysis::GetUnitValue("MeV"));
-  }
-  for(auto it : *TimeMap->GetMap())
-  {
-    thit.push_back((*it.second) / G4Analysis::GetUnitValue("ns"));
-  }
-  for(auto it : *WeightMap->GetMap())
-  {
-    whit.push_back((*it.second));
-  }
-  for(auto it : *LocMap->GetMap())
-  {
-    xloc.push_back((*it.second).x() / G4Analysis::GetUnitValue("m"));
-    yloc.push_back((*it.second).y() / G4Analysis::GetUnitValue("m"));
-    zloc.push_back((*it.second).z() / G4Analysis::GetUnitValue("m"));
-  }
-  for(auto it : *THitsMap->GetMap())
-  {
-    htrid.push_back((*it.second));
+    auto hh = (*CrysHC)[i];
+
+    htrid.push_back(hh->GetTID());
+    whit.push_back(hh->GetWeight());
+    thit.push_back(hh->GetTime()  / G4Analysis::GetUnitValue("ns"));
+    edep.push_back(hh->GetEdep()  / G4Analysis::GetUnitValue("MeV"));
+    xloc.push_back((hh->GetPos()).x() / G4Analysis::GetUnitValue("m"));
+    yloc.push_back((hh->GetPos()).y() / G4Analysis::GetUnitValue("m"));
+    zloc.push_back((hh->GetPos()).z() / G4Analysis::GetUnitValue("m"));
   }
 
+
   // fill trajectory data
-  // temporary full storage
-  std::vector<G4int>    temptid, temppid, temppdg, tempnpts;
-  std::vector<G4String> tempname;
-  std::vector<G4double> tempxvtx, tempyvtx, tempzvtx;
-  std::vector<G4double> tempxpos, tempypos, tempzpos;
 
   // fill trajectory data if available
   G4TrajectoryContainer* trajectoryContainer = event->GetTrajectoryContainer();
   G4int                  n_trajectories =
     (trajectoryContainer == nullptr) ? 0 : trajectoryContainer->entries();
 
-  for(G4int i = 0; i < n_trajectories; i++)
-  {
-    WLGDTrajectory* trj = (WLGDTrajectory*) ((*(event->GetTrajectoryContainer()))[i]);
-    temptid.push_back(trj->GetTrackID());
-    temppid.push_back(trj->GetParentID());
-    temppdg.push_back(trj->GetPDGEncoding());
-    tempname.push_back(trj->GetVertexName());
-    tempxvtx.push_back((trj->GetVertex()).x());
-    tempyvtx.push_back((trj->GetVertex()).y());
-    tempzvtx.push_back((trj->GetVertex()).z());
-    tempnpts.push_back(trj->GetPointEntries());
-    for(int nn = 0; nn < trj->GetPointEntries(); ++nn)
-    {
-      tempxpos.push_back((trj->GetPoint(nn)->GetPosition()).x());
-      tempypos.push_back((trj->GetPoint(nn)->GetPosition()).y());
-      tempzpos.push_back((trj->GetPoint(nn)->GetPosition()).z());
-    }
-  }
   if(n_trajectories > 0)
   {
+    // temporary full storage
+    std::vector<G4int>    temptid, temppid, temppdg, tempnpts;
+    std::vector<G4String> tempname;
+    std::vector<G4double> tempxvtx, tempyvtx, tempzvtx;
+    std::vector<G4double> tempxpos, tempypos, tempzpos;
+
+    for(G4int i = 0; i < n_trajectories; i++)
+    {
+      WLGDTrajectory* trj = (WLGDTrajectory*) ((*(event->GetTrajectoryContainer()))[i]);
+      temptid.push_back(trj->GetTrackID());
+      temppid.push_back(trj->GetParentID());
+      temppdg.push_back(trj->GetPDGEncoding());
+      tempname.push_back(trj->GetVertexName());
+      tempxvtx.push_back((trj->GetVertex()).x());
+      tempyvtx.push_back((trj->GetVertex()).y());
+      tempzvtx.push_back((trj->GetVertex()).z());
+      tempnpts.push_back(trj->GetPointEntries());
+      for(int nn = 0; nn < trj->GetPointEntries(); ++nn)
+      {
+        tempxpos.push_back((trj->GetPoint(nn)->GetPosition()).x());
+        tempypos.push_back((trj->GetPoint(nn)->GetPosition()).y());
+        tempzpos.push_back((trj->GetPoint(nn)->GetPosition()).z());
+      }
+    }
+
     for(const int& item : htrid)
     {
       std::vector<int> res = FilterTrajectories(item, temptid, temppid);
@@ -228,19 +183,18 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
         }
       }
     }
+    temptid.clear();
+    temppid.clear();
+    temppdg.clear();
+    tempnpts.clear();
+    tempname.clear();
+    tempxvtx.clear();
+    tempyvtx.clear();
+    tempzvtx.clear();
+    tempxpos.clear();
+    tempypos.clear();
+    tempzpos.clear();
   }
-  temptid.clear();
-  temppid.clear();
-  temppdg.clear();
-  tempnpts.clear();
-  tempname.clear();
-  tempxvtx.clear();
-  tempyvtx.clear();
-  tempzvtx.clear();
-  tempxpos.clear();
-  tempypos.clear();
-  tempzpos.clear();
-
   // fill the ntuple
   analysisManager->AddNtupleRow();
 

@@ -18,13 +18,10 @@ add_executable(warwick-legend
   src/WLGDActionInitialization.cc
   src/WLGDBiasChangeCrossSection.cc
   src/WLGDBiasMultiParticleChangeCrossSection.cc
+  src/WLGDCrystalHit.cc
+  src/WLGDCrystalSD.cc
   src/WLGDDetectorConstruction.cc
   src/WLGDEventAction.cc
-  src/WLGDPSEnergyDeposit.cc
-  src/WLGDPSLocation.cc
-  src/WLGDPSTime.cc
-  src/WLGDPSTrackID.cc
-  src/WLGDPSTrackWeight.cc
   src/WLGDPrimaryGeneratorAction.cc
   src/WLGDRunAction.cc
   src/WLGDStackingAction.cc
