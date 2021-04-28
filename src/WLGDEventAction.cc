@@ -136,69 +136,66 @@ void WLGDEventAction::EndOfEventAction(const G4Event* event)
   G4int                  n_trajectories =
     (trajectoryContainer == nullptr) ? 0 : trajectoryContainer->entries();
 
-  if(n_trajectories == 0)
+  if(n_trajectories > 0)
   {
-    return; // no further action on trajectories
-  }
+    // temporary full storage
+    std::vector<G4int>    temptid, temppid, temppdg, tempnpts;
+    std::vector<G4String> tempname;
+    std::vector<G4double> tempxvtx, tempyvtx, tempzvtx;
+    std::vector<G4double> tempxpos, tempypos, tempzpos;
 
-  // temporary full storage
-  std::vector<G4int>    temptid, temppid, temppdg, tempnpts;
-  std::vector<G4String> tempname;
-  std::vector<G4double> tempxvtx, tempyvtx, tempzvtx;
-  std::vector<G4double> tempxpos, tempypos, tempzpos;
-
-  for(G4int i = 0; i < n_trajectories; i++)
-  {
-    WLGDTrajectory* trj = (WLGDTrajectory*) ((*(event->GetTrajectoryContainer()))[i]);
-    temptid.push_back(trj->GetTrackID());
-    temppid.push_back(trj->GetParentID());
-    temppdg.push_back(trj->GetPDGEncoding());
-    tempname.push_back(trj->GetVertexName());
-    tempxvtx.push_back((trj->GetVertex()).x());
-    tempyvtx.push_back((trj->GetVertex()).y());
-    tempzvtx.push_back((trj->GetVertex()).z());
-    tempnpts.push_back(trj->GetPointEntries());
-    for(int nn = 0; nn < trj->GetPointEntries(); ++nn)
+    for(G4int i = 0; i < n_trajectories; i++)
     {
-      tempxpos.push_back((trj->GetPoint(nn)->GetPosition()).x());
-      tempypos.push_back((trj->GetPoint(nn)->GetPosition()).y());
-      tempzpos.push_back((trj->GetPoint(nn)->GetPosition()).z());
-    }
-  }
-
-  // store filtered trajectories only
-  for(const int& item : htrid)
-  {
-    std::vector<int> res = FilterTrajectories(item, temptid, temppid);
-    for(int& idx : res)
-    {
-      trjpdg.push_back(temppdg.at(idx));
-      nameid.push_back(GeomID(tempname.at(idx)));
-      trjxvtx.push_back(tempxvtx.at(idx));
-      trjyvtx.push_back(tempyvtx.at(idx));
-      trjzvtx.push_back(tempzvtx.at(idx));
-      trjnpts.push_back(tempnpts.at(idx));
-      int start = std::accumulate(tempnpts.begin(), tempnpts.begin() + idx, 0);
-      for(int i = start; i < (start + tempnpts.at(idx)); ++i)
+      WLGDTrajectory* trj = (WLGDTrajectory*) ((*(event->GetTrajectoryContainer()))[i]);
+      temptid.push_back(trj->GetTrackID());
+      temppid.push_back(trj->GetParentID());
+      temppdg.push_back(trj->GetPDGEncoding());
+      tempname.push_back(trj->GetVertexName());
+      tempxvtx.push_back((trj->GetVertex()).x());
+      tempyvtx.push_back((trj->GetVertex()).y());
+      tempzvtx.push_back((trj->GetVertex()).z());
+      tempnpts.push_back(trj->GetPointEntries());
+      for(int nn = 0; nn < trj->GetPointEntries(); ++nn)
       {
-        trjxpos.push_back(tempxpos.at(i));
-        trjypos.push_back(tempypos.at(i));
-        trjzpos.push_back(tempzpos.at(i));
+        tempxpos.push_back((trj->GetPoint(nn)->GetPosition()).x());
+        tempypos.push_back((trj->GetPoint(nn)->GetPosition()).y());
+        tempzpos.push_back((trj->GetPoint(nn)->GetPosition()).z());
       }
     }
-  }
-  temptid.clear();
-  temppid.clear();
-  temppdg.clear();
-  tempnpts.clear();
-  tempname.clear();
-  tempxvtx.clear();
-  tempyvtx.clear();
-  tempzvtx.clear();
-  tempxpos.clear();
-  tempypos.clear();
-  tempzpos.clear();
 
+    // store filtered trajectories only
+    for(const int& item : htrid)
+    {
+      std::vector<int> res = FilterTrajectories(item, temptid, temppid);
+      for(int& idx : res)
+      {
+        trjpdg.push_back(temppdg.at(idx));
+        nameid.push_back(GeomID(tempname.at(idx)));
+        trjxvtx.push_back(tempxvtx.at(idx));
+        trjyvtx.push_back(tempyvtx.at(idx));
+        trjzvtx.push_back(tempzvtx.at(idx));
+        trjnpts.push_back(tempnpts.at(idx));
+        int start = std::accumulate(tempnpts.begin(), tempnpts.begin() + idx, 0);
+        for(int i = start; i < (start + tempnpts.at(idx)); ++i)
+        {
+          trjxpos.push_back(tempxpos.at(i));
+          trjypos.push_back(tempypos.at(i));
+          trjzpos.push_back(tempzpos.at(i));
+        }
+      }
+    }
+    temptid.clear();
+    temppid.clear();
+    temppdg.clear();
+    tempnpts.clear();
+    tempname.clear();
+    tempxvtx.clear();
+    tempyvtx.clear();
+    tempzvtx.clear();
+    tempxpos.clear();
+    tempypos.clear();
+    tempzpos.clear();
+  }
   // fill the ntuple
   analysisManager->AddNtupleRow();
 
