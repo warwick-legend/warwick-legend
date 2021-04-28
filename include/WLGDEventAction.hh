@@ -23,6 +23,7 @@ public:
   virtual void EndOfEventAction(const G4Event* event);
 
   // to create columns for Ntuple
+  std::vector<G4int>&    GetHitTID()  { return htrid; }
   std::vector<G4double>& GetHitEdep() { return edep; }
   std::vector<G4double>& GetHitTime() { return thit; }
   std::vector<G4double>& GetHitWeight() { return whit; }
