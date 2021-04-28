@@ -25,7 +25,6 @@ add_executable(warwick-legend
   src/WLGDPrimaryGeneratorAction.cc
   src/WLGDRunAction.cc
   src/WLGDStackingAction.cc
-  src/WLGDTrackInformation.cc
   src/WLGDTrackingAction.cc
   src/WLGDTrajectory.cc)
 target_include_directories(warwick-legend PRIVATE ${PROJECT_SOURCE_DIR}/include)
