@@ -98,8 +98,8 @@ void WLGDDetectorConstruction::DefineMaterials()
   auto* Ge_76 = new G4Isotope("Ge76", 32, 76, 76.0 * g / mole);
 
   auto* eGe = new G4Element("enriched Germanium", "enrGe", 2);
-  eGe->AddIsotope(Ge_76, 88. * perCent);
-  eGe->AddIsotope(Ge_74, 12. * perCent);
+  eGe->AddIsotope(Ge_76, 92. * perCent);
+  eGe->AddIsotope(Ge_74,  8. * perCent);
 
   G4double density = 5.323 * g / cm3;
   auto*    roiMat  = new G4Material("enrGe", density, 1);
@@ -219,8 +219,14 @@ auto WLGDDetectorConstruction::SetupAlternative() -> G4VPhysicalVolume*
   G4double cushift   = 234.34;  // shift cu tube inside cryostat to top
   G4double ringrad   = 100.0;   // cu tube placement ring radius
   // Ge cylinder for 250 kg at 5.32 g/cm3
-  G4double roiradius     = 25.0;   // detector region diam 50 cm
-  G4double roihalfheight = 11.97;  // detector region height 24 cm
+  G4double roiradius     = 30.0;   // string radius curad - Ge radius - gap
+
+  G4double gerad          = 4.0;                      // Ge radius
+  G4double gehheight      = 5.0;                      // full height 10 cm
+  G4double gegap          = 3.0;                      // gap between Ge 3cm
+  G4double layerthickness = gegap + 2 * gehheight;    // 13 cm total
+  G4int    nofLayers      = 8;   // 8 Ge + 7 gaps = 1010 mm string height
+  G4int    nofStrings     = 12;  // 12 strings  of 8 Ge each
 
   // total
   G4double offset =
@@ -310,16 +316,55 @@ auto WLGDDetectorConstruction::SetupAlternative() -> G4VPhysicalVolume*
   auto* ularSolid = new G4Tubs("ULar", 0.0 * cm, (curad - copper) * cm, cuhheight * cm,
                                0.0, CLHEP::twopi);
 
-  //
-  // Germanium, solid cylinder
-  //
-  auto* geSolid =
-    new G4Tubs("ROI", 0.0 * cm, roiradius * cm, roihalfheight * cm, 0.0, CLHEP::twopi);
-
   // tower; logical volumes
   auto* fCopperLogical = new G4LogicalVolume(copperSolid, copperMat, "Copper_log");
   auto* fUlarLogical   = new G4LogicalVolume(ularSolid, larMat, "ULar_log");
-  auto* fGeLogical     = new G4LogicalVolume(geSolid, roiMat, "Ge_log");
+
+  //
+  // Germanium, solid cylinder
+  //
+  // layers in tower
+  auto* layerSolid = new G4Tubs("LayerSolid", 0.0 * cm, gerad * cm,
+                                (gehheight + gegap / 2.0) * cm, 0.0, CLHEP::twopi);
+  
+  auto* fLayerLogical = new G4LogicalVolume(layerSolid, larMat, "Layer_log");
+                      
+  // fill one layer
+  auto* geSolid =
+    new G4Tubs("ROI", 0.0 * cm, gerad * cm, gehheight * cm, 0.0, CLHEP::twopi);
+    
+  auto* fGeLogical = new G4LogicalVolume(geSolid, roiMat, "Ge_log");
+  new G4PVPlacement(nullptr, G4ThreeVector(0.0, 0.0, -gegap / 2.0 * cm), fGeLogical,   
+                    "Ge_phys", fLayerLogical, false, 0, true);
+  
+  auto* gapSolid =
+    new G4Tubs("Gap", 0.0 * cm, gerad * cm, gegap / 2.0 * cm, 0.0, CLHEP::twopi);
+  
+  auto* fGapLogical = new G4LogicalVolume(gapSolid, larMat, "Gap_log");
+  new G4PVPlacement(nullptr, G4ThreeVector(0.0, 0.0, gehheight * cm), fGapLogical,
+                    "Gap_phys", fLayerLogical, false, 0, true);
+  
+  // place layers as mother volume with unique copy number
+  G4double step = (gehheight + gegap / 2) * cm;
+  G4double xpos;
+  G4double ypos;
+  G4double angle = CLHEP::twopi / nofStrings;
+
+  // layer logical into ULarlogical
+  for(G4int j = 0; j < nofStrings; j++)
+  {
+    xpos = roiradius * cm * std::cos(j * angle);
+    ypos = roiradius * cm * std::sin(j * angle);
+    for(G4int i = 0; i < nofLayers; i++)
+    {
+      new G4PVPlacement(
+        nullptr,
+        G4ThreeVector(xpos, ypos,  
+                      - step + (nofLayers / 2 * layerthickness - i * layerthickness) * cm),
+        fLayerLogical, "Layer_phys", fUlarLogical, false, i + j * nofLayers, true);
+    }
+  }
+
 
   // placements
   new G4PVPlacement(nullptr, G4ThreeVector(ringrad * cm, 0., cushift * cm),
@@ -328,8 +373,6 @@ auto WLGDDetectorConstruction::SetupAlternative() -> G4VPhysicalVolume*
   new G4PVPlacement(nullptr, G4ThreeVector(ringrad * cm, 0., cushift * cm), fUlarLogical,
                     "ULar_phys", fLarLogical, false, 0, true);
 
-  new G4PVPlacement(nullptr, G4ThreeVector(0. * cm, 0. * cm, -cushift * cm), fGeLogical,
-                    "Ge_phys", fUlarLogical, false, 0, true);
 
   // tower 2
   new G4PVPlacement(nullptr, G4ThreeVector(0., ringrad * cm, cushift * cm),
@@ -414,9 +457,15 @@ auto WLGDDetectorConstruction::SetupBaseline() -> G4VPhysicalVolume*
   G4double cuhheight = 200.0;  // copper tube height 4 m inside cryostat
   G4double cushift   = 150.0;  // shift cu tube inside cryostat to top
   G4double ringrad   = 100.0;  // cu tube placement ring radius
-  // Ge cylinder for 250 kg at 5.32 g/cm3
-  G4double roiradius     = 25.0;   // detector region diam 50 cm
-  G4double roihalfheight = 11.97;  // detector region height 24 cm
+  // Ge cylinder 2.67 kg at 5.32 g/cm3
+  G4double roiradius     = 30.0;   // string radius curad - Ge radius - gap
+  // total mass 1026.86 kg in 4 towers, each with 8 Ge stacked in 12 strings
+  G4double gerad          = 4.0;                      // Ge radius
+  G4double gehheight      = 5.0;                      // full height 10 cm
+  G4double gegap          = 3.0;                      // gap between Ge 3cm
+  G4double layerthickness = gegap + 2 * gehheight;    // 13 cm total
+  G4int    nofLayers      = 8;   // 8 Ge + 7 gaps = 1010 mm string height
+  G4int    nofStrings     = 12;  // 12 strings  of 8 Ge each
 
   fvertexZ = (hallhheight + offset) * cm;
   fmaxrad  = hallrad * cm;
@@ -535,16 +584,55 @@ auto WLGDDetectorConstruction::SetupBaseline() -> G4VPhysicalVolume*
   auto* ularSolid = new G4Tubs("ULar", 0.0 * cm, (curad - copper) * cm, cuhheight * cm,
                                0.0, CLHEP::twopi);
 
-  //
-  // Germanium, solid cylinder
-  //
-  auto* geSolid =
-    new G4Tubs("ROI", 0.0 * cm, roiradius * cm, roihalfheight * cm, 0.0, CLHEP::twopi);
-
   // tower; logical volumes
   auto* fCopperLogical = new G4LogicalVolume(copperSolid, copperMat, "Copper_log");
   auto* fUlarLogical   = new G4LogicalVolume(ularSolid, larMat, "ULar_log");
-  auto* fGeLogical     = new G4LogicalVolume(geSolid, roiMat, "Ge_log");
+
+  //
+  // Germanium, solid cylinder
+  //
+  // layers in tower
+  auto* layerSolid = new G4Tubs("LayerSolid", 0.0 * cm, gerad * cm,
+                                (gehheight + gegap / 2.0) * cm, 0.0, CLHEP::twopi);
+  
+  auto* fLayerLogical = new G4LogicalVolume(layerSolid, larMat, "Layer_log");
+                      
+  // fill one layer
+  auto* geSolid =
+    new G4Tubs("ROI", 0.0 * cm, gerad * cm, gehheight * cm, 0.0, CLHEP::twopi);
+    
+  auto* fGeLogical = new G4LogicalVolume(geSolid, roiMat, "Ge_log");
+  new G4PVPlacement(nullptr, G4ThreeVector(0.0, 0.0, -gegap / 2.0 * cm), fGeLogical,   
+                    "Ge_phys", fLayerLogical, false, 0, true);
+  
+  auto* gapSolid =
+    new G4Tubs("Gap", 0.0 * cm, gerad * cm, gegap / 2.0 * cm, 0.0, CLHEP::twopi);
+  
+  auto* fGapLogical = new G4LogicalVolume(gapSolid, larMat, "Gap_log");
+  new G4PVPlacement(nullptr, G4ThreeVector(0.0, 0.0, gehheight * cm), fGapLogical,
+                    "Gap_phys", fLayerLogical, false, 0, true);
+  
+  // place layers as mother volume with unique copy number
+  G4double step = (gehheight + gegap / 2) * cm;
+  G4double xpos;
+  G4double ypos;
+  G4double angle = CLHEP::twopi / nofStrings;
+
+  // layer logical into ULarlogical
+  for(G4int j = 0; j < nofStrings; j++)
+  {
+    xpos = roiradius * cm * std::cos(j * angle);
+    ypos = roiradius * cm * std::sin(j * angle);
+    for(G4int i = 0; i < nofLayers; i++)
+    {
+      new G4PVPlacement(
+        nullptr,
+        G4ThreeVector(xpos, ypos,  
+                      - step + (nofLayers / 2 * layerthickness - i * layerthickness) * cm),
+        fLayerLogical, "Layer_phys", fUlarLogical, false, i + j * nofLayers, true);
+    }
+  }
+
 
   // placements
   new G4PVPlacement(nullptr, G4ThreeVector(ringrad * cm, 0., cushift * cm),
@@ -553,8 +641,6 @@ auto WLGDDetectorConstruction::SetupBaseline() -> G4VPhysicalVolume*
   new G4PVPlacement(nullptr, G4ThreeVector(ringrad * cm, 0., cushift * cm), fUlarLogical,
                     "ULar_phys", fLarLogical, false, 0, true);
 
-  new G4PVPlacement(nullptr, G4ThreeVector(0. * cm, 0. * cm, -cushift * cm), fGeLogical,
-                    "Ge_phys", fUlarLogical, false, 0, true);
 
   // tower 2
   new G4PVPlacement(nullptr, G4ThreeVector(0., ringrad * cm, cushift * cm),
