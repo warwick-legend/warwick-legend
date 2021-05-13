@@ -38,12 +38,11 @@ class WLGDCrystalHit : public G4VHit
     G4ThreeVector GetPos() const { return fPos; };
 
   private:
-
-      G4int         fTid;
-      G4double      fTime;
-      G4double      fWeight;
-      G4double      fEdep;
-      G4ThreeVector fPos;
+      G4int         fTid = 0;
+      G4double      fTime = 0.0 ;
+      G4double      fWeight = 0.0;
+      G4double      fEdep = 0.0;
+      G4ThreeVector fPos = G4ThreeVector{};
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
