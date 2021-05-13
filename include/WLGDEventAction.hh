@@ -5,8 +5,8 @@
 #include <numeric>
 #include <vector>
 
-#include "G4THitsMap.hh"
-#include "G4ThreeVector.hh"
+#include "WLGDCrystalHit.hh"
+
 #include "G4UserEventAction.hh"
 #include "globals.hh"
 
@@ -23,6 +23,7 @@ public:
   virtual void EndOfEventAction(const G4Event* event);
 
   // to create columns for Ntuple
+  std::vector<G4int>&    GetHitTID()  { return htrid; }
   std::vector<G4double>& GetHitEdep() { return edep; }
   std::vector<G4double>& GetHitTime() { return thit; }
   std::vector<G4double>& GetHitWeight() { return whit; }
@@ -43,9 +44,8 @@ public:
 
 private:
   // methods
-  G4THitsMap<G4int>*         GetIntHitsCollection(G4int hcID, const G4Event* event) const;
-  G4THitsMap<G4double>*      GetHitsCollection(G4int hcID, const G4Event* event) const;
-  G4THitsMap<G4ThreeVector>* GetVecHitsCollection(G4int hcID, const G4Event* event) const;
+  WLGDCrystalHitsCollection*   GetHitsCollection(G4int hcID,
+                                                 const G4Event* event) const;
   G4int                      GeomID(G4String name);
   void                       makeMap();
 
@@ -85,11 +85,8 @@ private:
 
   // data members
   // hit data
-  G4int                 fTidID    = -1;
-  G4int                 fLocID    = -1;
-  G4int                 fTimeID   = -1;
-  G4int                 fWeightID = -1;
-  G4int                 fEdepID   = -1;
+  G4int                 fHID    = -1;
+
   std::vector<G4int>    htrid;
   std::vector<G4double> edep;
   std::vector<G4double> thit;

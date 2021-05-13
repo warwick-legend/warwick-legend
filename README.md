@@ -86,7 +86,7 @@ up to the developer. The set of fixes applied are:
 For a full listing of the wildcards, see [the `clang-tidy` documentation](https://clang.llvm.org/extra/clang-tidy/checks/list.html).
 
 ## Code Details
-### Cross secton bias reference
+### Cross section bias reference
 M.H. Mendenhall and R.A. Weller, NIM A667 (2012) 38-43
 
 ### Ntuple output columns

@@ -7,7 +7,6 @@
 #include "G4VVisManager.hh"
 #include "G4VisAttributes.hh"
 
-#include "WLGDTrackInformation.hh"
 #include "WLGDTrajectory.hh"
 
 G4ThreadLocal G4Allocator<WLGDTrajectory>* myTrajectoryAllocator = nullptr;
