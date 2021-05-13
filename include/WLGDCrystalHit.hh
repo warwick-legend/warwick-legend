@@ -14,12 +14,6 @@
 class WLGDCrystalHit : public G4VHit
 {
   public:
-    WLGDCrystalHit();
-    WLGDCrystalHit(const WLGDCrystalHit&);
-    virtual ~WLGDCrystalHit();
-
-    // operators
-    const WLGDCrystalHit& operator=(const WLGDCrystalHit&);
     G4bool operator==(const WLGDCrystalHit&) const;
 
     inline void* operator new(size_t);
@@ -77,4 +71,3 @@ inline void WLGDCrystalHit::operator delete(void *hit)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
-
