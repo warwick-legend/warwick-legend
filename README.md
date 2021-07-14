@@ -5,7 +5,7 @@ First attempt at creating a LEGEND Monte-Carlo simulation application,
 suitable for large production runs estimating Germanium-77 production in
 Germanium-76 crystals in different underground laboratories.
 
-Should allow for two alternative experimental setups.
+** Should allow for two alternative experimental setups.
 
 ## Requirements
 
@@ -24,10 +24,10 @@ primary vertex generator and cross section bias factor (one each, neutron and mu
 
 CLI for number of threads, macro file, output file name (for production runs)
 
-User Limits for run time optimization
+** User Limits for run time optimization
 
-## How to Build/Develop
-The project has the following requirements:
+## How to Build/Develop in an optimistic way
+The project has the following requirements and one must be good enough to fulfil the requirements :
 
 - Linux/macOS system (only CentOS7, Catalina tested at present)
 - C++17 compatible compiler (GCC9, Xcode 11 tested at present)
